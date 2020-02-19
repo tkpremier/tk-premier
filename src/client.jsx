@@ -3,9 +3,14 @@ import React from 'react';
 import { hydrate } from 'react-dom';
 import Grid from './Grid';
 
-(function (props) {
+(function ({ data = []}) {
+  
   hydrate(
-    <Grid data={props.data} />,
+    (<div>
+      <a href="/">Drive</a>
+      <a href="/list">List</a>
+      <Grid data={data} />
+    </div>),
     document.querySelector('#app')
   );
 }(window.__client));

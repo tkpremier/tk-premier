@@ -4,7 +4,8 @@
   "description": "Tommy's side project",
   "main": "app.js",
   "scripts": {
-    "test": "test",
+    "jest-init": "jest --init",
+    "test": "jest",
     "babel": "babel src -d views",
     "prebuild": "yarn install --no-save",
     "build": "yarn run webpack",
