@@ -31,6 +31,21 @@ const Grid = ({ data }) => {
     fetch(`/get-more/${nextData.nextPageToken}`)
       .then(handleResponse)
       .then((json) => {
+        if (typeof window !== 'undefined' && typeof window.localStorage.getItem('data') !== 'undefined') {
+          const nameModifiedThumb = json.data.files.map(model => `{ name: ${model.name}, modifiedTime: ${model.modifiedTime}, thumbnailLink: ${model.thumbnailLink} }`);
+          const prev = window.localStorage.getItem('data');
+          console.log('prev');
+          const concat = nameModifiedThumb.concat(prev);
+          window.localStorage.setItem('data', concat);
+          console.log('window localStorage: ', window.localStorage.getItem('data'));
+          console.log('yes worker');
+            const worker = new Worker('/workers/worker.js');
+            worker.postMessage('worker set');
+            console.log('worker? ', worker);
+            worker.onmessage = (e) => {
+              console.log('back in the main thread: ', e);
+            }
+        }
         setNextData({
           ...nextData,
           files: returnSorted(nextData.files.concat(json.data.files)),
@@ -49,9 +64,15 @@ const Grid = ({ data }) => {
       });
   }
   return (
-    <div>
+    <div style={{ 'postion': 'fixed', 'width': '100%', 'minHeight': '25px' }}>
       <section className="controls">
         <fieldset>
+          <button onClick={(e) => { if (window) {
+            window.localStorage.clear();
+          } }}
+          >
+            Clear
+          </button>
           <select onChange={sortData} defaultValue="createdTime-asc">
             <option value="">Choose Sort</option>
             <option value="createdTime-asc">Created - Earliest</option>
