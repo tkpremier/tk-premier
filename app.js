@@ -51,24 +51,24 @@ const ModelType = new GraphQLObjectType({
 
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
-      name: 'Query',
-      fields: {
-          models: {
-              type: GraphQLList(ModelType),
-              resolve: (root, args, context, info) => {
-                  return Model.find().exec();
-              }
-          },
-          model: {
-              type: ModelType,
-              args: {
-                  id: { type: GraphQLNonNull(GraphQLID) }
-              },
-              resolve: (root, args, context, info) => {
-                  return Model.findById(args.id).exec();
-              }
-          }
+    name: 'Query',
+    fields: {
+      models: {
+        type: GraphQLList(ModelType),
+        resolve: (root, args, context, info) => {
+          return Model.find().exec();
+        }
+      },
+      model: {
+        type: ModelType,
+        args: {
+          id: { type: GraphQLNonNull(GraphQLID) }
+        },
+        resolve: (root, args, context, info) => {
+          return Model.findById(args.id).exec();
+        }
       }
+    }
   })
 });
 
@@ -110,9 +110,9 @@ async function movieGame(req, res) {
       console.log('movie err: ', err);
       res.send(err);
     });
-    // weird axios quirk
-    // https://github.com/axios/axios/issues/836
-    res.json(json.data);
+  // weird axios quirk
+  // https://github.com/axios/axios/issues/836
+  res.json(json.data);
 
 };
 
@@ -146,14 +146,13 @@ const returnSorted = (files, sortString = 'createdTime-asc') => {
 };
 
 async function listRouter(req, res) {
-  const credentials = await fsp.readFile('./credentials.json', { encoding: 'utf8'});
+  const credentials = await fsp.readFile('./credentials.json', { encoding: 'utf8' });
   const auth = await authorize(JSON.parse(credentials));
-  console.log('auth: ', auth);
   const data = await listFiles(auth)
     .then((res) => {
       console.log('res: ', res);
       return { ...res, files: res.data.files };
-  })
+    })
     .catch((err) => {
       console.log('listFiles err: ', err);
       const jsonErr = JSON.stringify({
@@ -196,12 +195,14 @@ async function contiguous(req, res) {
 };
 
 async function indexRouter(req, res) {
-  
+  const data = [];
+  const content = ssr({ data });
   const response = layout({
     initialState,
     title: 'Google T',
-    type: 'react',
-    data: []
+    type: 'server',
+    content,
+    data: JSON.stringify(data)
   });
   res.setHeader('Cache-Control', 'assets, max-age=604800');
   res.send(response);

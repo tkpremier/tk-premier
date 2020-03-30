@@ -1,16 +1,7 @@
-
 import React from 'react';
 import { hydrate } from 'react-dom';
-import Grid from './Grid';
+import Main from './Main';
 
-(function ({ data = []}) {
-  
-  hydrate(
-    (<div>
-      <a href="/">Drive</a>
-      <a href="/list">List</a>
-      <Grid data={data} />
-    </div>),
-    document.querySelector('#app')
-  );
-}(window.__client));
+(function(data = '[]') {
+  hydrate(<Main />, document.querySelector('#app'));
+})(window.__client);

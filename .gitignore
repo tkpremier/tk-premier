@@ -1,5 +1,7 @@
 node_modules
-assets
-dist
+assets/*
+dist/*
 .vscode
 yarn-error.log
+assets/client.bundle.js
+dist/app.bundle.js

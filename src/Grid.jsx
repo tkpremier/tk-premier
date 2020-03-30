@@ -25,8 +25,8 @@ const returnSorted = (files, sortString = 'createdTime-asc') => {
   });  
 }
 
-const Grid = ({ data }) => {
-  const [ nextData , setNextData ] = useState(data);
+const Grid = ({ data: initData }) => {
+  const [ data , setData ] = useState(initData);
   const getMore = () => {
     fetch(`/get-more/${nextData.nextPageToken}`)
       .then(handleResponse)

@@ -17,11 +17,9 @@ const webpack = require('webpack');
  */
 
 module.exports = {
-  mode: 'development',
   entry: {
     algos: './src/data-structures/contiguous.js',
-    app: './src/server-bundle.jsx',
-    client: './src/client.jsx',
+    client: './src/client.jsx'
   },
   output: {
     filename: '[name].bundle.js',
@@ -29,7 +27,8 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.jsx$/,
+      {
+        test: /\.jsx$/,
         exclude: /(node_modules)/,
         use: {
           loader: 'babel-loader',
@@ -64,7 +63,7 @@ module.exports = {
                 }
               ]
             ]
-          } 
+          }
         }
       }
     ]

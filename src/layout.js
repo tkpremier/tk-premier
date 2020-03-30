@@ -1,7 +1,7 @@
 
-const getWorkers = type => type === 'client'
-  ? `<script src="/assets/workers.bundle.js" type="text/javascript"></script>`
-  : ``;
+// const getWorkers = type => type === 'client'
+//   ? `<script src="/assets/workers.bundle.js" type="text/javascript"></script>`
+//   : ``;
 
 function template({
   data,
@@ -13,6 +13,10 @@ function template({
           <html lang="en">
           <head>
             <meta charset="utf-8">
+            <meta
+  name="viewport"
+  content="minimum-scale=1, initial-scale=1, width=device-width"
+/>
             <title> ${title} </title>
           </head>
           <body>
@@ -20,7 +24,6 @@ function template({
           </body>
           <script>if (typeof window !== 'undefined') { window.__client = ${data} }</script>
           <script src="/assets/client.bundle.js" type="text/javascript"></script>
-          ${getWorkers('client')}
           </html>
           `;
   return page;
