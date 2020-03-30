@@ -3,6 +3,8 @@ const createError = require('http-errors');
 
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
+const fsp = require('fs').promises;
 const dotenv = require('dotenv');
 const logger = require('morgan');
 const ExpressGraphQL = require("express-graphql");
@@ -144,15 +146,14 @@ const returnSorted = (files, sortString = 'createdTime-asc') => {
 };
 
 async function listRouter(req, res) {
-  const auth = await authorize();
-  const json = await listFiles(auth)
-    .then((resp) => {
-      const { data } = resp;
-      let { files } = data;
-      files = returnSorted(files, 'createdTime-asc');
-
-      return { ...resp, files };
-    })
+  const credentials = await fsp.readFile('./credentials.json', { encoding: 'utf8'});
+  const auth = await authorize(JSON.parse(credentials));
+  console.log('auth: ', auth);
+  const data = await listFiles(auth)
+    .then((res) => {
+      console.log('res: ', res);
+      return { ...res, files: res.data.files };
+  })
     .catch((err) => {
       console.log('listFiles err: ', err);
       const jsonErr = JSON.stringify({
@@ -160,10 +161,11 @@ async function listRouter(req, res) {
         nextPageToken: err.toString()
       });
       return {
-        data: jsonErr
+        files: []
       }
     });
-  const content = ssr(json);
+  // const json = await listFiles(auth)
+  const content = ssr({ data });
   const response = layout({
     initialState,
     title: 'Lists',
@@ -194,27 +196,17 @@ async function contiguous(req, res) {
 };
 
 async function indexRouter(req, res) {
-  const auth = await authorize();
-  const json = await getUser(auth)
-    .then(user => JSON.stringify(user))
-    .catch(err => JSON.stringify(err));
+  
   const response = layout({
     initialState,
     title: 'Google T',
-    type: 'client',
-    data: json
+    type: 'react',
+    data: []
   });
   res.setHeader('Cache-Control', 'assets, max-age=604800');
   res.send(response);
   // const json = JSON.parse(data);
 };
-
-// const listRouter = (req, res) => {
-//   const response = layout({ title: 'TK Premier', type: 'canvas' });
-//   res.setHeader('Cache-Control', 'assets, max-age=604800');
-//   res.send(response);
-//   console.log('hello');
-// };
 
 const webWorkers = (req, res) => {
   const response = layout({ title: 'Lab 49 Prep', type: 'web-worker' });

@@ -111,4 +111,7 @@ const Grid = ({ data }) => {
   );
 };
 
+Grid.defaultProps = {
+  data: []
+};
 export default Grid;
