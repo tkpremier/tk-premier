@@ -11,8 +11,9 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import serialize from 'form-serialize';
+import handleResponse from './utils/handleResponse';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1
   },
@@ -23,13 +24,29 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   }
 }));
-
+const defaultUser = {
+  email: '',
+  firstName: '',
+  lastName: '',
+  password: ''
+};
 const Main = () => {
   const classes = useStyles();
+  const [user, loginUser] = useState(defaultUser);
   const [content, setContent] = useState('');
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setContent(JSON.stringify(serialize(e.target, true)));
+    fetch('/api/user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify(serialize(e.target, true))
+    })
+      .then(handleResponse)
+      .then((res) => console.log('res: ', res))
+      .catch((err) => console.log('err: ', err));
+    // setContent());
   };
   return (
     <Container className={classes.root} maxWidth="md">
@@ -46,10 +63,10 @@ const Main = () => {
       </AppBar>
       {content.length > 0 ? <p>{content}</p> : null}
       <Paper component="form" onSubmit={handleSubmit}>
-        <TextField name="email" label="Email" id="email" />
-        <TextField name="firstName" label="First Name" id="first-name" />
-        <TextField name="lastName" label="Last Name" id="last-name" />
-        <TextField name="password" label="Password" id="password" type="password" />
+        <TextField name="email" defaultValue={user.email} label="Email" id="email" />
+        <TextField name="firstName" label="First Name" defaultValue={user.firstName} id="first-name" />
+        <TextField defaultValue={user.lastName} name="lastName" label="Last Name" id="last-name" />
+        <TextField defaultValue={user.password} name="password" label="Password" id="password" type="password" />
         <Button type="submit">Submit</Button>
       </Paper>
     </Container>

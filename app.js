@@ -1,9 +1,8 @@
 // Include the cluster module
 const createError = require('http-errors');
-
 const express = require('express');
 const path = require('path');
-const pg = require('pg');
+const fs = require('fs');
 const fsp = require('fs').promises;
 const dotenv = require('dotenv');
 const logger = require('morgan');
@@ -18,9 +17,9 @@ const {
   GraphQLSchema,
   buildSchema
 } = require("graphql");
-
 const layout = require('./src/layout');
 const { authorize, listFiles, getFile, getUser } = require('./src/services/drive');
+const apiRoutes = require('./src/routes');
 const getMovie = require('./src/services/movie');
 const ssr = require('./dist/app.bundle');
 
@@ -226,8 +225,8 @@ app.use('/dist', express.static(path.resolve(__dirname, 'dist')));
 app.use('/assets', express.static(path.resolve(__dirname, 'assets')));
 app.use('/workers', express.static(path.resolve(__dirname, 'workers')))
 app.use(logger('dev'));
-// app.use(express.json());
-// app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.get('/', indexRouter);
 app.get('/list', listRouter);
@@ -236,6 +235,8 @@ app.get('/web-workers', webWorkers);
 app.get('/test', mochaTest);
 app.get('/get-more/:token', getMore);
 app.get('/contiguous/', contiguous);
+
+app.use('/api', apiRoutes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -254,7 +255,6 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.send(err);
 });
-
 
 var port = process.env.PORT || 3000;
 

@@ -11,7 +11,7 @@ import {
 } from '../utils/validations';
 
 import {
-  errorMessage, successMessage, status,
+  errorMessage, successMessage, status
 } from '../utils/status';
 
 /**
@@ -22,10 +22,10 @@ import {
    */
 const createUser = async (req, res) => {
   const {
-    email, firstName, lastName, password,
+    email, firstName, lastName, password
   } = req.body;
 
-  const createdOn = format(new Date());
+  const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
   if (isEmpty(email) || isEmpty(firstName) || isEmpty(lastName) || isEmpty(password)) {
     errorMessage.error = 'Email, password, first name and last name field cannot be empty';
     return res.status(status.bad).send(errorMessage);
@@ -34,11 +34,6 @@ const createUser = async (req, res) => {
     errorMessage.error = 'Please enter a valid Email';
     return res.status(status.bad).send(errorMessage);
   }
-  if (!validatePassword(password)) {
-    errorMessage.error = 'Password must be more than five(5) characters';
-    return res.status(status.bad).send(errorMessage);
-  }
-  const hashedPassword = hashPassword(password);
   const createUserQuery = `INSERT INTO
         users(email, first_name, last_name, password, created_on)
         VALUES($1, $2, $3, $4, $5)
@@ -47,17 +42,17 @@ const createUser = async (req, res) => {
     email,
     firstName,
     lastName,
-    hashedPassword,
+    password,
     createdOn
   ];
-
+  console.log('values: ', values);
   try {
     const { rows } = await dbQuery.query(createUserQuery, values);
     const dbResponse = rows[0];
     delete dbResponse.password;
-    const token = generateUserToken(dbResponse.email, dbResponse.id, dbResponse.is_admin, dbResponse.first_name, dbResponse.last_name);
-    successMessage.data = dbResponse;
-    successMessage.data.token = token;
+    // const token = generateUserToken(dbResponse.email, dbResponse.id, dbResponse.is_admin, dbResponse.first_name, dbResponse.last_name);
+    // successMessage.data = dbResponse;
+    // successMessage.data.token = token;
     return res.status(status.created).send(successMessage);
   } catch (error) {
     if (error.routine === '_bt_check_unique') {
@@ -108,7 +103,7 @@ const siginUser = async (req, res) => {
   }
 };
 
-export {
+module.exports = {
   createUser,
-  siginUser,
+  siginUser
 };
