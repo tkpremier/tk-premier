@@ -21,10 +21,14 @@ const layout = require('./src/layout');
 const { authorize, listFiles, getFile, getUser } = require('./src/services/drive');
 const apiRoutes = require('./src/routes');
 const getMovie = require('./src/services/movie');
-const ssr = require('./dist/app.bundle');
+const ServerFactory = require('./dist/app.bundle');
 
 dotenv.config();
 
+// google drive authenticate;
+async function getCredentials () {
+  return fsp.readFile('./credentials.json', { encoding: 'utf8' }).then(res => { return JSON.parse(res); });
+};
 // mongoose.connect("mongodb://127.0.0.1:27017/tk-premier", {useNewUrlParser: true});
 // const db = mongoose.connection;
 // db.on('error', console.error.bind(console, 'connection error:'));
@@ -72,6 +76,8 @@ const schema = new GraphQLSchema({
 });
 
 const app = express();
+const serverFactory = new ServerFactory();
+
 
 // GRAPHQL //
 
@@ -145,37 +151,34 @@ const returnSorted = (files, sortString = 'createdTime-asc') => {
 };
 
 async function listRouter(req, res) {
-  const credentials = await fsp.readFile('./credentials.json', { encoding: 'utf8' });
-  const auth = await authorize(JSON.parse(credentials));
+  const credentials = await getCredentials().then(res => res);
+  const auth = await authorize(credentials);
   const data = await listFiles(auth)
     .then((res) => {
-      console.log('res: ', res);
-      return { ...res, files: res.data.files };
+      return { ...res.data };
     })
     .catch((err) => {
       console.log('listFiles err: ', err);
-      const jsonErr = JSON.stringify({
-        files: [],
-        nextPageToken: err.toString()
-      });
       return {
-        files: []
+        files: [],
+        nextPageToken: ''
       }
     });
   // const json = await listFiles(auth)
-  const content = ssr({ data });
+  const content = serverFactory.getSsr('Grid', { data });
   const response = layout({
     initialState,
     title: 'Lists',
-    type: 'server',
-    data: JSON.stringify(json),
+    componentType: 'Grid',
+    data: JSON.stringify(data),
     content
   });
   res.setHeader('Cache-Control', 'assets, max-age=604800');
   res.send(response);
 }
 async function getMore(req, res) {
-  const auth = await authorize();
+  const credentials = await getCredentials().then(res => res);
+  const auth = await authorize(credentials);
   const listMore = await listFiles(auth, req.params.token)
     .then(moreRes => moreRes)
     .catch(err => JSON.stringify(err));
@@ -195,11 +198,11 @@ async function contiguous(req, res) {
 
 async function indexRouter(req, res) {
   const data = [];
-  const content = ssr({ data });
+  const content = serverFactory.getSsr('Main', { data });
   const response = layout({
     initialState,
     title: 'Google T',
-    type: 'server',
+    componentType: 'Main',
     content,
     data: JSON.stringify(data)
   });

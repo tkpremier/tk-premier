@@ -25,44 +25,33 @@ const returnSorted = (files, sortString = 'createdTime-asc') => {
   });  
 }
 
-const Grid = ({ data: initData }) => {
-  const [ data , setData ] = useState(initData);
+const Grid = ({ nextPageToken = '', files =  [] }) => {
+  const [ data , setData ] = useState(files);
+  const [ token, setToken ] = useState(nextPageToken);
   const getMore = () => {
-    fetch(`/get-more/${nextData.nextPageToken}`)
+    fetch(`/get-more/${token}`)
       .then(handleResponse)
       .then((json) => {
-        if (typeof window !== 'undefined' && typeof window.localStorage.getItem('data') !== 'undefined') {
-          const nameModifiedThumb = json.data.files.map(model => `{ name: ${model.name}, modifiedTime: ${model.modifiedTime}, thumbnailLink: ${model.thumbnailLink} }`);
-          const prev = window.localStorage.getItem('data');
-          console.log('prev');
-          const concat = nameModifiedThumb.concat(prev);
-          window.localStorage.setItem('data', concat);
-          console.log('window localStorage: ', window.localStorage.getItem('data'));
-          console.log('yes worker');
-            const worker = new Worker('/workers/worker.js');
-            worker.postMessage('worker set');
-            console.log('worker? ', worker);
-            worker.onmessage = (e) => {
-              console.log('back in the main thread: ', e);
-            }
-        }
-        setNextData({
-          ...nextData,
-          files: returnSorted(nextData.files.concat(json.data.files)),
-          nextPageToken: json.data.nextPageToken
-        });
+        // if (typeof window !== 'undefined' && typeof window.localStorage.getItem('data') !== 'undefined') {
+        //   const nameModifiedThumb = json.data.files.map(model => `{ name: ${model.name}, modifiedTime: ${model.modifiedTime}, thumbnailLink: ${model.thumbnailLink} }`);
+        //   const prev = window.localStorage.getItem('data');
+        //   const concat = nameModifiedThumb.concat(prev);
+        //   window.localStorage.setItem('data', concat);
+        //     const worker = new Worker('/workers/worker.js');
+        //     worker.postMessage('worker set');
+        //     console.log('worker? ', worker);
+        //     worker.onmessage = (e) => {
+        //       console.log('back in the main thread: ', e);
+        //     }
+        // }
+        setToken(json.data.nextPageToken);
+        setData(returnSorted(json.data.files.concat(data)));
       })
       .catch((err) => {
         console.log('err: ', err);
       });
   };
-  const sortData = (e) => {
-    const sorted = returnSorted(nextData.files, e.target.value);
-      setNextData({
-        ...nextData,
-        files: sorted
-      });
-  }
+  const sortData = e => setData(returnSorted(data, e.target.value));
   return (
     <div style={{ 'postion': 'fixed', 'width': '100%', 'minHeight': '25px' }}>
       <section className="controls">
@@ -83,7 +72,7 @@ const Grid = ({ data: initData }) => {
         </fieldset>
       </section>
       <ul>
-      {nextData.files.map((file, i) => (
+      {data.map((file, i) => (
         <li>
           <button onClick={() => { console.log('file',  file);}} >Get File info</button>
           <p>{`Name: ${file.name}, created on: ${file.createdTime}, last seen: ${file.viewedByMeTime}`}</p>
@@ -102,7 +91,7 @@ const Grid = ({ data: initData }) => {
            type="button"
             onClick={getMore}
           >
-            { `Get 100 More : ${nextData.files.length}` }
+            { `Get 100 More : ${data.length}` }
           </button>
         </li>
       ))}

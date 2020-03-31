@@ -7,7 +7,7 @@ function template({
   data,
   title,
   content = '',
-  type = 'client'
+  componentType = 'Main'
 }) {
   const page = `<!DOCTYPE html>
           <html lang="en">
@@ -22,7 +22,8 @@ function template({
           <body>
             <div id="app">${content}</div>
           </body>
-          <script>if (typeof window !== 'undefined') { window.__client = ${data} }</script>
+          <script>if (typeof window !== 'undefined') { window.__client = \`${data}\`;
+        window.__cType = \`${componentType}\`; }</script>
           <script src="/assets/client.bundle.js" type="text/javascript"></script>
           </html>
           `;
