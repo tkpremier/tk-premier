@@ -34,29 +34,29 @@ const createUserTable = () => {
     });
 };
 
-// /**
-//  * Create Buses Table
-//  */
-// const createBusTable = () => {
-//   const busCreateQuery = `CREATE TABLE IF NOT EXISTS bus
-//     (id SERIAL PRIMARY KEY,
-//     number_plate VARCHAR(100) NOT NULL,
-//     manufacturer VARCHAR(100) NOT NULL,
-//     model VARCHAR(100) NOT NULL,
-//     year VARCHAR(10) NOT NULL,
-//     capacity integer NOT NULL,
-//     created_on DATE NOT NULL)`;
+/**
+ * Create DriveFiles Table
+ */
+const createDriveFilesTable = () => {
+  const driveFilesCreateQuery = `CREATE TABLE IF NOT EXISTS drive
+    (id VARCHAR(100) NOT NULL,
+    drive_id VARCHAR(100) NOT NULL,
+    type VARCHAR(100) NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    web_view_link VARCHAR(100) NOT NULL,
+    web_content_link VARCHAR(100) NOT NULL,
+    created_on DATE NOT NULL)`;
 
-//   pool.query(busCreateQuery)
-//     .then((res) => {
-//       console.log(res);
-//       pool.end();
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       pool.end();
-//     });
-// };
+  pool.query(driveFilesCreateQuery)
+    .then((res) => {
+      console.log('driveFilesCreate res', res);
+      pool.end();
+    })
+    .catch((err) => {
+      console.log(err);
+      pool.end();
+    });
+};
 
 // /**
 //  * Create Trip Table
@@ -86,28 +86,28 @@ const createUserTable = () => {
 /**
  * Create Booking Table
  */
-const createBookingTable = () => {
-  const bookingCreateQuery = `CREATE TABLE IF NOT EXISTS booking(id SERIAL, 
-    trip_id INTEGER REFERENCES trip(id) ON DELETE CASCADE,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    bus_id INTEGER REFERENCES bus(id) ON DELETE CASCADE,
-    trip_date DATE, 
-    seat_number INTEGER UNIQUE,      
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,      
-    created_on DATE NOT NULL,
-    PRIMARY KEY (id, trip_id, user_id))`;
-  pool.query(bookingCreateQuery)
-    .then((res) => {
-      console.log(res);
-      pool.end();
-    })
-    .catch((err) => {
-      console.log(err);
-      pool.end();
-    });
-};
+// const createBookingTable = () => {
+//   const bookingCreateQuery = `CREATE TABLE IF NOT EXISTS booking(id SERIAL, 
+//     trip_id INTEGER REFERENCES trip(id) ON DELETE CASCADE,
+//     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+//     bus_id INTEGER REFERENCES bus(id) ON DELETE CASCADE,
+//     trip_date DATE, 
+//     seat_number INTEGER UNIQUE,      
+//     first_name VARCHAR(100) NOT NULL,
+//     last_name VARCHAR(100) NOT NULL,
+//     email VARCHAR(100) NOT NULL,      
+//     created_on DATE NOT NULL,
+//     PRIMARY KEY (id, trip_id, user_id))`;
+//   pool.query(bookingCreateQuery)
+//     .then((res) => {
+//       console.log(res);
+//       pool.end();
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       pool.end();
+//     });
+// };
 
 /**
  * Drop User Table
@@ -125,6 +125,21 @@ const dropUserTable = () => {
     });
 };
 
+/**
+ * Drop User Table
+ */
+const dropDriveFilesTable = () => {
+  const driveFilesDropQuery = 'DROP TABLE IF EXISTS drive';
+  pool.query(driveFilesDropQuery)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    })
+    .catch((err) => {
+      console.log(err);
+      pool.end();
+    });
+};
 
 // /**
 //  * Drop Bus Table
@@ -180,6 +195,7 @@ const dropUserTable = () => {
  */
 const createAllTables = () => {
   createUserTable();
+  createDriveFilesTable();
 };
 
 
@@ -187,6 +203,7 @@ const createAllTables = () => {
  * Drop All Tables
  */
 const dropAllTables = () => {
+  dropDriveFilesTable();
   dropUserTable();
 };
 

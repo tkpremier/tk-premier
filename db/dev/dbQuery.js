@@ -3,13 +3,13 @@ import pool from './pool';
 export default {
   /**
    * DB Query
-   * @param {object} req
-   * @param {object} res
-   * @returns {object} object
+   * @param {string} queryText
+   * @param {object} params
+   * @returns {Promise}
    */
-  query(quertText, params) {
+  query(queryText, params) {
     return new Promise((resolve, reject) => {
-      pool.query(quertText, params)
+      pool.query(queryText, params)
         .then((res) => {
           resolve(res);
         })
@@ -17,5 +17,5 @@ export default {
           reject(err);
         });
     });
-  },
+  }
 };

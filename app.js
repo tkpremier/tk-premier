@@ -14,29 +14,22 @@ const {
   GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
-  GraphQLSchema,
-  buildSchema
+  GraphQLSchema
 } = require("graphql");
 const layout = require('./src/layout');
 const { authorize, listFiles, getFile, getUser } = require('./src/services/drive');
 const apiRoutes = require('./src/routes');
+const { createDriveFile } = require('./src/services/db');
 const getMovie = require('./src/services/movie');
 const ServerFactory = require('./dist/app.bundle');
 
 dotenv.config();
 
 // google drive authenticate;
-async function getCredentials () {
-  return fsp.readFile('./credentials.json', { encoding: 'utf8' }).then(res => { return JSON.parse(res); });
-};
-// mongoose.connect("mongodb://127.0.0.1:27017/tk-premier", {useNewUrlParser: true});
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', function() {
-//   // we're connected!
-//   console.log('connected to database: ');
-// });
-
+async function getCredentials() {
+  return fsp.readFile('./credentials.json', { encoding: 'utf8' })
+    .then(res => JSON.parse(res));
+}
 const modelSchema = {
   name: String,
   dates: Array
@@ -87,6 +80,8 @@ const root = {
     return `Hello world`;
   }
 };
+app.use('/api', apiRoutes);
+
 app.use('/graphql', ExpressGraphQL({
   schema: schema,
   graphiql: true,
@@ -105,9 +100,8 @@ const initialState = {
   type: 'server'
 };
 
-// Movie game 
+// Movie game
 async function movieGame(req, res) {
-
   res.setHeader('Cache-Control', 'assets, max-age=604800');
   const json = await getMovie()
     .then(movie => movie)
@@ -118,44 +112,35 @@ async function movieGame(req, res) {
   // weird axios quirk
   // https://github.com/axios/axios/issues/836
   res.json(json.data);
-
-};
-
-const returnSorted = (files, sortString = 'createdTime-asc') => {
-  return files.filter(file => sortString.indexOf('viewed') > -1
-    ? (file.viewedByMe)
-    : file)
-    .sort((a, b) => {
-      const asc = sortString.indexOf('asc') > -1;
-      const prop = sortString.split('-')[0];
-
-      const dateA = new Date(a[prop]);
-      const dateB = new Date(b[prop]);
-      if (asc) {
-        if (dateA.valueOf() < dateB.valueOf()) {
-          return -1;
-        }
-        if (dateA.valueOf() > dateB.valueOf()) {
-          return 1;
-        }
-      } else if (!asc) {
-        if (dateA.valueOf() > dateB.valueOf()) {
-          return -1;
-        }
-        if (dateA.valueOf() < dateB.valueOf()) {
-          return 1;
-        }
-      }
-      return 0;
-    });
-};
+}
 
 async function listRouter(req, res) {
-  const credentials = await getCredentials().then(res => res);
+  const credentials = await getCredentials().then(cred => cred);
   const auth = await authorize(credentials);
   const data = await listFiles(auth)
     .then((res) => {
-      return { ...res.data };
+      const files = res.data.files.map((file) => {
+        // const {
+        //   id,
+        //   name,
+        //   webViewLink,
+        //   webContentLink,
+        //   mimeType
+        // } = file;
+        // createDriveFile({
+        //   id,
+        //   name,
+        //   mimeType,
+        //   webViewLink,
+        //   webContentLink
+        // });
+        return createDriveFile(fileData).then().catch();
+        return {
+          ...file,
+          type: file.mimeType
+        };
+      });
+      return { files, nextPageToken: res.data.nextPageToken };
     })
     .catch((err) => {
       console.log('listFiles err: ', err);
@@ -177,14 +162,13 @@ async function listRouter(req, res) {
   res.send(response);
 }
 async function getMore(req, res) {
-  const credentials = await getCredentials().then(res => res);
+  const credentials = await getCredentials().then(cred => cred);
   const auth = await authorize(credentials);
   const listMore = await listFiles(auth, req.params.token)
     .then(moreRes => moreRes)
     .catch(err => JSON.stringify(err));
   res.json(listMore);
 }
-
 
 async function contiguous(req, res) {
   const response = layout({
@@ -194,7 +178,7 @@ async function contiguous(req, res) {
   });
   res.setHeader('Cache-Control', 'assets, max-age=604800');
   res.send(response);
-};
+}
 
 async function indexRouter(req, res) {
   const data = [];
@@ -208,20 +192,19 @@ async function indexRouter(req, res) {
   });
   res.setHeader('Cache-Control', 'assets, max-age=604800');
   res.send(response);
-  // const json = JSON.parse(data);
-};
+}
 
 const webWorkers = (req, res) => {
   const response = layout({ title: 'Lab 49 Prep', type: 'web-worker' });
   res.setHeader('Cache-Control', 'assets, max-age=604800');
   res.send(response);
-}
+};
 
 const mochaTest = (req, res) => {
   const response = layout({ title: 'Lab 49 Prep', type: 'web-worker' });
   res.setHeader('Cache-Control', 'assets, max-age=604800');
   res.send(response);
-}
+};
 
 
 app.use('/dist', express.static(path.resolve(__dirname, 'dist')));
@@ -239,7 +222,6 @@ app.get('/test', mochaTest);
 app.get('/get-more/:token', getMore);
 app.get('/contiguous/', contiguous);
 
-app.use('/api', apiRoutes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

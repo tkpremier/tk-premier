@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "create-dev-tables": "babel-node ./db/dev/dbConnection createAllTables",
+    "drop-dev-tables": "babel-node ./db/dev/dbConnection dropAllTables",
     "jest-init": "jest --init",
     "test": "jest",
     "babel": "babel src -d views",

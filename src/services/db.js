@@ -16,7 +16,7 @@ import {
 
 /**
    * Create A User
-   * @param {object} req
+   * @param {object} req request object
    * @param {object} res
    * @returns {object} reflection object
    */
@@ -49,6 +49,7 @@ const createUser = async (req, res) => {
   try {
     const { rows } = await dbQuery.query(createUserQuery, values);
     const dbResponse = rows[0];
+    console.log('dResponse?: ', dbResponse);
     delete dbResponse.password;
     // const token = generateUserToken(dbResponse.email, dbResponse.id, dbResponse.is_admin, dbResponse.first_name, dbResponse.last_name);
     // successMessage.data = dbResponse;
@@ -61,6 +62,48 @@ const createUser = async (req, res) => {
     }
     errorMessage.error = 'Operation was not successful';
     return res.status(status.error).send(errorMessage);
+  }
+};
+const createDriveFile = async (req, res) => {
+  const {
+    id, name, webViewLink, webContentLink, mimeType
+  } = req;
+  const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+  let type = 'folder';
+  console.log('mimeType: ', mimeType);
+  console.log("indexOf: ", mimeType.indexOf('image'));
+  if (mimeType.indexOf('image') > -1) {
+    type = 'image';
+  }
+  if (mimeType.indexOf('video') > -1) {
+    type = 'video';
+  }
+  const createDriveFileQuery = `INSERT INTO
+        drive(id, drive_id, type, name, web_view_link, web_content_link, created_on)
+        VALUES($1, $1, $2, $3, $4, $5, $6)
+        returning *`;
+  const values = [
+    id,
+    type,
+    name,
+    webViewLink,
+    webContentLink,
+    createdOn
+  ]; try {
+    const { rows } = await dbQuery.query(createDriveFileQuery, values);
+    const dbResponse = rows[0];
+    return dbResponse;
+    return res.status(status.created).send(successMessage);
+
+  } catch (error) {
+    console.log('error?: ', error);
+    // if (error.routine === '_bt_check_unique') {
+    //   errorMessage.error = 'User with that EMAIL already exist';
+    //   return res.status(status.conflict).send(errorMessage);
+    // }
+    // errorMessage.error = 'Operation was not successful';
+    // return res.status(status.error).send(errorMessage);
+    return 'Error';
   }
 };
 
@@ -104,6 +147,7 @@ const siginUser = async (req, res) => {
 };
 
 module.exports = {
+  createDriveFile,
   createUser,
   siginUser
 };
