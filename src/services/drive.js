@@ -7,7 +7,6 @@ const SCOPES = ['https://www.googleapis.com/auth/drive.readonly', 'https://www.g
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = 'token.json';
 
 /**
  * Lists the names and IDs of up to 10 files.
@@ -63,9 +62,9 @@ function getAccessToken(oAuth2Client) {
         if (err) return console.error('Error retrieving access token', err);
         oAuth2Client.setCredentials(token);
         // Store the token to disk for later program executions
-        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+        fs.writeFile(process.env.GDTOKENPATH, JSON.stringify(token), (err) => {
           if (err) return console.error(err);
-          console.log('Token stored to', TOKEN_PATH);
+          console.log('Token stored to', process.env.GDTOKENPATH);
         });
         return oAuth2Client;
       });
@@ -87,7 +86,7 @@ async function authorize(credentials, callback) {
   const { client_secret, client_id, redirect_uris } = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(
     client_id, client_secret, redirect_uris[0]);
-  const promise = await fsp.readFile(TOKEN_PATH, { 'encoding': 'utf8' })
+  const promise = await fsp.readFile(process.env.GDTOKENPATH, { 'encoding': 'utf8' })
     .then((res) => {
       oAuth2Client.setCredentials(JSON.parse(res));
       return oAuth2Client;

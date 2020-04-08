@@ -27,7 +27,7 @@ dotenv.config();
 
 // google drive authenticate;
 async function getCredentials() {
-  return fsp.readFile('./credentials.json', { encoding: 'utf8' })
+  return fsp.readFile(process.env.GDCREDPATH, { encoding: 'utf8' })
     .then(res => JSON.parse(res));
 }
 const modelSchema = {
@@ -119,28 +119,30 @@ async function listRouter(req, res) {
   const auth = await authorize(credentials);
   const data = await listFiles(auth)
     .then((res) => {
-      const files = res.data.files.map((file) => {
-        // const {
-        //   id,
-        //   name,
-        //   webViewLink,
-        //   webContentLink,
-        //   mimeType
-        // } = file;
-        // createDriveFile({
-        //   id,
-        //   name,
-        //   mimeType,
-        //   webViewLink,
-        //   webContentLink
-        // });
-        return createDriveFile(fileData).then().catch();
-        return {
-          ...file,
-          type: file.mimeType
-        };
-      });
-      return { files, nextPageToken: res.data.nextPageToken };
+      // const files = res.data.files.map((file) => {
+      //   // const {
+      //   //   id,
+      //   //   name,
+      //   //   webViewLink,
+      //   //   webContentLink,
+      //   //   mimeType
+      //   // } = file;
+      //   // createDriveFile({
+      //   //   id,
+      //   //   name,
+      //   //   mimeType,
+      //   //   webViewLink,
+      //   //   webContentLink
+      //   // });
+      //   // return createDriveFile(file).then((dbRes) => {
+      //   //   console.log('dbRes: ', dbRes);
+      //   //   return {
+      //   //     ...file,
+      //   //     type: file.mimeType
+      //   //   };
+      //   // }).catch();
+      // });
+      return { files: res.data.files, nextPageToken: res.data.nextPageToken };
     })
     .catch((err) => {
       console.log('listFiles err: ', err);
