@@ -1,7 +1,24 @@
-
-//app/helpers/validation.js
-
-
+// src/utils/validation.js
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';/**
+* Hash Password Method
+* @param {string} password
+* @returns {string} returns hashed password
+*/
+const saltRounds = 10;
+const salt = bcrypt.genSaltSync(saltRounds);
+const hashPassword = password => bcrypt.hashSync(password, salt);
+/**
+   * comparePassword
+   * @param {string} hashPassword
+   * @param {string} password
+   * @returns {Boolean} return True or False
+   */
+const comparePassword = (hashedPassword, password) => {
+  return bcrypt.compareSync(password, hashedPassword);
+};
+dotenv.config();
 /**
    * isValidEmail helper method
    * @param {string} email
@@ -47,9 +64,24 @@ const empty = (input) => {
   }
 };
 
+
+const generateUserToken = (email, id, firstName, lastName) => {
+  const token = jwt.sign({
+    email,
+    user_id: id,
+    first_name: firstName,
+    last_name: lastName
+  },
+    process.env.SECRET,
+    { expiresIn: '3d' });
+  return token;
+};
 export {
-  isValidEmail,
-  validatePassword,
+  comparePassword,
+  empty,
+  generateUserToken,
+  hashPassword,
   isEmpty,
-  empty
+  isValidEmail,
+  validatePassword
 };

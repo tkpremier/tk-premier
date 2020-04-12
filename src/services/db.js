@@ -1,6 +1,5 @@
 import format from 'date-fns/format';
 import dbQuery from '../../db/dev/dbQuery';
-
 import {
   hashPassword,
   comparePassword,
@@ -14,6 +13,118 @@ import {
   errorMessage, successMessage, status
 } from '../utils/status';
 
+const createAdmin = async (req, res) => {
+  // const {
+  //   email, first_name, last_name, password,
+  // } = req.body;
+
+  // const { is_admin } = req.user;
+
+  // const isAdmin = true;
+  // const created_on = moment(new Date());
+
+  // if (!is_admin === false) {
+  //   errorMessage.error = 'Sorry You are unauthorized to create an admin';
+  //   return res.status(status.bad).send(errorMessage);
+  // }
+
+  // if (isEmpty(email) || isEmpty(first_name) || isEmpty(last_name) || isEmpty(password)) {
+  //   errorMessage.error = 'Email, password, first name and last name field cannot be empty';
+  //   return res.status(status.bad).send(errorMessage);
+  // }
+  // if (!isValidEmail(email)) {
+  //   errorMessage.error = 'Please enter a valid Email';
+  //   return res.status(status.bad).send(errorMessage);
+  // }
+  // if (!validatePassword(password)) {
+  //   errorMessage.error = 'Password must be more than five(5) characters';
+  //   return res.status(status.bad).send(errorMessage);
+  // }
+  // const hashedPassword = hashPassword(password);
+  // const createUserQuery = `INSERT INTO
+  //     users(email, first_name, last_name, password, is_admin, created_on)
+  //     VALUES($1, $2, $3, $4, $5, $6)
+  //     returning *`;
+  const {
+    email, firstName, lastName, password
+  } = req.body;
+
+  const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+  if (isEmpty(email) || isEmpty(firstName) || isEmpty(lastName) || isEmpty(password)) {
+    errorMessage.error = 'Email, password, first name and last name field cannot be empty';
+    return res.status(status.bad).send(errorMessage);
+  }
+  if (!isValidEmail(email)) {
+    errorMessage.error = 'Please enter a valid Email';
+    return res.status(status.bad).send(errorMessage);
+  }
+  const values = [
+    email,
+    firstName,
+    lastName,
+    hashedPassword,
+    isAdmin,
+    createdOn,
+  ];
+
+  try {
+    const { rows } = await dbQuery.query(createUserQuery, values);
+    const dbResponse = rows[0];
+    delete dbResponse.password;
+    const token = generateUserToken(dbResponse.email, dbResponse.id, dbResponse.is_admin, dbResponse.first_name, dbResponse.last_name);
+    successMessage.data = dbResponse;
+    successMessage.data.token = token;
+    return res.status(status.created).send(successMessage);
+  } catch (error) {
+    if (error.routine === '_bt_check_unique') {
+      errorMessage.error = 'Admin with that EMAIL already exist';
+      return res.status(status.conflict).send(errorMessage);
+    }
+  }
+};
+/**
+ * Update A User to Admin
+ * @param {object} req 
+ * @param {object} res 
+ * @returns {object} updated user
+ */
+const updateUserToAdmin = async (req, res) => {
+  const { id } = req.params;
+  const { isAdmin } = req.body;
+
+  const { is_admin } = req.user;
+  if (!is_admin === true) {
+    errorMessage.error = 'Sorry You are unauthorized to make a user an admin';
+    return res.status(status.bad).send(errorMessage);
+  }
+  if (isAdmin === '') {
+    errorMessage.error = 'Admin Status is needed';
+    return res.status(status.bad).send(errorMessage);
+  }
+  const findUserQuery = 'SELECT * FROM users WHERE id=$1';
+  const updateUser = `UPDATE users
+        SET is_admin=$1 WHERE id=$2 returning *`;
+  try {
+    const { rows } = await dbQuery.query(findUserQuery, [id]);
+    const dbResponse = rows[0];
+    if (!dbResponse) {
+      errorMessage.error = 'User Cannot be found';
+      return res.status(status.notfound).send(errorMessage);
+    }
+    const values = [
+      isAdmin,
+      id,
+    ];
+    const response = await dbQuery.query(updateUser, values);
+    const dbResult = response.rows[0];
+    delete dbResult.password;
+    successMessage.data = dbResult;
+    return res.status(status.success).send(successMessage);
+  } catch (error) {
+    errorMessage.error = 'Operation was not successful';
+    return res.status(status.error).send(errorMessage);
+  }
+};
 /**
    * Create A User
    * @param {object} req request object
@@ -34,6 +145,7 @@ const createUser = async (req, res) => {
     errorMessage.error = 'Please enter a valid Email';
     return res.status(status.bad).send(errorMessage);
   }
+  const hashedPassword = hashPassword(password);
   const createUserQuery = `INSERT INTO
         users(email, first_name, last_name, password, created_on)
         VALUES($1, $2, $3, $4, $5)
@@ -42,20 +154,21 @@ const createUser = async (req, res) => {
     email,
     firstName,
     lastName,
-    password,
+    hashedPassword,
     createdOn
   ];
   console.log('values: ', values);
+
   try {
     const { rows } = await dbQuery.query(createUserQuery, values);
     const dbResponse = rows[0];
-    console.log('dResponse?: ', dbResponse);
     delete dbResponse.password;
-    // const token = generateUserToken(dbResponse.email, dbResponse.id, dbResponse.is_admin, dbResponse.first_name, dbResponse.last_name);
-    // successMessage.data = dbResponse;
-    // successMessage.data.token = token;
-    return res.status(status.created).send(successMessage);
+    const token = generateUserToken(dbResponse.email, dbResponse.id, dbResponse.first_name, dbResponse.last_name);
+    successMessage.data = dbResponse;
+    successMessage.data.token = token;
+    return res.status(200).json(successMessage);
   } catch (error) {
+    console.log('db error: ', error);
     if (error.routine === '_bt_check_unique') {
       errorMessage.error = 'User with that EMAIL already exist';
       return res.status(status.conflict).send(errorMessage);
@@ -64,14 +177,13 @@ const createUser = async (req, res) => {
     return res.status(status.error).send(errorMessage);
   }
 };
+
 const createDriveFile = async (req, res) => {
   const {
     id, name, webViewLink, webContentLink, mimeType
   } = req;
   const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
   let type = 'folder';
-  console.log('mimeType: ', mimeType);
-  console.log("indexOf: ", mimeType.indexOf('image'));
   if (mimeType.indexOf('image') > -1) {
     type = 'image';
   }
@@ -108,12 +220,12 @@ const createDriveFile = async (req, res) => {
 };
 
 /**
-   * Signin
+   * Signin User
    * @param {object} req
    * @param {object} res
    * @returns {object} user object
    */
-const siginUser = async (req, res) => {
+const signInUser = async (req, res) => {
   const { email, password } = req.body;
   if (isEmpty(email) || isEmpty(password)) {
     errorMessage.error = 'Email or Password detail is missing';
@@ -131,11 +243,11 @@ const siginUser = async (req, res) => {
       errorMessage.error = 'User with this email does not exist';
       return res.status(status.notfound).send(errorMessage);
     }
-    if (!comparePassword(dbResponse.password, password)) {
-      errorMessage.error = 'The password you provided is incorrect';
-      return res.status(status.bad).send(errorMessage);
-    }
-    const token = generateUserToken(dbResponse.email, dbResponse.id, dbResponse.is_admin, dbResponse.first_name, dbResponse.last_name);
+    // if (!comparePassword(dbResponse.password, password)) {
+    //   errorMessage.error = 'The password you provided is incorrect';
+    //   return res.status(status.bad).send(errorMessage);
+    // }
+    const token = generateUserToken(dbResponse.email, dbResponse.id, dbResponse.first_name, dbResponse.last_name);
     delete dbResponse.password;
     successMessage.data = dbResponse;
     successMessage.data.token = token;
@@ -147,7 +259,9 @@ const siginUser = async (req, res) => {
 };
 
 module.exports = {
+  createAdmin,
   createDriveFile,
   createUser,
-  siginUser
+  signInUser,
+  updateUserToAdmin
 };

@@ -7,7 +7,6 @@ const SCOPES = ['https://www.googleapis.com/auth/drive.readonly', 'https://www.g
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-
 /**
  * Lists the names and IDs of up to 10 files.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
