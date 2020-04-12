@@ -80,8 +80,6 @@ const root = {
     return `Hello world`;
   }
 };
-app.use('/api', apiRoutes);
-
 app.use('/graphql', ExpressGraphQL({
   schema: schema,
   graphiql: true,
@@ -94,6 +92,9 @@ app.use('/graphql', ExpressGraphQL({
 //   publicPath: config.output.publicPath
 // }));
 
+
+
+// react state
 const initialState = {
   isFetching: true,
   name: 'Kyungtae',
@@ -118,38 +119,16 @@ async function listRouter(req, res) {
   const credentials = await getCredentials().then(cred => cred);
   const auth = await authorize(credentials);
   const data = await listFiles(auth)
-    .then((res) => {
-      // const files = res.data.files.map((file) => {
-      //   // const {
-      //   //   id,
-      //   //   name,
-      //   //   webViewLink,
-      //   //   webContentLink,
-      //   //   mimeType
-      //   // } = file;
-      //   // createDriveFile({
-      //   //   id,
-      //   //   name,
-      //   //   mimeType,
-      //   //   webViewLink,
-      //   //   webContentLink
-      //   // });
-      //   // return createDriveFile(file).then((dbRes) => {
-      //   //   console.log('dbRes: ', dbRes);
-      //   //   return {
-      //   //     ...file,
-      //   //     type: file.mimeType
-      //   //   };
-      //   // }).catch();
-      // });
-      return { files: res.data.files, nextPageToken: res.data.nextPageToken };
-    })
+    .then(gd => ({
+      files: gd.data.files,
+      nextPageToken: gd.data.nextPageToken
+    }))
     .catch((err) => {
       console.log('listFiles err: ', err);
       return {
         files: [],
         nextPageToken: ''
-      }
+      };
     });
   // const json = await listFiles(auth)
   const content = serverFactory.getSsr('Grid', { data });
@@ -208,7 +187,6 @@ const mochaTest = (req, res) => {
   res.send(response);
 };
 
-
 app.use('/dist', express.static(path.resolve(__dirname, 'dist')));
 app.use('/assets', express.static(path.resolve(__dirname, 'assets')));
 app.use('/workers', express.static(path.resolve(__dirname, 'workers')))
@@ -223,6 +201,7 @@ app.get('/web-workers', webWorkers);
 app.get('/test', mochaTest);
 app.get('/get-more/:token', getMore);
 app.get('/contiguous/', contiguous);
+app.use('/api', apiRoutes);
 
 
 // catch 404 and forward to error handler

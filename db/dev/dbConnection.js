@@ -215,7 +215,11 @@ pool.on('remove', () => {
 
 export {
   createAllTables,
-  dropAllTables
+  createDriveFilesTable,
+  createUserTable,
+  dropAllTables,
+  dropDriveFilesTable,
+  dropUserTable
 };
 
 require('make-runnable');

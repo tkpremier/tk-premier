@@ -33,18 +33,36 @@ const defaultUser = {
 const Main = () => {
   const classes = useStyles();
   const [user, loginUser] = useState(defaultUser);
-  const [content, setContent] = useState('');
+  const [active, setActive] = useState('signup');
   const handleSubmit = (e) => {
-    e.preventDefault();
-    fetch('/api/user', {
+    const formData = serialize(e.target, true);
+    const options = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8'
       },
-      body: JSON.stringify(serialize(e.target, true))
-    })
+      body: JSON.stringify(formData)
+    };
+    e.preventDefault();
+    fetch('/api/user', options)
       .then(handleResponse)
       .then((res) => console.log('res: ', res))
+      .catch((err) => console.log('err: ', err));
+    // setContent());
+  };
+  const handleLogin = (e) => {
+    const formData = serialize(e.target, true);
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify(formData)
+    };
+    e.preventDefault();
+    fetch('/api/login', options)
+      .then(handleResponse)
+      .then((res) => loginUser(res))
       .catch((err) => console.log('err: ', err));
     // setContent());
   };
@@ -58,17 +76,31 @@ const Main = () => {
           <Typography variant="h6" className={classes.title}>
             Main
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Button
+            color="inherit"
+            onClick={() => {
+              setActive('login');
+            }}
+          >
+            Login
+          </Button>
         </Toolbar>
       </AppBar>
-      {content.length > 0 ? <p>{content}</p> : null}
-      <Paper component="form" onSubmit={handleSubmit}>
-        <TextField name="email" defaultValue={user.email} label="Email" id="email" />
-        <TextField name="firstName" label="First Name" defaultValue={user.firstName} id="first-name" />
-        <TextField defaultValue={user.lastName} name="lastName" label="Last Name" id="last-name" />
-        <TextField defaultValue={user.password} name="password" label="Password" id="password" type="password" />
-        <Button type="submit">Submit</Button>
-      </Paper>
+      {active === 'login' ? (
+        <Paper component="form" onSubmit={handleLogin}>
+          <TextField name="email" defaultValue={user.email} label="Email" id="email" />
+          <TextField defaultValue={user.password} name="password" label="Password" id="password" type="password" />
+          <Button type="submit">Submit</Button>
+        </Paper>
+      ) : (
+        <Paper component="form" onSubmit={handleSubmit}>
+          <TextField name="email" defaultValue={user.email} label="Email" id="email" />
+          <TextField name="firstName" label="First Name" defaultValue={user.firstName} id="first-name" />
+          <TextField defaultValue={user.lastName} name="lastName" label="Last Name" id="last-name" />
+          <TextField defaultValue={user.password} name="password" label="Password" id="password" type="password" />
+          <Button type="submit">Submit</Button>
+        </Paper>
+      )}
     </Container>
   );
 };
