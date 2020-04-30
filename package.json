@@ -4,10 +4,10 @@
   "description": "Tommy's side project",
   "main": "app.js",
   "scripts": {
-    "create-user-table": "babel-node ./db/dev/dbConnection dropConnection createUserTable",
+    "create-user-table": "babel-node ./db/dev/dbConnection createUserTable",
     "create-dev-tables": "babel-node ./db/dev/dbConnection createAllTables",
     "drop-dev-tables": "babel-node ./db/dev/dbConnection dropAllTables",
-    "drop-dev-user": "babel-node ./db/dev/dbConnection dropConnection dropUserTable",
+    "drop-dev-user": "babel-node ./db/dev/dbConnection dropUserTable",
     "jest-init": "jest --init",
     "test": "jest",
     "babel": "babel src -d views",

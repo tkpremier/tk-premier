@@ -2,7 +2,6 @@
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
 const fsp = require('fs').promises;
 const dotenv = require('dotenv');
 const logger = require('morgan');
@@ -30,6 +29,12 @@ async function getCredentials() {
   return fsp.readFile(process.env.GDCREDPATH, { encoding: 'utf8' })
     .then(res => JSON.parse(res));
 }
+
+const app = express();
+const serverFactory = new ServerFactory();
+
+/* 
+// GRAPHQL //
 const modelSchema = {
   name: String,
   dates: Array
@@ -67,13 +72,6 @@ const schema = new GraphQLSchema({
     }
   })
 });
-
-const app = express();
-const serverFactory = new ServerFactory();
-
-
-// GRAPHQL //
-
 const root = {
   query: () => {
     console.log('root');
@@ -84,15 +82,13 @@ app.use('/graphql', ExpressGraphQL({
   schema: schema,
   graphiql: true,
   rootValue: root
-}));
+})); */
 
 // Tell express to use the webpack-dev-middleware and use the webpack.config.js
 // configuration file as a base.
 // app.use(webpackHotMiddleware(compiler, {
 //   publicPath: config.output.publicPath
 // }));
-
-
 
 // react state
 const initialState = {

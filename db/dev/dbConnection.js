@@ -8,33 +8,6 @@ pool.on('connect', () => {
 });
 
 /**
- * Create User Table
- * CREATE TABLE test
-  (id SERIAL PRIMARY KEY, 
-  name VARCHAR(100) UNIQUE NOT NULL, 
-  phone VARCHAR(100));
- */
-const createUserTable = () => {
-  const userCreateQuery = `CREATE TABLE IF NOT EXISTS users
-  (id SERIAL PRIMARY KEY, 
-  email VARCHAR(100) UNIQUE NOT NULL, 
-  first_name VARCHAR(100), 
-  last_name VARCHAR(100), 
-  password VARCHAR(100) NOT NULL,
-  created_on DATE NOT NULL)`;
-
-  pool.query(userCreateQuery)
-    .then((res) => {
-      console.log(res);
-      pool.end();
-    })
-    .catch((err) => {
-      console.log(err);
-      pool.end();
-    });
-};
-
-/**
  * Create DriveFiles Table
  */
 const createDriveFilesTable = () => {
@@ -47,16 +20,40 @@ const createDriveFilesTable = () => {
     web_content_link VARCHAR(100) NOT NULL,
     created_on DATE NOT NULL)`;
 
-  pool.query(driveFilesCreateQuery)
-    .then((res) => {
-      console.log('driveFilesCreate res', res);
-      pool.end();
-    })
-    .catch((err) => {
-      console.log(err);
-      pool.end();
-    });
+  return pool.query(driveFilesCreateQuery);
 };
+
+/**
+ * Create Model Table
+ */
+const createModelTable = () => {
+  const modelCreateQuery = `CREATE TABLE IF NOT EXISTS model
+    (id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    platform VARCHAR(100) NOT NULL,
+    drive_ids VARCHAR(500)[],
+    created_on DATE NOT NULL)`;
+  return pool.query(modelCreateQuery);
+};
+
+/**
+ * Create ClientTable Table
+ * CREATE TABLE test
+  (id SERIAL PRIMARY KEY, 
+  name VARCHAR(100) UNIQUE NOT NULL, 
+  phone VARCHAR(100));
+ */
+const createClientTable = () => {
+  const clientCreateQuery = `CREATE TABLE IF NOT EXISTS client
+  (id SERIAL PRIMARY KEY, 
+  email VARCHAR(100) UNIQUE NOT NULL, 
+  first_name VARCHAR(100), 
+  last_name VARCHAR(100), 
+  password VARCHAR(100) NOT NULL,
+  created_on DATE NOT NULL)`;
+  return pool.query(clientCreateQuery);
+};
+
 
 // /**
 //  * Create Trip Table
@@ -112,50 +109,18 @@ const createDriveFilesTable = () => {
 /**
  * Drop User Table
  */
-const dropUserTable = () => {
-  const usersDropQuery = 'DROP TABLE IF EXISTS users';
-  pool.query(usersDropQuery)
-    .then((res) => {
-      console.log(res);
-      pool.end();
-    })
-    .catch((err) => {
-      console.log(err);
-      pool.end();
-    });
-};
+const dropClientTable = () => pool.query('DROP TABLE IF EXISTS client');
 
 /**
  * Drop User Table
  */
-const dropDriveFilesTable = () => {
-  const driveFilesDropQuery = 'DROP TABLE IF EXISTS drive';
-  pool.query(driveFilesDropQuery)
-    .then((res) => {
-      console.log(res);
-      pool.end();
-    })
-    .catch((err) => {
-      console.log(err);
-      pool.end();
-    });
-};
+const dropDriveFilesTable = () => pool.query('DROP TABLE IF EXISTS drive');
 
-// /**
-//  * Drop Bus Table
-//  */
-// const dropBusTable = () => {
-//   const busDropQuery = 'DROP TABLE IF EXISTS bus';
-//   pool.query(busDropQuery)
-//     .then((res) => {
-//       console.log(res);
-//       pool.end();
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       pool.end();
-//     });
-// };
+
+/**
+ * Drop Bus Table
+ */
+const dropModelTable = () => pool.query('DROP TABLE IF EXISTS model');
 
 // /**
 //  * Drop Trip Table
@@ -193,19 +158,35 @@ const dropDriveFilesTable = () => {
 /**
  * Create All Tables
  */
-const createAllTables = () => {
-  createUserTable();
-  createDriveFilesTable();
-};
+const createAllTables = () => Promise.all([
+  createClientTable(), createDriveFilesTable(), createModelTable()
+])
+  .then(() => {
+    console.log('all tables created values: ');
+    pool.end();
+  })
+  .catch((err) => {
+    console.log('error creating all tables: ', err);
+    pool.end();
+  });
 
 
 /**
  * Drop All Tables
  */
-const dropAllTables = () => {
-  dropDriveFilesTable();
-  dropUserTable();
-};
+const dropAllTables = () => Promise.all([
+  dropClientTable(),
+  dropDriveFilesTable(),
+  dropModelTable()
+])
+  .then((values) => {
+    console.log('all tables dropped: ', values);
+    pool.end();
+  })
+  .catch((err) => {
+    console.log('error dropping all tables: ', err);
+    pool.end();
+  });
 
 pool.on('remove', () => {
   console.log('client removed');
@@ -216,10 +197,10 @@ pool.on('remove', () => {
 export {
   createAllTables,
   createDriveFilesTable,
-  createUserTable,
+  createClientTable,
   dropAllTables,
   dropDriveFilesTable,
-  dropUserTable
+  dropClientTable
 };
 
 require('make-runnable');

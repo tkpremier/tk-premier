@@ -6,6 +6,7 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
+import handleResponse from './utils/handleResponse';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -38,28 +39,21 @@ const useStyles = makeStyles(() => ({
  *     [etc...]
  *   },
  * ];
+ * AddModelForm
+ *  input name="modelName"
+ *
  */
-import handleResponse from './utils/handleResponse';
 
 const List = ({ data }) => {
   const classes = useStyles();
-  const files = data.map(({ mimeType, id, name, webViewLink, webContentLink = '' }) => ({
-    mimeType,
-    id,
-    name,
-    webViewLink,
-    webContentLink
-  }));
   return (
     <div className={classes.root}>
       <GridList cellHeight={160} className={classes.gridList} cols={6}>
-        {data.map((file) => {
-          const fileType = file.mimeType.indexOf('image') > -1 ? 'image' : 'video';
-          return (
+        {data
+          .filter(file => file.mimeType.indexOf('image') > -1 || file.mimeType.indexOf('video') > -1)
+          .map(file => (
             <GridListTile cols={2} key={file.webViewLink}>
-              {fileType === 'image' ? (
-                <img src={`${getImageLink(file.webContentLink, '', 'export=download')}`} alt={file.title} />
-              ) : file.hasThumbnail && file.thumbnailLink.length > 0 ? (
+              {file.hasThumbnail && file.thumbnailLink.length > 0 ? (
                 <img src={getImageLink(file.thumbnailLink, 's550')} alt={file.title} />
               ) : null}
               <GridListTileBar
@@ -85,8 +79,7 @@ const List = ({ data }) => {
                 }
               />
             </GridListTile>
-          );
-        })}
+          ))}
       </GridList>
     </div>
   );
@@ -107,7 +100,7 @@ const handlethumbNailLink = (thumbnailLink = '', mult = 0, begin = 0) => {
 
 const returnSorted = (files, sortString = 'createdTime-asc') => {
   return files
-    .filter((file) => (sortString.indexOf('viewed') > -1 ? file.viewedByMe : file))
+    .filter(file => (sortString.indexOf('viewed') > -1 ? file.viewedByMe : file))
     .sort((a, b) => {
       const asc = sortString.indexOf('asc') > -1;
       const prop = sortString.split('-')[0];
@@ -123,20 +116,16 @@ const Grid = ({ nextPageToken = '', files = [] }) => {
   const getMore = () => {
     fetch(`/get-more/${token}`)
       .then(handleResponse)
-      .then((json) => {
+      .then(json => {
         setToken(json.data.nextPageToken);
-        const newData = json.data.files
-          .map((newFile) => {
-            fetch('/api/drive-file');
-          })
-          .concat(data);
+        const newData = json.data.files.concat(data);
         setData(returnSorted(newData));
       })
-      .catch((err) => {
+      .catch(err => {
         console.log('err: ', err);
       });
   };
-  const sortData = (e) => setData(returnSorted(data, e.target.value));
+  const sortData = e => setData(returnSorted(data, e.target.value));
   return (
     <div>
       <section style={{ postion: 'fixed', width: '100%' }} className="controls">
