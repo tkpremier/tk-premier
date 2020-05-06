@@ -5,20 +5,13 @@ const path = require('path');
 const fsp = require('fs').promises;
 const dotenv = require('dotenv');
 const logger = require('morgan');
-const ExpressGraphQL = require("express-graphql");
+const ExpressGraphQL = require('express-graphql');
 const mongoose = require('mongoose');
-const {
-  GraphQLID,
-  GraphQLString,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLSchema
-} = require("graphql");
+const { GraphQLID, GraphQLString, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema } = require('graphql');
 const layout = require('./src/layout');
 const { authorize, listFiles, getFile, getUser } = require('./src/services/drive');
 const apiRoutes = require('./src/routes');
-const { createDriveFile } = require('./src/services/db');
+const { createDriveFile, getModel } = require('./src/services/db');
 const getMovie = require('./src/services/movie');
 const ServerFactory = require('./dist/app.bundle');
 
@@ -26,63 +19,63 @@ dotenv.config();
 
 // google drive authenticate;
 async function getCredentials() {
-  return fsp.readFile(process.env.GDCREDPATH, { encoding: 'utf8' })
-    .then(res => JSON.parse(res));
+  return fsp.readFile(process.env.GDCREDPATH, { encoding: 'utf8' }).then(res => JSON.parse(res));
 }
 
 const app = express();
 const serverFactory = new ServerFactory();
 
 /* 
-// GRAPHQL //
-const modelSchema = {
-  name: String,
-  dates: Array
-};
-const Model = mongoose.model('Model', modelSchema);
+  // GRAPHQL //
+  const modelSchema = {
+    name: String,
+    dates: Array
+  };
+  const Model = mongoose.model('Model', modelSchema);
 
-const ModelType = new GraphQLObjectType({
-  name: 'Model',
-  fields: {
-    id: { type: GraphQLID },
-    firstname: { type: GraphQLString },
-    dates: { type: GraphQLList(GraphQLString) }
-  }
-});
-
-const schema = new GraphQLSchema({
-  query: new GraphQLObjectType({
-    name: 'Query',
+  const ModelType = new GraphQLObjectType({
+    name: 'Model',
     fields: {
-      models: {
-        type: GraphQLList(ModelType),
-        resolve: (root, args, context, info) => {
-          return Model.find().exec();
-        }
-      },
-      model: {
-        type: ModelType,
-        args: {
-          id: { type: GraphQLNonNull(GraphQLID) }
+      id: { type: GraphQLID },
+      firstname: { type: GraphQLString },
+      dates: { type: GraphQLList(GraphQLString) }
+    }
+  });
+
+  const schema = new GraphQLSchema({
+    query: new GraphQLObjectType({
+      name: 'Query',
+      fields: {
+        models: {
+          type: GraphQLList(ModelType),
+          resolve: (root, args, context, info) => {
+            return Model.find().exec();
+          }
         },
-        resolve: (root, args, context, info) => {
-          return Model.findById(args.id).exec();
+        model: {
+          type: ModelType,
+          args: {
+            id: { type: GraphQLNonNull(GraphQLID) }
+          },
+          resolve: (root, args, context, info) => {
+            return Model.findById(args.id).exec();
+          }
         }
       }
+    })
+  });
+  const root = {
+    query: () => {
+      console.log('root');
+      return `Hello world`;
     }
-  })
-});
-const root = {
-  query: () => {
-    console.log('root');
-    return `Hello world`;
-  }
-};
-app.use('/graphql', ExpressGraphQL({
-  schema: schema,
-  graphiql: true,
-  rootValue: root
-})); */
+  };
+  app.use('/graphql', ExpressGraphQL({
+    schema: schema,
+    graphiql: true,
+    rootValue: root
+  })); 
+*/
 
 // Tell express to use the webpack-dev-middleware and use the webpack.config.js
 // configuration file as a base.
@@ -97,12 +90,12 @@ const initialState = {
   type: 'server'
 };
 
-// Movie game
+// BEGIN controller fns
 async function movieGame(req, res) {
   res.setHeader('Cache-Control', 'assets, max-age=604800');
   const json = await getMovie()
     .then(movie => movie)
-    .catch((err) => {
+    .catch(err => {
       console.log('movie err: ', err);
       res.send(err);
     });
@@ -111,7 +104,7 @@ async function movieGame(req, res) {
   res.json(json.data);
 }
 
-async function listRouter(req, res) {
+async function getDriveList(req, res) {
   const credentials = await getCredentials().then(cred => cred);
   const auth = await authorize(credentials);
   const data = await listFiles(auth)
@@ -119,7 +112,7 @@ async function listRouter(req, res) {
       files: gd.data.files,
       nextPageToken: gd.data.nextPageToken
     }))
-    .catch((err) => {
+    .catch(err => {
       console.log('listFiles err: ', err);
       return {
         files: [],
@@ -138,6 +131,28 @@ async function listRouter(req, res) {
   res.setHeader('Cache-Control', 'assets, max-age=604800');
   res.send(response);
 }
+async function getModels(req, res) {
+  const data = await getModel(req, res)
+    .then(res => ({
+      models: res.data
+    }))
+    .catch(err => {
+      console.log('models err: ', err);
+      return {
+        models: []
+      };
+    });
+  // const json = await listFiles(auth)
+  const content = serverFactory.getSsr('ModelRoot', data);
+  const response = layout({
+    componentType: 'ModelRoot',
+    content,
+    data: JSON.stringify(data),
+    title: 'Models'
+  });
+  res.setHeader('Cache-Control', 'assets, max-age=604800');
+  res.send(response);
+}
 async function getMore(req, res) {
   const credentials = await getCredentials().then(cred => cred);
   const auth = await authorize(credentials);
@@ -147,17 +162,7 @@ async function getMore(req, res) {
   res.json(listMore);
 }
 
-async function contiguous(req, res) {
-  const response = layout({
-    title: 'Algorithms and Data Structures',
-    type: 'algos',
-    data: ''
-  });
-  res.setHeader('Cache-Control', 'assets, max-age=604800');
-  res.send(response);
-}
-
-async function indexRouter(req, res) {
+async function getIndex(req, res) {
   const data = [];
   const content = serverFactory.getSsr('Main', { data });
   const response = layout({
@@ -182,23 +187,23 @@ const mochaTest = (req, res) => {
   res.setHeader('Cache-Control', 'assets, max-age=604800');
   res.send(response);
 };
+// END controller fns
 
 app.use('/dist', express.static(path.resolve(__dirname, 'dist')));
 app.use('/assets', express.static(path.resolve(__dirname, 'assets')));
-app.use('/workers', express.static(path.resolve(__dirname, 'workers')))
+app.use('/workers', express.static(path.resolve(__dirname, 'workers')));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get('/', indexRouter);
-app.get('/list', listRouter);
+app.get('/', getIndex);
+app.get('/get-more/:token', getMore);
+app.get('/list', getDriveList);
+app.get('/model', getModels);
 app.get('/moviegame', movieGame);
 app.get('/web-workers', webWorkers);
 app.get('/test', mochaTest);
-app.get('/get-more/:token', getMore);
-app.get('/contiguous/', contiguous);
 app.use('/api', apiRoutes);
-
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
