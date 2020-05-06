@@ -109,18 +109,18 @@ const createClientTable = () => {
 /**
  * Drop User Table
  */
-const dropClientTable = () => pool.query('DROP TABLE IF EXISTS client');
+const dropClientTable = () => pool.query('DROP TABLE IF EXISTS client').then(() => pool.end());
 
 /**
  * Drop User Table
  */
-const dropDriveFilesTable = () => pool.query('DROP TABLE IF EXISTS drive');
+const dropDriveFilesTable = () => pool.query('DROP TABLE IF EXISTS drive').then(() => pool.end());
 
 
 /**
  * Drop Bus Table
  */
-const dropModelTable = () => pool.query('DROP TABLE IF EXISTS model');
+const dropModelTable = () => pool.query('DROP TABLE IF EXISTS model').then(() => pool.end());
 
 // /**
 //  * Drop Trip Table
@@ -174,7 +174,13 @@ const createAllTables = () => Promise.all([
 /**
  * Drop All Tables
  */
-const dropAllTables = () => Promise.all([
+const dropAllTables = () => {
+  dropClientTable();
+  dropDriveFilesTable();
+  dropModelTable();
+};
+
+const dropAllTablesPromise = () => Promise.all([
   dropClientTable(),
   dropDriveFilesTable(),
   dropModelTable()

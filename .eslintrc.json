@@ -1,8 +1,6 @@
 {
-  "extends": "airbnb",
-  "plugins": [
-      "react"
-  ],
+  "extends": ["airbnb", "prettier"],
+  "plugins": ["prettier", "react"],
   "env": {
     "browser": true,
     "node": true
@@ -22,16 +20,17 @@
     "window": true
   },
   "rules": {
-    "quote-props": ["error", "as-needed", { "unnecessary": false }],
+    "arrow-body-style": ["error", "as-needed", { "requireReturnForObjectLiteral": false }],
     "comma-dangle": ["error", "never"],
     "func-names": ["off"],
-    "react/destructuring-assignment": ["off"],
+    "linebreak-style": 0,
     "no-confusing-arrow": ["warn"],
     "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-nested-ternary": ["off"],
     "object-shorthand": ["error", "methods"],
-    "arrow-body-style": ["error", "as-needed", { "requireReturnForObjectLiteral": false }],
-    "linebreak-style": 0,
-    "no-nested-ternary": ["off"]
+    "prettier/prettier": ["error"],
+    "quote-props": ["error", "as-needed", { "unnecessary": false }],
+    "react/destructuring-assignment": ["off"]
   },
   "parser": "babel-eslint",
   "parserOptions": {
