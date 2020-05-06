@@ -1,14 +1,16 @@
 import React from 'react';
 import { hydrate } from 'react-dom';
 import Main from './Main';
+import ModelRoot from './Models';
 import Grid from './Grid';
 
 (function (clientData = '[]', componentType = 'Main') {
   class ComponentFactory {
     constructor() {
-      this.Main = Main;
-      this.Grid = Grid;
       this.hydrate = this.hydrate.bind(this);
+      this.Grid = Grid;
+      this.Main = Main;
+      this.ModelRoot = ModelRoot;
     }
     hydrate(str = 'Main', props = {}) {
       const Component = this[str];

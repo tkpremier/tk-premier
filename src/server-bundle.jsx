@@ -1,13 +1,14 @@
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
-import Main from './Main';
 import Grid from './Grid';
-
+import Main from './Main';
+import ModelRoot from './Models';
 class ServerFactory {
   constructor() {
-    this.Main = Main;
-    this.Grid = Grid;
     this.getSsr = this.getSsr.bind(this);
+    this.Grid = Grid;
+    this.Main = Main;
+    this.ModelRoot = ModelRoot;
   }
   getSsr(str = 'Main', props = {}) {
     const Component = this[str];
