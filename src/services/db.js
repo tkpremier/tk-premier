@@ -9,14 +9,10 @@ import {
   generateUserToken
 } from '../utils/validations';
 
-import {
-  errorMessage, successMessage, status
-} from '../utils/status';
+import { errorMessage, successMessage, status } from '../utils/status';
 
 const createAdmin = async (req, res) => {
-  const {
-    email, firstName, lastName, password
-  } = req.body;
+  const { email, firstName, lastName, password } = req.body;
 
   const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
   if (isEmpty(email) || isEmpty(firstName) || isEmpty(lastName) || isEmpty(password)) {
@@ -27,20 +23,19 @@ const createAdmin = async (req, res) => {
     errorMessage.error = 'Please enter a valid Email';
     return res.status(status.bad).send(errorMessage);
   }
-  const values = [
-    email,
-    firstName,
-    lastName,
-    hashedPassword,
-    isAdmin,
-    createdOn,
-  ];
+  const values = [email, firstName, lastName, hashedPassword, isAdmin, createdOn];
 
   try {
     const { rows } = await dbQuery.query(createUserQuery, values);
     const dbResponse = rows[0];
     delete dbResponse.password;
-    const token = generateUserToken(dbResponse.email, dbResponse.id, dbResponse.is_admin, dbResponse.first_name, dbResponse.last_name);
+    const token = generateUserToken(
+      dbResponse.email,
+      dbResponse.id,
+      dbResponse.is_admin,
+      dbResponse.first_name,
+      dbResponse.last_name
+    );
     successMessage.data = dbResponse;
     successMessage.data.token = token;
     return res.status(status.created).send(successMessage);
@@ -53,8 +48,8 @@ const createAdmin = async (req, res) => {
 };
 /**
  * Update A User to Admin
- * @param {object} req 
- * @param {object} res 
+ * @param {object} req
+ * @param {object} res
  * @returns {object} updated user
  */
 const updateUserToAdmin = async (req, res) => {
@@ -80,10 +75,7 @@ const updateUserToAdmin = async (req, res) => {
       errorMessage.error = 'User Cannot be found';
       return res.status(status.notfound).send(errorMessage);
     }
-    const values = [
-      isAdmin,
-      id,
-    ];
+    const values = [isAdmin, id];
     const response = await dbQuery.query(updateUser, values);
     const dbResult = response.rows[0];
     delete dbResult.password;
@@ -96,9 +88,7 @@ const updateUserToAdmin = async (req, res) => {
 };
 
 const createDriveFile = async (req, res) => {
-  const {
-    id, name, webViewLink, webContentLink, mimeType
-  } = req;
+  const { id, name, webViewLink, webContentLink, mimeType } = req;
   const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
   let type = 'folder';
   if (mimeType.indexOf('image') > -1) {
@@ -111,19 +101,12 @@ const createDriveFile = async (req, res) => {
         drive(id, drive_id, type, name, web_view_link, web_content_link, created_on)
         VALUES($1, $1, $2, $3, $4, $5, $6)
         returning *`;
-  const values = [
-    id,
-    type,
-    name,
-    webViewLink,
-    webContentLink,
-    createdOn
-  ]; try {
+  const values = [id, type, name, webViewLink, webContentLink, createdOn];
+  try {
     const { rows } = await dbQuery.query(createDriveFileQuery, values);
     const dbResponse = rows[0];
     return dbResponse;
     return res.status(status.created).send(successMessage);
-
   } catch (error) {
     console.log('error?: ', error);
     // if (error.routine === '_bt_check_unique') {
@@ -136,9 +119,7 @@ const createDriveFile = async (req, res) => {
   }
 };
 const createModel = async (req, res) => {
-  const {
-    modelName, platform
-  } = req.body;
+  const { modelName, platform } = req.body;
   const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
   if (isEmpty(modelName) || isEmpty(platform)) {
     errorMessage.error = 'Name or platform cannot be empty';
@@ -148,11 +129,7 @@ const createModel = async (req, res) => {
           model(name, platform, created_on)
           VALUES($1, $2, $3)
           returning *`;
-  const values = [
-    modelName,
-    platform,
-    createdOn
-  ];
+  const values = [modelName, platform, createdOn];
   try {
     const { rows } = await dbQuery.query(createModelQuery, values);
     const dbResponse = rows[0];
@@ -164,16 +141,8 @@ const createModel = async (req, res) => {
     return res.status(status.error).send(errorMessage);
   }
 };
-/**
-   * Create A User
-   * @param {object} req request object
-   * @param {object} res
-   * @returns {object} reflection object
-   */
 const createUser = async (req, res) => {
-  const {
-    email, firstName, lastName, password
-  } = req.body;
+  const { email, firstName, lastName, password } = req.body;
 
   const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
   if (isEmpty(email) || isEmpty(firstName) || isEmpty(lastName) || isEmpty(password)) {
@@ -189,13 +158,7 @@ const createUser = async (req, res) => {
           user(email, first_name, last_name, password, created_on)
           VALUES($1, $2, $3, $4, $5)
           returning *`;
-  const values = [
-    email,
-    firstName,
-    lastName,
-    hashedPassword,
-    createdOn
-  ];
+  const values = [email, firstName, lastName, hashedPassword, createdOn];
   try {
     const { rows } = await dbQuery.query(createUserQuery, values);
     const dbResponse = rows[0];
@@ -214,12 +177,52 @@ const createUser = async (req, res) => {
     return res.status(status.error).send(errorMessage);
   }
 };
+
+const getModel = async (req, res) => {
+  console.log('res');
+  const getModelQuery = `SELECT * FROM
+  model ORDER BY id DESC`;
+  try {
+    const { rows } = await dbQuery.query(getModelQuery);
+    const dbResponse = rows;
+    if (dbResponse[0] === undefined) {
+      console.log('There are no models');
+      return { data: [] };
+      // errorMessage.error = 'There are no models';
+      // return res.status(status.notfound).send(errorMessage);
+    }
+    // successMessage.data = dbResponse;
+    return { data: dbResponse };
+  } catch (error) {
+    console.log('An error occurred');
+    // errorMessage.error = 'An error Occured';
+    // return res.status(status.error).send(errorMessage);
+    return { data: [] };
+  }
+};
+const getModelApi = async (rq, res) => {
+  const getModelQuery = `SELECT * FROM
+  model ORDER BY id DESC`;
+  try {
+    const { rows } = await dbQuery.query(getModelQuery);
+    const dbResponse = rows;
+    if (dbResponse[0] === undefined) {
+      errorMessage.error = 'There are no models';
+      return res.status(status.notfound).send(errorMessage);
+    }
+    successMessage.data = dbResponse;
+    return res.status(status.success).send(successMessage);
+  } catch (error) {
+    errorMessage.error = 'An error Occured';
+    return res.status(status.error).send(errorMessage);
+  }
+};
 /**
-   * Signin User
-   * @param {object} req
-   * @param {object} res
-   * @returns {object} user object
-   */
+ * Signin User
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} user object
+ */
 const signInUser = async (req, res) => {
   const { email, password } = req.body;
   if (isEmpty(email) || isEmpty(password)) {
@@ -258,6 +261,8 @@ module.exports = {
   createDriveFile,
   createModel,
   createUser,
+  getModel,
+  getModelApi,
   signInUser,
   updateUserToAdmin
 };
