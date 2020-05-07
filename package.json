@@ -4,7 +4,7 @@
   "description": "Tommy's side project",
   "main": "app.js",
   "scripts": {
-    "create-user-table": "babel-node ./db/dev/dbConnection createUserTable",
+    "update-drive-table": "babel-node ./db/dev/dbConnection createDriveFilesFromJson",
     "create-dev-tables": "babel-node ./db/dev/dbConnection createAllTables",
     "drop-dev-tables": "babel-node ./db/dev/dbConnection dropAllTables",
     "drop-dev-user": "babel-node ./db/dev/dbConnection dropUserTable",

@@ -28,7 +28,7 @@
     "no-console": ["warn", { "allow": ["warn", "error"] }],
     "no-nested-ternary": ["off"],
     "object-shorthand": ["error", "methods"],
-    "prettier/prettier": ["error"],
+    "prettier/prettier": ["off"],
     "quote-props": ["error", "as-needed", { "unnecessary": false }],
     "react/destructuring-assignment": ["off"]
   },
