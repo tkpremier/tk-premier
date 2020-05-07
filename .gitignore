@@ -9,3 +9,4 @@ dist/app.bundle.js
 yarn-error.log
 credentials.json
 token.json
+drive-files-dump.json
