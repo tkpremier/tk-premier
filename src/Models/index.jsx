@@ -3,18 +3,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import serialize from 'form-serialize';
-import handleResponse from '../utils/handleResponse';
+import Form from './Form';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    maxWidth: '600px'
   },
   menuButton: {
     marginRight: theme.spacing(2)
@@ -26,23 +23,6 @@ const useStyles = makeStyles(theme => ({
 
 const ModelRoot = ({ models = [] }) => {
   const classes = useStyles();
-  console.log('models: ', models);
-  const handleSubmit = e => {
-    const formData = serialize(e.target, true);
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(formData)
-    };
-    e.preventDefault();
-    fetch('/api/model', options)
-      .then(handleResponse)
-      .then(res => console.log('res: ', res))
-      .catch(err => console.log('err: ', err));
-    // setContent());
-  };
   return (
     <Container className={classes.root} maxWidth="md">
       <AppBar position="static">
@@ -55,11 +35,18 @@ const ModelRoot = ({ models = [] }) => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Paper component="form" onSubmit={handleSubmit}>
-        <TextField name="modelName" label="name" id="model-name" />
-        <TextField name="platform" label="Platform" id="platform" />
-        <Button type="submit">Submit</Button>
-      </Paper>
+      <ul>
+        {models.map(model => {
+          console.log('model: ', model);
+          return (
+            <li>
+              <span>{model.platform}</span>
+              <p>{model.name}</p>
+            </li>
+          );
+        })}
+      </ul>
+      <Form />
     </Container>
   );
 };
