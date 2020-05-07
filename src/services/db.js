@@ -1,4 +1,5 @@
 import format from 'date-fns/format';
+import uniq from 'lodash/uniq';
 import dbQuery from '../../db/dev/dbQuery';
 import {
   hashPassword,
@@ -8,7 +9,6 @@ import {
   isEmpty,
   generateUserToken
 } from '../utils/validations';
-
 import { errorMessage, successMessage, status } from '../utils/status';
 
 const createAdmin = async (req, res) => {
@@ -86,8 +86,15 @@ const updateUserToAdmin = async (req, res) => {
     return res.status(status.error).send(errorMessage);
   }
 };
-
-const createDriveFile = async (req, res) => {
+const createDriveFile = async (values) => {
+  const createDriveFileQuery = `INSERT INTO
+  drive(id, drive_id, type, name, web_view_link, web_content_link, created_on)
+  VALUES($1, $1, $2, $3, $4, $5, $6)
+  returning *`;
+  const { rows } = await dbQuery.query(createDriveFileQuery, values);
+  return rows;
+}
+const createDriveFileApi = async (req, res) => {
   const { id, name, webViewLink, webContentLink, mimeType } = req;
   const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
   let type = 'folder';
@@ -96,16 +103,12 @@ const createDriveFile = async (req, res) => {
   }
   if (mimeType.indexOf('video') > -1) {
     type = 'video';
-  }
-  const createDriveFileQuery = `INSERT INTO
-        drive(id, drive_id, type, name, web_view_link, web_content_link, created_on)
-        VALUES($1, $1, $2, $3, $4, $5, $6)
-        returning *`;
+  };
   const values = [id, type, name, webViewLink, webContentLink, createdOn];
   try {
-    const { rows } = await dbQuery.query(createDriveFileQuery, values);
+    const rows = await createDriveFile(values);
     const dbResponse = rows[0];
-    return dbResponse;
+    successMessage.data = dbResponse;
     return res.status(status.created).send(successMessage);
   } catch (error) {
     console.log('error?: ', error);
@@ -118,18 +121,22 @@ const createDriveFile = async (req, res) => {
     return 'Error';
   }
 };
+
 const createModel = async (req, res) => {
-  const { modelName, platform } = req.body;
+  const { driveIds, modelName, platform } = req.body;
   const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
   if (isEmpty(modelName) || isEmpty(platform)) {
     errorMessage.error = 'Name or platform cannot be empty';
     return res.status(status.bad).send(errorMessage);
   }
-  const createModelQuery = `INSERT INTO
-          model(name, platform, created_on)
-          VALUES($1, $2, $3)
-          returning *`;
+  const hasIds = Array.isArray(driveIds) && driveIds.length > 0;
+  const createModelQuery = hasIds
+    ? `INSERT INTO model(name, platform, created_on, drive_ids) VALUES($1, $2, $3, $4) returning *`
+    : `INSERT INTO model(name, platform, created_on) VALUES($1, $2, $3) returning *`;
   const values = [modelName, platform, createdOn];
+  if (hasIds) {
+    values.push(uniq(driveIds));
+  }
   try {
     const { rows } = await dbQuery.query(createModelQuery, values);
     const dbResponse = rows[0];
@@ -179,7 +186,6 @@ const createUser = async (req, res) => {
 };
 
 const getModel = async (req, res) => {
-  console.log('res');
   const getModelQuery = `SELECT * FROM
   model ORDER BY id DESC`;
   try {
@@ -259,6 +265,7 @@ const signInUser = async (req, res) => {
 module.exports = {
   createAdmin,
   createDriveFile,
+  createDriveFileApi,
   createModel,
   createUser,
   getModel,
