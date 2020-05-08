@@ -68,7 +68,7 @@ const List = ({ data }) => {
                 }
                 actionIcon={
                   <IconButton
-                    aria-label={`info about ${file.title}`}
+                    aria-label={`info about ${file.name}`}
                     className={classes.icon}
                     onClick={() => {
                       console.log('file', file);
