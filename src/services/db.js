@@ -1,4 +1,6 @@
+import camelCase from 'lodash/camelCase';
 import format from 'date-fns/format';
+import snakeCase from 'lodash/snakeCase';
 import uniq from 'lodash/uniq';
 import dbQuery from '../../db/dev/dbQuery';
 import {
@@ -184,7 +186,23 @@ const createUser = async (req, res) => {
     return res.status(status.error).send(errorMessage);
   }
 };
-
+const getModelDriveFiles = async (ids) => {
+  const getModelDriveFileQuery = `SELECT
+  drive.id,
+  drive.drive_id,
+  drive.name,
+  drive.type,
+  drive.web_content_link,
+  drive.web_view_link
+  FROM drive
+  WHERE drive.id=ANY($1)`;
+  try {
+    const query = await dbQuery.query(getModelDriveFileQuery, [ids]);
+    return query.rows;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
 const getModel = async (req, res) => {
   const getModelQuery = `SELECT * FROM
   model ORDER BY id DESC`;
@@ -197,8 +215,20 @@ const getModel = async (req, res) => {
       // errorMessage.error = 'There are no models';
       // return res.status(status.notfound).send(errorMessage);
     }
-    // successMessage.data = dbResponse;
-    return { data: dbResponse };
+    // const promises = dbResponse.map(row => {
+    //   // const camelCased = Object.keys(row).reduce((r, key) => {
+    //   //   r[camelCase(key)] = row[key];
+    //   //   return r;
+    //   // }, {});
+    //   return getModelDriveFiles(row.drive_ids);
+    // });
+    // Promise.all(promises, (([...res]) => {
+
+    // }))
+    console.log('data: ', data);
+    return {
+      data: dbResponse
+    };
   } catch (error) {
     console.log('An error occurred');
     // errorMessage.error = 'An error Occured';
@@ -206,7 +236,7 @@ const getModel = async (req, res) => {
     return { data: [] };
   }
 };
-const getModelApi = async (rq, res) => {
+const getModelApi = async (req, res) => {
   const getModelQuery = `SELECT * FROM
   model ORDER BY id DESC`;
   try {

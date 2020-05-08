@@ -124,7 +124,7 @@ const createDriveFilesFromJson = async () => {
   });
 };
 /**
- * Drop User Table
+ * Drop Client Table
  */
 const dropClientTable = () => pool.query('DROP TABLE IF EXISTS client').then(() => pool.end());
 
