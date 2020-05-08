@@ -1,7 +1,8 @@
-const fsp = require('fs').promises;
 const fs = require('fs');
+const fsp = require('fs').promises;
 const readline = require('readline');
 const { google } = require('googleapis');
+
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/drive.readonly', 'https://www.googleapis.com/auth/drive.metadata.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
@@ -11,16 +12,41 @@ const SCOPES = ['https://www.googleapis.com/auth/drive.readonly', 'https://www.g
  * Lists the names and IDs of up to 10 files.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-
 async function listFiles(auth, pageToken = '') {
-
   const drive = google.drive({ version: 'v3', auth });
   const opt = {
     pageToken,
     pageSize: 800,
     fields: 'files, nextPageToken'
   };
-  const fetch = await drive.files.list(opt);
+  const fetch = await drive.files.list(opt).then(res => {
+    // handleFileDump(res.data.files);
+    const dbData = res.data.files
+      .filter(file => file.mimeType.indexOf('google-apps') === -1)
+      .map(({
+        createdTime,
+        id,
+        mimeType,
+        name,
+        thumbnailLink,
+        webContentLink,
+        webViewLink,
+        viewedByMeTime
+      }) => ({
+        createdTime,
+        id,
+        mimeType,
+        name,
+        thumbnailLink,
+        webContentLink,
+        webViewLink,
+        viewedByMeTime
+      }));
+    fsp.writeFile('drive-files-dump.json', JSON.stringify(dbData, null, 2))
+      .then(() => console.log('dump complete :)'))
+      .catch((err) => console.log("dump err :( ", err));
+    return res;
+  });;
   // const fileAsync = await getFile("1Q9B8CAXbwqb43txdsz0BwYfbzr1tZQ2n");
   return fetch;
 }
@@ -33,8 +59,8 @@ async function getFile(auth, fileId) {
 
 async function getUser(auth) {
   const drive = google.drive({ version: 'v3', auth });
-  const getUser = await drive.about.get({ fields: 'user' });
-  return getUser;
+  const user = await drive.about.get({ fields: 'user' });
+  return user;
 }
 
 /**

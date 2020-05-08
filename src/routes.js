@@ -1,7 +1,7 @@
 const express = require('express');
 const {
   createAdmin,
-  createDriveFile,
+  createDriveFileApi,
   createModel,
   createUser,
   signInUser,
@@ -11,7 +11,7 @@ const {
 const router = express.Router();
 router.post('/admin', createAdmin);
 router.put('/admin', updateUserToAdmin);
-router.post('/drive-file', createDriveFile);
+router.post('/drive-file', createDriveFileApi);
 router.post('/login', signInUser);
 // router.get('/model', getModel);
 router.post('/model', createModel);
