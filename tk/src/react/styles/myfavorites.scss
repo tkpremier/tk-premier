@@ -1,0 +1,359 @@
+@import 'components';
+@import 'vars';
+.my-lots,
+#shared-list {
+  font-family: $seroWebPro;
+  position: relative;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  h2 {
+    font-family: $seroWebPro;
+    font-size: em(36, 16);
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  h3 {
+    font-size: em(18, 16);
+    line-height: em(23, 18);
+    font-family: $seroMedium;
+  }
+  nav {
+    width: 100%;
+    text-align: center;
+    a {
+      margin: 0 15px;
+      text-transform: uppercase;
+      font-family: $seroMedium;
+      color: #dfdfdf;
+      border-bottom: 2px solid #dfdfdf;
+      text-decoration: none;
+      &.active {
+        color: #000000;
+        border-bottom: 0;
+      }
+      &.disabled {
+        color: #dfdfdf;
+        cursor: default;
+      }
+    }
+  }
+  section {
+    padding: $mobileMargin 0;
+  }
+  ul {
+    padding: 0;
+    list-style: none;
+  }
+  p {
+    // line-height: em(17.875, 16);
+    &.artist {
+      font-size: em(15);
+      text-transform: uppercase;
+      font-family: $seroMedium;
+    }
+    &.sold {
+      color: #e20078;
+      font-family: $seroMedium;
+      text-transform: uppercase;
+    }
+    &.title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: none;
+    }
+    &.no-lists {
+      font-size: 0.75em;
+      line-height: 1.91667em;
+      font-family: $seroMedium;
+      text-align: center;
+      margin: 0 auto;
+    }
+  }
+  button,
+  input {
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(0, 0, 0);
+    padding: 10px 20px;
+    width: auto;
+  }
+  .description {
+    p {
+      line-height: em(19, 12);
+      margin: 0;
+      font-size: em(12);
+      &.artist {
+        font-size: em(15);
+        text-transform: uppercase;
+        font-family: $seroMedium;
+      }
+      &.number {
+        font-family: $seroMedium;
+        font-size: em(18);
+      }
+      &.sold {
+        color: #e20078;
+        font-family: $seroMedium;
+        text-transform: uppercase;
+      }
+      &.title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-transform: none;
+      }
+      &:first-child {
+        margin-top: 1em;
+      }
+    }
+    strong {
+      text-transform: none;
+    }
+  }
+  .lot {
+    @include phillips-lot {
+      .user-actions-container {
+        justify-content: flex-start;
+        flex-flow: row;
+        align-items: flex-start;
+      }
+    }
+    .phillips-lot-list-container {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      flex-flow: wrap;
+      @include favorite-lot;
+      @include follow-artist($icon-size: 45px, $icon-display: block) {
+        @extend %tooltip;
+      }
+      .phillips-lot-list {
+        flex-flow: wrap;
+        .lot-list-header {
+          width: 100%;
+        }
+        .lot-list-list {
+          width: 100%;
+        }
+      }
+      @media screen and (min-width: 769px) {
+        .phillips-lot-list {
+          &.show {
+            position: absolute;
+            left: 50%;
+            top: 60px;
+          }
+        }
+      }
+    }
+    @media screen and (min-width: 769px) {
+      margin-right: 40px;
+      margin-bottom: 40px;
+      width: calc(20% - 40px);
+    }
+  }
+  .lot-list {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+    &__description {
+      border-top: 2px solid #eaeaea;
+      margin-top: 0;
+      margin-bottom: 40px;
+      padding-top: 15px;
+      width: 100%;
+    }
+    &__p {
+      margin: 0;
+    }
+    &__form {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      line-height: em(38);
+    }
+    &__button {
+      background: rgb(255, 255, 255);
+      border: 1px solid rgb(0, 0, 0);
+      padding: 10px 20px;
+      width: auto;
+      @media screen and (min-width: $sm-bp) {
+        margin-left: 15px;
+      }
+      &--no-border {
+        margin-left: 15px;
+        border: none;
+        text-decoration: underline;
+        font-size: em(14, 16);
+        padding: 0;
+        line-height: em(22, 14);
+        margin-bottom: 2px;
+      }
+    }
+    &__lots {
+      display: flex;
+      flex-flow: row wrap;
+      width: 100%;
+      justify-content: flex-start;
+    }
+    &__lot {
+      &__button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: url('https://phillips.vo.llnwd.net/v1/web_prod/images/layout/check-light-grey.svg')
+          #fff center no-repeat;
+        position: absolute;
+        top: 175.5px;
+        right: 10px;
+        border: 2px solid #f1f1f1;
+        background-size: 18px 18px;
+        z-index: 10;
+        &:active, &:focus {
+          outline: none;
+        }
+        &--checked {
+          background: url('https://phillips.vo.llnwd.net/v1/web_prod/images/layout/check.svg') #fff
+          center no-repeat;
+          border: 2px solid #000;
+        }
+      }
+    }
+    &__management {
+      display: flex;
+      flex-direction: row-reverse;
+    }
+    &__name,
+    &__management {
+      margin-bottom: 15px;
+    }
+  }
+  .auction-info {
+    margin-bottom: em(32, 16);
+    @media screen and (min-width: $sm-bp) {
+      margin-bottom: em(75, 16);
+    }
+    h3 {
+      font-size: em(24, 16);
+      margin-bottom: em(7, 24);
+      max-width: 400px;
+      @media screen and (min-width: $sm-bp) {
+        margin-bottom: em(15, 24);
+      }
+    }
+    p {
+      font-size: em(18, 16);
+      font-family: $seroWebPro;
+      .location {
+        text-transform: capitalize;
+      }
+      .time {
+        text-transform: none;
+      }
+    }
+  }
+  .panel {
+    width: 100%;
+  }
+  .pending {
+    background: url(/images/ajax-loader.gif) #fff 50% 50% no-repeat;
+    height: 281px;
+  }
+  &__select {
+    padding: 10px;
+    margin-bottom: 30px;
+    @media screen and (min-width: $sm-bp) {
+      position: absolute;
+      top: 96px;
+      right: 0;
+      margin-bottom: 0;
+    }
+  }
+  @media screen and (min-width: $sm-bp) {
+    flex-flow: row wrap;
+    .lot-list-form {
+      input[type='submit'] {
+        margin-left: 15px;
+      }
+    }
+    section {
+      padding: $marginsize 0 0 0;
+      &:not(:last-child):not(.lots-list) {
+        border-bottom: 2px solid #eaeaea;
+      }
+      &.panel {
+        border-bottom: 0;
+      }
+      &.no-border {
+        border: none !important;
+      }
+    }
+    
+    // .lot-list-buttons {
+    //   button {
+    //     margin-left: 15px;
+    //     margin-bottom: 15px;
+    //   }
+    // }
+  }
+  @include phillips-lot-list;
+}
+.favorites-modal {
+  background: #fff;
+  padding: 30px;
+  align-self: flex-start;
+  h2 {
+    text-transform: none;
+    font-family: $seroMedium;
+    span {
+      font-family: $seroWebPro;
+    }
+  }
+  form {
+    position: relative;
+  }
+  button,
+  input,
+  textarea {
+    &:not(:first-child) {
+      margin-top: 15px;
+    }
+    background: rgb(255, 255, 255);
+    padding: 10px 20px;
+    border: 1px solid rgb(0, 0, 0);
+    &.cancel {
+      border: 1px solid rgb(255, 255, 255);
+    }
+  }
+  input:not([type='submit']),
+  textarea {
+    width: 100%;
+  }
+  p,
+  button,
+  input {
+    font-family: $seroWebPro;
+  }
+  p {
+    margin: 15px 0 0 0;
+  }
+  .error {
+    color: red;
+  }
+  .pending {
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    bottom: 0px;
+    position: absolute;
+  }
+  .close {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    text-decoration: none;
+  }
+}

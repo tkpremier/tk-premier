@@ -1,0 +1,19 @@
+@import 'vars';
+
+#component-icon-list {
+  .menuVisible {
+    display: none;
+  }
+  .mainVisible {
+    display: block;
+  }
+}
+
+.editorials-visibility {
+  .menuVisible {
+    display: block;
+  }
+  .mainVisible {
+    display: none;
+  }
+}

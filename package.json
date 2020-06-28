@@ -26,7 +26,12 @@
     "webpack-server-watch": "webpack --config webpack.server.js -d -w",
     "webpack-client": "webpack --config webpack.client.js -d",
     "webpack-client-watch": "webpack --config webpack.client.js -d -w",
-    "webpack": "concurrently \"webpack --config webpack.client.js -d\" \"webpack --config webpack.server.js -d\""
+    "webpack": "concurrently \"webpack --config webpack.client.js -d\" \"webpack --config webpack.server.js -d\"",
+    "prebuild-tk": "node ./PhillipsPublic.JavaScript/tk/sass.config.js",
+    "build-tk": "webpack --config webpack.config.tk.js -d",
+    "nodemon-tk": "nodemon --exec babel-node ./PhillipsPublic.JavaScript/tk/index.js",
+    "start-tk": "babel-node ./PhillipsPublic.JavaScript/tk/index.js",
+    "watch-tk": "concurrently \"webpack --config webpack.config.tk.js -d -w\" \" node ./PhillipsPublic.JavaScript/tk/sass.config.js watch\""
   },
   "dependencies": {
     "@material-ui/core": "^4.9.8",

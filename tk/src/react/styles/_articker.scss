@@ -1,0 +1,51 @@
+@import 'vars';
+@import 'components';
+// @mixin articker__headlines {
+//   .articker__
+// }
+@mixin articker__headlines {
+  .articker {
+    &__headlines {
+      margin-top: 0;
+      width: 100%;
+      list-style: none;
+      padding: 0;
+      display: grid;
+      // @media screen and (min-width: $sm-bp) {
+      //   grid-template-columns: repeat(2, 1fr);
+      // }
+    }
+    &__headline {
+      margin-top: 0;
+      margin-bottom: 0.75em;
+
+      &__link {
+        text-decoration: none;
+        // font-family: $portrait;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      &__eyebrow {
+        @include phillips-eyebrow;
+        margin-bottom: 0.5em;
+      }
+    }
+  }
+}
+
+@mixin articker__bulletin {
+  .articker {
+    &__bulletin {
+      &__item {
+        display: flex;
+        flex-flow: column nowrap;
+      }
+    }
+    &__maker-name {
+      text-transform: none;
+      font-family: $portrait;
+      align-self: center;
+    }
+  }
+}

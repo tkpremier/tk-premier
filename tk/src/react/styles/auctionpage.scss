@@ -1,0 +1,664 @@
+@import 'components';
+@import 'vars';
+// Included Components
+@include add-to-calendar;
+@include favorite-lot;
+@include flockler-banner;
+@include follow-artist;
+@include language-select;
+@include phillips-box;
+@include phillips-carousel;
+@include phillips-image;
+@include phillips-lot-list;
+@include phillips-lot;
+@include phillips-modal {
+  &--iframe {
+    iframe {
+      overflow: hidden;
+      border: none;
+      outline: none;
+    }
+  }
+}
+@include phillips-slider('fade');
+@include phillips-timer;
+@include post-sale-offer-filter;
+@include sortfilter;
+// curated auctions
+@import 'curated_auctions';
+@include curated-toggle {
+  justify-content: flex-end;
+}
+// Include consignment link styles
+#primaryAside {
+  @include consignment-aside;
+  @media screen and (min-width: 769px) {
+    max-width: 230px;
+    margin-right: calc(25% - 230px);
+  }
+}
+
+// Titlebox styles
+.title-box {
+  &__title {
+    font-family: $portrait;
+    font-size: em(30, 16);
+    line-height: em(33, 30);
+    margin: 0;
+    text-transform: none;
+  }
+}
+
+/* Auction Timer */
+.auction-timer {
+  @media screen and (min-width: $md-bp) {
+    max-width: 230px;
+  }
+}
+
+.online-only-header {
+  margin-bottom: $sm-marginsize;
+  height: 151px;
+
+  .nav {
+    font-size: $sm-fontsize;
+    text-align: right;
+    text-transform: uppercase;
+    margin-top: 0;
+    a {
+      &:first-child {
+        padding: 0 $marginsize/4 0 $marginsize/2;
+      }
+      &:nth-child(2) {
+        padding: 0 $marginsize/2 0 $marginsize/4;
+        border-left: 1px solid $borderDark;
+      }
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+  .online-only-timer {
+    background: $light;
+    width: 199px;
+    height: 59px;
+    margin-left: $marginsize/2;
+    padding: $marginsize/2 $marginsize/4;
+    line-height: 1.1em;
+    font-family: $seroMedium;
+    text-transform: uppercase;
+    text-align: center;
+    float: right;
+    display: none;
+    .timer {
+      p {
+        margin: 0 0 1em 0;
+        font-family: $seroMedium;
+        text-transform: uppercase;
+        text-align: center;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0.5em 0;
+        li {
+          margin: 0;
+          display: inline-block;
+        }
+        .countDays,
+        .countHrs,
+        .countMin,
+        .countSec {
+          width: 30px;
+          font-size: 1.2em;
+          text-align: center;
+          .position {
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            top: -3px;
+            .digit {
+              display: block;
+            }
+          }
+          .label {
+            font-size: 0.5em;
+            font-family: $seroWebPro;
+            display: inline-block;
+            position: relative;
+            top: -8px;
+          }
+        }
+        .countDiv {
+          width: 10px;
+          height: 42px;
+          vertical-align: text-bottom;
+          &:after {
+            content: ':';
+            color: $dark;
+            font-size: 1.3em;
+            font-family: $seroWebPro;
+          }
+        }
+      }
+    }
+  }
+  &.lotDetails {
+    width: 1002px;
+    border: 1px solid $light;
+    height: auto;
+    border-top: 0;
+    margin: 0 auto;
+
+    p {
+      margin: 1em 0;
+      &.nav {
+        margin-top: 0;
+        padding-top: 1em;
+      }
+    }
+    .auctionDesc {
+      float: left;
+      margin-left: $marginsize/2;
+      margin-top: $marginsize/2;
+      h4 {
+        text-transform: uppercase;
+      }
+      p {
+        margin-top: 0.5em;
+        text-transform: uppercase;
+        font-size: em(13);
+      }
+      span {
+        display: inline-block;
+        margin-bottom: -3px;
+      }
+      .location {
+        background: url('/images/location.png') center no-repeat;
+        background-size: 16px 16px;
+        width: 16px;
+        height: 16px;
+      }
+      .date {
+        background: url('/images/date.png') center no-repeat;
+        background-size: 14px 14px;
+        width: 16px;
+        height: 16px;
+        margin-left: $marginsize/4;
+      }
+      .time {
+        margin-left: $sm-marginsize - 5px;
+        background: url('/images/time.png') center no-repeat;
+        background-size: 14px 14px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}
+
+.plain-text-button {
+  @include override-button-defaults;
+  font-family: $seroWebPro;
+  &.active {
+    font-family: $seroMedium;
+    text-decoration: none;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #ccc;
+}
+
+span.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 5.5px rgba(234, 234, 234, 1);
+}
+.green {
+  background: #32cd32;
+}
+.pulsate-bkg-green {
+  animation: 2s pulsate-green ease-in-out infinite;
+}
+@keyframes pulsate-green {
+  0% {
+    background: #32cd32;
+  }
+  10% {
+    background: #2ad82a;
+  }
+  25% {
+    background: #1eec1e;
+  }
+  50% {
+    background: #08fa08;
+  }
+  75% {
+    background: #1eec1e;
+  }
+  90% {
+    background: #2ad82a;
+  }
+  100% {
+    background: #32cd32;
+  }
+}
+
+.registration,
+.saleroom-link {
+  h3 {
+    font-family: $portrait;
+    font-size: 26px;
+    text-transform: none;
+    margin: 0;
+  }
+}
+
+.registration {
+  margin-top: $mobileMargin;
+  @media screen and (min-width: $md-bp) {
+    margin-top: 0;
+  }
+  a {
+    text-decoration: none;
+    padding: 12px 15px;
+    border: 1px solid #000000;
+    width: 100%;
+    text-align: center;
+  }
+
+  p {
+    font-size: em(13);
+  }
+}
+.saleroom-link {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgb(204, 204, 204);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  > div {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+  }
+  p {
+    background: #f2f2f2;
+    padding: 5px;
+    font-size: 13px;
+    font-family: $seroMedium;
+    display: flex;
+    justify-content: center;
+    span {
+      align-self: center;
+      margin-right: 3px;
+      margin-bottom: 3.25px;
+    }
+  }
+  a {
+    text-align: center;
+    text-decoration: none;
+    padding: 12px 45px;
+    border: 1px solid #000;
+    width: 100%;
+    margin: 1em 0;
+  }
+  @media screen and (min-width: 513px) {
+    flex-flow: row nowrap;
+    h3 {
+      font-size: 2rem;
+    }
+    a {
+      margin: 0;
+      width: auto;
+    }
+  }
+}
+.auction-page {
+  .auction-highlight {
+    text-align: center;
+  }
+  .short-list,
+  .filter-list {
+    li {
+      padding: 0;
+    }
+  }
+  .filter-list {
+    li {
+      text-indent: 0;
+    }
+  }
+  &__sidebar {
+    &__button {
+      @include button(230px) {
+        margin-bottom: 15px;
+        @media screen and (max-width: 768px) {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+// Highlights Slider
+.highlights-caption {
+  font-size: em(13);
+}
+
+// Content Area padding for no-banner
+.no-banner {
+  padding-top: 136px;
+  @media screen and (min-width: $md-bp) {
+    padding-top: 139px;
+  }
+}
+
+.auction-banner {
+  margin-bottom: 1em;
+}
+
+.short-list.filter {
+  .header.expandable {
+    & > .toggle {
+      &.no-arrow {
+        background: none;
+      }
+    }
+  }
+}
+
+.filter-list {
+  font-size: 16px;
+}
+.filter-checkbox {
+  line-height: 12px;
+  label {
+    display: block;
+    padding-left: 15px;
+    text-indent: -15px;
+    font-size: em(11);
+    color: #666;
+  }
+  input {
+    width: 13px;
+    height: 13px;
+    padding: 0;
+    margin: 0 3px 0 28px;
+    vertical-align: bottom;
+    position: relative;
+    top: -1px;
+    *overflow: hidden;
+  }
+}
+
+// Expandables
+@include expandables;
+.expandable {
+  .highlights {
+    background-position: -16px -206px;
+    @media (min-resolution: 192dpi) and (-webkit-min-device-pixel-ratio: 2) {
+      background-position: -13px -206px;
+    }
+  }
+
+  .catalogues,
+  .contact {
+    background-position: -16px -58px;
+  }
+  .closed {
+    .catalogues,
+    .contact {
+      @media (min-resolution: 192dpi) and (-webkit-min-device-pixel-ratio: 2) {
+        background-position: -16px -157px;
+      }
+    }
+  }
+}
+
+.closed {
+  .catalogues,
+  .contact {
+    background-position: -16px -158px;
+  }
+}
+
+#auction-info {
+  .expandable:not(.closed),
+  .header + .panel {
+    border-bottom: none;
+  }
+  .expandable {
+    button {
+      font-family: $seroMedium;
+    }
+  }
+  .closed {
+    button {
+      font-family: $seroWebPro;
+    }
+  }
+  .auction-details {
+    font-size: em(13, 13);
+    line-height: em(17.875, 13);
+    text-transform: none;
+    margin: 1em 0;
+    > p {
+      margin: 0;
+    }
+  }
+}
+
+#add-to-calendar {
+  margin-bottom: 10px;
+}
+
+// Personalized Carousel styles BEGIN
+
+.phillips-carousel {
+  .carousel-track,
+  .carousel-track > * {
+    display: flex;
+  }
+  .carousel-track > * {
+    flex-flow: row;
+    align-items: flex-end;
+  }
+  .phillips-lot {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
+
+// Personalized Carousel styles END
+
+// Sort Nav
+.sort-nav {
+  .sort-backbone {
+    width: 100%;
+    float: left;
+    @media screen and (min-width: $sm-bp) {
+      width: 30%;
+    }
+  }
+}
+
+// Auction Grid
+ul.standard-grid {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: stretch;
+  margin-top: 0;
+  padding: 15px 0 0;
+  .phillips-lot {
+    cursor: pointer;
+    display: flex;
+    flex-grow: 1;
+    flex-flow: row wrap;
+    align-content: flex-end;
+    max-width: 100%;
+    &.container_tworows_twocolumns-top_left,
+    &.container_tworows_twocolumns-top_right {
+      align-content: flex-start;
+      flex: none;
+    }
+    &.container_tworows_twocolumns-btm_left,
+    &.container_tworows_twocolumns-btm_right {
+      align-content: flex-end;
+      flex: none;
+    }
+    &.container_tworows_twocolumns-feature_left,
+    &.container_tworows_twocolumns-feature_right {
+      flex: none;
+    }
+    &.container_tworows_twocolumns-feature_center {
+      @media screen and (min-width: $sm-bp) {
+        max-width: 66.666667%;
+      }
+    }
+  }
+}
+
+.lot {
+  display: flex;
+}
+
+// curated auction grid styles
+.single-cell {
+  max-width: calc(50% - #{$marginsize/2});
+  // flex-grow: 1;
+  //flex-shrink: 0;
+  flex-basis: calc(50% - #{$marginsize/2});
+  margin-right: $marginsize/2;
+  margin-top: 0;
+  @media (min-width: $sm-bp) {
+    margin: em(22) #{$marginsize/2} em(22) 0;
+    flex-basis: calc(33.33333% - #{$marginsize/2});
+    max-width: calc(33.33333% - #{$marginsize/2});
+  }
+  @media (min-width: $md-bp) {
+    max-width: calc(33.33333% - #{$marginsize});
+    flex-basis: calc(33.33333% - #{$marginsize});
+    margin-right: $marginsize;
+  }
+}
+
+// Widget Styles BEGIN
+.widget-wrapper {
+  position: relative;
+}
+.am-lot-status-label {
+  position: relative;
+  display: flex;
+  .sold {
+    font-weight: normal;
+    font-family: $seroMedium;
+    text-transform: uppercase;
+    width: 100%;
+    text-align: left;
+    color: #e20078;
+  }
+  .winning {
+    background-color: rgb(0, 165, 215);
+  }
+  .lost {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+}
+.am-bid {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: $mobileMargin;
+  font-size: em(13, 13);
+  line-height: em(17, 13);
+  .col-xs-6 {
+    width: auto;
+  }
+  .am-bid-status-label,
+  .am-bid-count-label {
+    display: inline;
+  }
+  .am-bid-status-label {
+    > div {
+      .current-label {
+        font-family: $seroMedium;
+        font-weight: 400;
+      }
+      .current-bid {
+        padding-left: 2px;
+      }
+    }
+  }
+  .am-reserve-label {
+    display: none;
+    font-size: 13px;
+    font-weight: 400;
+    //font-family: $seroMedium;
+    padding: 0;
+    text-align: left;
+    strong {
+      font-family: $seroWebPro;
+    }
+  }
+}
+ul.widget-enabled {
+  .lot {
+    .bid-button-placeholder {
+      width: 100%;
+      display: block;
+      height: 49px;
+    }
+  }
+}
+.phillips-lot.widget-enabled {
+  .phillips-lot__description {
+    min-height: 131px;
+    &--is-watch {
+      min-height: 155px;
+    }
+  }
+}
+.has-sold-lots.widget-enabled {
+  .phillips-lot.widget-enabled {
+    .description {
+      min-height: 148px;
+      &.is-watch {
+        min-height: 182px;
+      }
+    }
+  }
+}
+// Widget Styles END
+
+.has-sold-lots {
+  @include phillips-lot {
+    &__description {
+      min-height: 115px;
+      &--is-watch {
+        min-height: 164px;
+      }
+    }
+  }
+}
+
+.language-select {
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 10px;
+
+  @media (min-width: $md-bp) {
+    padding-left: 10px;
+    margin-bottom: 10px;
+    align-self: flex-start;
+    max-width: 230px;
+  }
+}

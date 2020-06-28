@@ -1,0 +1,65 @@
+@import 'vars';
+@font-face {
+  font-family: 'Portrait';
+  src: url($limelight+'/fonts/Portrait/Portrait-Bold-Web.eot');
+  src: url($limelight+'/fonts/Portrait/Portrait-Bold-Web.eot?#iefix') format('embedded-opentype'),
+    url($limelight+'/fonts/Portrait/portrait-bold-web-webfont.woff2') format('woff2'),
+    url($limelight+'/fonts/Portrait/portrait-bold-web-webfont.woff') format('woff'),
+    url($limelight+'/fonts/Portrait/Portrait-Bold-Web.ttf') format('truetype'),
+    url($limelight+'/fonts/Portrait/Portrait-BoldItalic-Web.svg') format('svg');
+}
+
+@font-face {
+  font-family: 'PortraitItalic';
+  src: url($limelight+'/fonts/Portrait/Portrait-BoldItalic-Web.eot');
+  src: url($limelight+'/fonts/Portrait/Portrait-BoldItalic-Web.eot?#iefix') format('embedded-opentype'),
+    url($limelight+'/fonts/Portrait/portrait-bolditalic-web-webfont.woff2') format('woff2'),
+    url($limelight+'/fonts/Portrait/portrait-bolditalic-web-webfont.woff') format('woff'),
+    url($limelight+'/fonts/Portrait/Portrait-BoldItalic-Web.ttf') format('truetype'),
+    url($limelight+'/fonts/Portrait/Portrait-BoldItalic-Web.svg') format('svg');
+}
+@font-face {
+  font-family: 'SeroWebPro';
+  src: url($limelight+'/fonts/SeroWebPro.eot');
+  src: url($limelight+'/fonts/SeroWebPro.eot?#iefix') format('embedded-opentype'),
+    url($limelight+'/fonts/serowebpro-webfont.woff2') format('woff2'),
+    url($limelight+'/fonts/serowebpro-webfont.woff') format('woff'),
+    url($limelight+'/fonts/SeroCompPro.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'SeroMedium';
+  src: url($limelight+'/fonts/SeroWebPro-Medium.eot');
+  src: url($limelight+'/fonts/SeroWebPro-Medium.eot?#iefix') format('embedded-opentype'),
+    url($limelight+'/fonts/serowebpro-medium-webfont.woff2') format('woff2'),
+    url($limelight+'/fonts/serowebpro-medium-webfont.woff') format('woff'),
+    url($limelight+'/fonts/SeroCompPro-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'SeroBold';
+  src: url($limelight+'/fonts/SeroWebPro-Bold.eot');
+  src: url($limelight+'/fonts/SeroWebPro-Bold.eot?#iefix') format('embedded-opentype'),
+    url($limelight+'/fonts/serowebpro-bold-webfont.woff2') format('woff2'),
+    url($limelight+'/fonts/serowebpro-bold-webfont.woff') format('woff'),
+    url($limelight+'/fonts/SeroCompPro-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'SeroItalic';
+  src: url($limelight+'/fonts/SeroWebPro-Italic.eot');
+  src: url($limelight+'/fonts/SeroWebPro-Italic.eot?#iefix') format('embedded-opentype'),
+    url($limelight+'/fonts/serowebpro-italic-webfont.woff2') format('woff2'),
+    url($limelight+'/fonts/serowebpro-italic-webfont.woff') format('woff'),
+    url($limelight+'/fonts/SeroCompPro-Italic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'SeroThin';
+  // src: url($limelight + '/fonts/SeroWebPro-Thin.woff') format('woff');
+  src: url($limelight+'/fonts/serowebpro-thin-webfont.woff2') format('woff2'),
+    url($limelight+'/fonts/serowebpro-thin-webfont.woff') format('woff');
+}
+@font-face {
+  font-family: 'SeroLight';
+  src: url($limelight+'/fonts/SeroWebPro-Light.eot');
+  src: url($limelight+'/fonts/SeroWebPro-Light.eot?#iefix') format('embedded-opentype'),
+    url($limelight+'/fonts/serowebpro-light-webfont.woff2') format('woff2'),
+    url($limelight+'/fonts/serowebpro-light-webfont.woff') format('woff');
+}
