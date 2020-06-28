@@ -14,7 +14,6 @@ import Grid from './Grid';
     }
     hydrate(str = 'Main', props = {}) {
       const Component = this[str];
-      console.log('hydrate props: ', props);
       hydrate(<Component {...props} />, document.querySelector('#app'));
     }
   }

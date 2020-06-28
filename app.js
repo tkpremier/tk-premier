@@ -9,9 +9,9 @@ const ExpressGraphQL = require('express-graphql');
 const mongoose = require('mongoose');
 const { GraphQLID, GraphQLString, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLSchema } = require('graphql');
 const layout = require('./src/layout');
-const { authorize, listFiles, getFile, getUser } = require('./src/services/drive');
+const { authorize, listFiles, getUser } = require('./src/services/drive');
 const apiRoutes = require('./src/routes');
-const { createDriveFile, getModel } = require('./src/services/db');
+const { getDriveFile, getModel } = require('./src/services/db');
 const getMovie = require('./src/services/movie');
 const ServerFactory = require('./dist/app.bundle');
 
@@ -103,29 +103,34 @@ async function movieGame(req, res) {
   // https://github.com/axios/axios/issues/836
   res.json(json.data);
 }
-
-async function getDriveList(req, res) {
+async function getDrive(req, res) {
   const credentials = await getCredentials().then(cred => cred);
   const auth = await authorize(credentials);
   const data = await listFiles(auth)
-    .then(gd => ({
-      files: gd.data.files,
-      nextPageToken: gd.data.nextPageToken
-    }))
+    .then(({ data }) => data.files)
     .catch(err => {
       console.log('listFiles err: ', err);
-      return {
-        files: [],
-        nextPageToken: ''
-      };
+      return [];
     });
-  // const json = await listFiles(auth)
   const content = serverFactory.getSsr('Grid', { data });
   const response = layout({
     initialState,
     title: 'Lists',
     componentType: 'Grid',
-    data: JSON.stringify(data),
+    data: JSON.stringify({ data }),
+    content
+  });
+  res.setHeader('Cache-Control', 'assets, max-age=604800');
+  res.send(response);
+}
+async function getDriveList(req, res) {
+  const { data } = await getDriveFile();
+  const content = serverFactory.getSsr('Grid', { data });
+  const response = layout({
+    initialState,
+    title: 'Lists',
+    componentType: 'Grid',
+    data: JSON.stringify({ data }),
     content
   });
   res.setHeader('Cache-Control', 'assets, max-age=604800');
@@ -198,7 +203,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.get('/', getIndex);
 app.get('/get-more/:token', getMore);
-app.get('/list', getDriveList);
+app.get('/list', getDrive);
 app.get('/model', getModels);
 app.get('/moviegame', movieGame);
 app.get('/web-workers', webWorkers);

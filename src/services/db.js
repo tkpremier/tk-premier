@@ -1,6 +1,6 @@
 import camelCase from 'lodash/camelCase';
 import format from 'date-fns/format';
-import snakeCase from 'lodash/snakeCase';
+import isNull from 'lodash/isNull';
 import uniq from 'lodash/uniq';
 import dbQuery from '../../db/dev/dbQuery';
 import {
@@ -88,14 +88,28 @@ const updateUserToAdmin = async (req, res) => {
     return res.status(status.error).send(errorMessage);
   }
 };
-const createDriveFile = async (values) => {
+const createDriveFile = async values => {
+  /*
+    (id VARCHAR(100) NOT NULL,
+    drive_id VARCHAR(100) NOT NULL,
+    type VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    web_view_link VARCHAR(100) NOT NULL,
+    web_content_link VARCHAR(100) NOT NULL,
+    thumbnail_link VARCHAR(100),
+    created_time DATE NOT NULL,
+    viewed_time DATE NOT NULL,
+    created_on DATE NOT NULL)
+  */
   const createDriveFileQuery = `INSERT INTO
-  drive(id, drive_id, type, name, web_view_link, web_content_link, created_on)
-  VALUES($1, $1, $2, $3, $4, $5, $6)
+  drive(id, drive_id, type, name, web_view_link, web_content_link, thumbnail_link, created_time, viewed_time, created_on)
+  VALUES($1, $1, $2, $3, $4, $5, $6, $7, $8, $9)
   returning *`;
+  const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+  values.push(createdOn);
   const { rows } = await dbQuery.query(createDriveFileQuery, values);
   return rows;
-}
+};
 const createDriveFileApi = async (req, res) => {
   const { id, name, webViewLink, webContentLink, mimeType } = req;
   const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
@@ -105,7 +119,7 @@ const createDriveFileApi = async (req, res) => {
   }
   if (mimeType.indexOf('video') > -1) {
     type = 'video';
-  };
+  }
   const values = [id, type, name, webViewLink, webContentLink, createdOn];
   try {
     const rows = await createDriveFile(values);
@@ -186,7 +200,7 @@ const createUser = async (req, res) => {
     return res.status(status.error).send(errorMessage);
   }
 };
-const getModelDriveFiles = async (ids) => {
+const getModelDriveFiles = async ids => {
   const getModelDriveFileQuery = `SELECT
   drive.id,
   drive.drive_id,
@@ -203,7 +217,35 @@ const getModelDriveFiles = async (ids) => {
     throw new Error(e);
   }
 };
-const getModel = async (req, res) => {
+const getDriveFile = async () => {
+  const getDriveFileQuery = `SELECT * FROM
+  drive ORDER BY created_time ASC`;
+  try {
+    const { rows } = await dbQuery.query(getDriveFileQuery);
+    const dbResponse = rows;
+    if (dbResponse[0] === undefined) {
+      console.log('There are no models');
+      return { data: [] };
+      // errorMessage.error = 'There are no models';
+      // return res.status(status.notfound).send(errorMessage);
+    }
+    const data = dbResponse.map(row => {
+      return Object.keys(row).reduce((o, key) => {
+        o[camelCase(key)] = row[key];
+        return o;
+      }, {});
+    });
+    return {
+      data
+    };
+  } catch (error) {
+    console.log('An error occurred');
+    // errorMessage.error = 'An error Occured';
+    // return res.status(status.error).send(errorMessage);
+    return { data: [] };
+  }
+};
+const getModel = async () => {
   const getModelQuery = `SELECT * FROM
   model ORDER BY id DESC`;
   try {
@@ -215,17 +257,6 @@ const getModel = async (req, res) => {
       // errorMessage.error = 'There are no models';
       // return res.status(status.notfound).send(errorMessage);
     }
-    // const promises = dbResponse.map(row => {
-    //   // const camelCased = Object.keys(row).reduce((r, key) => {
-    //   //   r[camelCase(key)] = row[key];
-    //   //   return r;
-    //   // }, {});
-    //   return getModelDriveFiles(row.drive_ids);
-    // });
-    // Promise.all(promises, (([...res]) => {
-
-    // }))
-    console.log('data: ', data);
     return {
       data: dbResponse
     };
@@ -298,6 +329,7 @@ module.exports = {
   createDriveFileApi,
   createModel,
   createUser,
+  getDriveFile,
   getModel,
   getModelApi,
   signInUser,

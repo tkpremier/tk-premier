@@ -11,14 +11,16 @@ pool.on('connect', () => {
  */
 const createDriveFilesTable = () => {
   const driveFilesCreateQuery = `CREATE TABLE IF NOT EXISTS drive
-    (id VARCHAR(100) NOT NULL,
-    drive_id VARCHAR(100) NOT NULL,
-    type VARCHAR(100) NOT NULL,
-    name VARCHAR(50) NOT NULL,
-    web_view_link VARCHAR(100) NOT NULL,
-    web_content_link VARCHAR(100) NOT NULL,
+    (id VARCHAR(300) NOT NULL,
+    drive_id VARCHAR(300) NOT NULL,
+    type VARCHAR(300) NOT NULL,
+    name VARCHAR(300) NOT NULL,
+    web_view_link VARCHAR(300) NOT NULL,
+    web_content_link VARCHAR(300) NOT NULL,
+    thumbnail_link VARCHAR(300),
+    created_time DATE NOT NULL,
+    viewed_time DATE NOT NULL,
     created_on DATE NOT NULL)`;
-
   return pool.query(driveFilesCreateQuery);
 };
 
@@ -53,15 +55,14 @@ const createClientTable = () => {
   return pool.query(clientCreateQuery);
 };
 
-
 // /**
 //  * Create Trip Table
 //  */
 // const createTripTable = () => {
 //   const tripCreateQuery = `CREATE TABLE IF NOT EXISTS trip
-//     (id SERIAL PRIMARY KEY, 
+//     (id SERIAL PRIMARY KEY,
 //     bus_id INTEGER REFERENCES bus(id) ON DELETE CASCADE,
-//     origin VARCHAR(300) NOT NULL, 
+//     origin VARCHAR(300) NOT NULL,
 //     destination VARCHAR(300) NOT NULL,
 //     trip_date DATE NOT NULL,
 //     fare float NOT NULL,
@@ -80,50 +81,6 @@ const createClientTable = () => {
 // };
 
 /**
- * Update Model Table
- */
-const createDriveFilesFromJson = async () => {
-  // `INSERT INTO
-  // drive(id, drive_id, type, name, web_view_link, web_content_link, created_on)
-  // VALUES($1, $1, $2, $3, $4, $5, $6)
-  // returning *`;
-  fs.readFile('drive-files-dump.json', (err, data) => {
-    if (err) {
-      console.log('huh???: ', err);
-      return false;
-    }
-    const files = JSON.parse(data);
-    files.forEach(async (file) => {
-      const {
-        createdTime,
-        id,
-        mimeType,
-        name,
-        thumbnailLink,
-        webContentLink,
-        webViewLink,
-        viewedByMeTime
-      } = file;
-      const createDriveFileQuery = `INSERT INTO
-  drive(id, drive_id, type, name, web_view_link, web_content_link, created_on)
-  VALUES($1, $1, $2, $3, $4, $5, $6)
-  returning *`;
-      const value = [id, mimeType, name, webViewLink, webContentLink, createdTime];
-      const client = await pool.connect();
-      await client.query(createDriveFileQuery, value)
-        .then((res) => {
-          console.log('res: ', res);
-          return res;
-        })
-        .catch((err) => {
-          console.log('err?: ', err);
-          return err;
-        });;
-      client.release();
-    });
-  });
-};
-/**
  * Drop Client Table
  */
 const dropClientTable = () => pool.query('DROP TABLE IF EXISTS client').then(() => pool.end());
@@ -133,28 +90,24 @@ const dropClientTable = () => pool.query('DROP TABLE IF EXISTS client').then(() 
  */
 const dropDriveFilesTable = () => pool.query('DROP TABLE IF EXISTS drive').then(() => pool.end());
 
-
 /**
  * Drop Bus Table
  */
 const dropModelTable = () => pool.query('DROP TABLE IF EXISTS model').then(() => pool.end());
 
-
 /**
  * Create All Tables
  */
-const createAllTables = () => Promise.all([
-  createClientTable(), createDriveFilesTable(), createModelTable()
-])
-  .then(() => {
-    console.log('all tables created values: ');
-    pool.end();
-  })
-  .catch((err) => {
-    console.log('error creating all tables: ', err);
-    pool.end();
-  });
-
+const createAllTables = () =>
+  Promise.all([createClientTable(), createDriveFilesTable(), createModelTable()])
+    .then(() => {
+      console.log('all tables created values: ');
+      pool.end();
+    })
+    .catch(err => {
+      console.log('error creating all tables: ', err);
+      pool.end();
+    });
 
 /**
  * Drop All Tables
@@ -170,10 +123,8 @@ pool.on('remove', () => {
   process.exit(0);
 });
 
-
 export {
   createAllTables,
-  createDriveFilesFromJson,
   createDriveFilesTable,
   createClientTable,
   dropAllTables,

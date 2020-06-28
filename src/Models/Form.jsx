@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import serialize from 'form-serialize';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 
 const Form = props => {
-  const [driveIds, setDriveIds] = useState([]);
+  const [driveIds, setDriveIds] = useState(props.initialIds);
   const handleAddDriveId = e => {
     e.preventDefault();
     const { driveId } = serialize(e.target, true);
@@ -33,5 +34,11 @@ const Form = props => {
     </div>
   );
 };
+Form.defaultProps = {
+  initialIds: []
+};
 
+Form.propTypes = {
+  initialIds: PropTypes.arrayOf(PropTypes.string)
+};
 export default Form;

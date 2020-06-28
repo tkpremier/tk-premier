@@ -1,5 +1,6 @@
 /* eslint-disable arrow-parens */
 import React, { useState } from 'react';
+import CKEditor from 'ckeditor4-react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AppBar from '@material-ui/core/AppBar';
@@ -13,7 +14,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import serialize from 'form-serialize';
 import handleResponse from './utils/handleResponse';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1
   },
@@ -34,7 +35,7 @@ const Main = () => {
   const classes = useStyles();
   const [user, loginUser] = useState(defaultUser);
   const [active, setActive] = useState('signup');
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     const formData = serialize(e.target, true);
     const options = {
       method: 'POST',
@@ -46,11 +47,11 @@ const Main = () => {
     e.preventDefault();
     fetch('/api/user', options)
       .then(handleResponse)
-      .then((res) => console.log('res: ', res))
-      .catch((err) => console.log('err: ', err));
+      .then(res => console.log('res: ', res))
+      .catch(err => console.log('err: ', err));
     // setContent());
   };
-  const handleLogin = (e) => {
+  const handleLogin = e => {
     const formData = serialize(e.target, true);
     const options = {
       method: 'POST',
@@ -62,8 +63,8 @@ const Main = () => {
     e.preventDefault();
     fetch('/api/login', options)
       .then(handleResponse)
-      .then((res) => loginUser(res))
-      .catch((err) => console.log('err: ', err));
+      .then(res => loginUser(res))
+      .catch(err => console.log('err: ', err));
     // setContent());
   };
   return (
@@ -98,6 +99,7 @@ const Main = () => {
           <TextField name="firstName" label="First Name" defaultValue={user.firstName} id="first-name" />
           <TextField defaultValue={user.lastName} name="lastName" label="Last Name" id="last-name" />
           <TextField defaultValue={user.password} name="password" label="Password" id="password" type="password" />
+          <CKEditor type="inline" data="<p>HTML this data</p>" />
           <Button type="submit">Submit</Button>
         </Paper>
       )}
