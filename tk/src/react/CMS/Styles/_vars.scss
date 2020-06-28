@@ -1,0 +1,95 @@
+$marginsize: 40px;
+$mobileMargin: 15px;
+$asidewidth: 225px;
+$basefontsize: 16px;
+$seroWebPro: "SeroWebPro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$seroBold: "SeroBold", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$seroMedium: "SeroMedium", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$seroItalic: "SeroItalic", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$seroLight: "SeroThin", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$portrait: "Portrait", serif;
+$portraitItalic: "PortraitItalic", serif;
+$jhengHei: "Microsoft JhengHei", "微軟正黑體", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$mobileHeader: 56px;
+$saleBanner: 43px;
+
+$tiny-font: 11;
+$medium-font: 15;
+
+$tiny-fontsize: 11px;
+$sm-fontsize: 13px;
+$medium-fontsize: 15px;
+$basefontsize: 16px;
+$lg-fontsize: 18px;
+$extra-large-fontsize: 25px;
+
+
+// marginsizes
+$marginsize: 40px;
+$sm-marginsize:15px;
+$mobileMargin: 15px;
+$asidewidth: 225px;
+
+// responsive breakpoints
+$sm-bp: 480px;
+$md-bp: 768px;
+$show-info-bp: 867px;
+$ipad-landscape-bp: 1024px;
+$lg-bp: 1112px;
+$xl-bp: 1176px;
+$desktopHeader: 84px;
+$desktopHeaderBP: 1025px;
+$mobileSaleBanner: 65px;
+$desktopSaleBanner: 43px;
+
+// colors
+$sold-red: #e20078;
+$error-red: #ff0000;
+$opaque-grey: rgba(0, 0, 0, .9);
+$black: #333;
+$white: #fff;
+$slate-grey: #eaeaea;
+$success-green: rgba(0, 200, 0, 0.5);
+$failure-red: rgba(200, 0 , 0, 0.5);
+$borderColor: #ccc;
+$placeholder-grey: rgb(117, 117, 117);
+$borderColor: #ccc; //used as border color and hr
+$borderDark: #000;
+$borderMid: #a4a4a4;
+$greyOfTheBeast: #666;
+$dark: #999;
+$midDark: #a4a4a4;
+$midLight: #dfdfdf;
+$light: #f2f2f2;
+
+// placeholders
+%absolute-center {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+
+// grid row height
+$row-height: 397px;
+
+// functions
+
+  // em to px
+@function em($px, $base: 16) {
+  @return ($px / $base) * 1em;
+}
+
+@function container-height($rows: 1) {
+  @return $row-height*$rows;
+}
+// mixins
+@mixin clearfix {
+  &::after {
+    clear: both;
+    content: "";
+    display: block;
+  }
+}

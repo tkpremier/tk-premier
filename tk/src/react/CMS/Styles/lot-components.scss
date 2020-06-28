@@ -1,0 +1,93 @@
+@import 'vars';
+
+#component-icon-list {
+  .menuVisible {
+    display: none;
+  }
+  .mainVisible {
+    display: block;
+  }
+  li {
+    width: 350px;
+    display: inline-block;
+  }
+}
+
+.lot-components-visibility {
+  .menuVisible {
+    display: block;
+  }
+  .mainVisible {
+    display: none;
+  }
+}
+
+.lot-components {
+  background-color: #eeffff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 0;
+}
+
+.no-components {
+  min-height: 600px;
+}
+
+.content-icon {
+  padding-top: 10px;
+
+  img {
+    height: 150px;
+  }
+}
+
+.component-icon-list {
+  display: inline-block;
+}
+
+.carousel-block {
+  white-space: nowrap;
+  overflow: scroll;
+  width: inherit;
+  height: inherit;
+
+  .carousel-tile {
+    width: 400px;
+    display: inline-block;
+    padding: 10px;
+    margin: 5px;
+    white-space: normal;
+    vertical-align: top;
+
+    .carousel-item-reordering {
+      display: inline;
+
+      div {
+        display: inline-block;
+      }
+    }
+  }
+
+  .carousel-editor {
+    width: 380px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin: 10px 0 10px 0;
+    padding: 5px;
+  }
+}
+
+
+
+.richtext-content {
+  margin: 20px;
+  width: 96%;
+}
+
+.richtext-editor {
+  width: 631px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin: 20px 0 20px 0;
+  padding: 10px;
+}

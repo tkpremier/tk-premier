@@ -1,0 +1,293 @@
+@import 'vars';
+@import 'components';
+@import 'curated_auctions';
+@include favorite-lot;
+@include phillips-lot;
+@include expandables;
+@include phillips-lot-list;
+@include follow-artist;
+@include phillips-box;
+@include curated-toggle;
+#upcoming-lots-page,
+.buy-now-page {
+  .banner {
+    .content-body {
+      display: flex;
+      align-content: center;
+      justify-content: center;
+      @media screen and (min-width: $md-bp) {
+        height: 400px;
+      }
+    }
+    &__headline {
+      font-family: $portrait;
+      text-transform: none;
+      text-shadow: 1px 1px 2px $black;
+      margin: 0;
+      @media screen and (min-width: $md-bp) {
+        font-size: em(70);
+      }
+      @media screen and (min-width: $lg-bp) {
+        font-size: em(110);
+      }
+    }
+    &__image {
+      @media screen and (min-width: $md-bp) {
+        background-position: 0px -322px;
+      }
+      &--buy-now {
+        background-position: 0 0;
+        @media screen and (min-width: $md-bp) {
+          background-position: 0px -130px;
+        }
+      }
+    }
+  }
+  h2 {
+    text-transform: none;
+  }
+
+  .sale-info {
+    &--buy-now {
+      width: 100%;
+    }
+  }
+
+  /*
+  styles for chips list
+  .filtered-by {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: flex-start;
+    ul {
+      list-style: none;
+      display: flex;
+      flex-flow: row;
+      justify-content: flex-start;
+      align-items: center;
+    }
+    li {
+      margin-right: 15px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    button {
+      border: none;
+      background-color: rgb(0, 0, 0);
+      color: rgb(255, 255, 255);
+      font-family: $seroWebPro;
+      border-radius: 3px;
+      padding: 5px;
+      font-size: em(11, 16);
+      max-width: 75px;
+    }
+  } */
+  #primaryAside {
+    .header,
+    .typeahead h3 {
+      text-transform: uppercase;
+      font-size: em(16, 16);
+    }
+    .filter-list {
+      list-style: none;
+      display: flex;
+      flex-flow: column;
+      max-width: 230px;
+      max-height: 500px;
+      overflow-y: scroll;
+      padding: 15px;
+      background: #f2f2f2;
+    }
+
+    li {
+      margin: 7.5px 0;
+      &:first-child {
+        margin-top: 15px;
+      }
+      &:last-child {
+        margin-bottom: 15px;
+      }
+    }
+  }
+
+  @include phillips-grid {
+    .phillips-lot {
+      .user-actions-container {
+        display: flex;
+        justify-content: center;
+        & > * {
+          margin: 0 5px;
+          outline: none;
+        }
+        .phillips-share {
+          .icon {
+            -ms-background-position-y: -216px;
+            background-position-y: -216px;
+          }
+        }
+      }
+      .user-actions {
+        display: block;
+        position: relative;
+        opacity: 1;
+        @media screen and (min-width: $lg-bp) {
+          opacity: 0;
+          transition: opacity ease-in 100ms;
+          & > * {
+            margin: 0 10px;
+          }
+        }
+      }
+      @media screen and (min-width: $lg-bp) {
+        &:hover {
+          .user-actions {
+            display: block;
+            opacity: 1;
+          }
+        }
+      }
+    }
+    .lot {
+      &.single-cell {
+        flex-basis: calc(50% - 20px);
+        max-width: calc(50% - 20px);
+        margin-right: 20px;
+        @media screen and (min-width: $sm-bp) {
+          flex-basis: calc(33.33333% - 40px);
+          max-width: calc(33.33333% - 40px);
+          margin-right: 40px;
+        }
+      }
+      &.container_tworows_twocolumns-top_left,
+      &.container_tworows_twocolumns-top_right {
+        align-content: flex-start;
+        flex: none;
+      }
+      &.container_tworows_twocolumns-btm_left,
+      &.container_tworows_twocolumns-btm_right {
+        align-content: flex-end;
+        flex: none;
+      }
+      &.container_tworows_twocolumns-feature_left,
+      &.container_tworows_twocolumns-feature_right {
+        flex: none;
+      }
+      &.container_tworows_twocolumns-feature_center {
+        @media screen and (min-width: $sm-bp) {
+          max-width: 66.666667%;
+        }
+      }
+    }
+    // &__container {
+    //   border-top: 1px solid #eaeaea;
+    // }
+  }
+
+  @include phillips-user-paywall;
+}
+/* BEM Strategy using featured__section as example */
+/* Block */
+.featured__section {
+  padding-bottom: 20px;
+  h1 {
+    text-transform: none;
+    font-family: $portrait;
+  }
+  &__auctions {
+    list-style: none;
+    &__h2 {
+      font-family: $portrait;
+      &--mg-btm-only {
+        margin: 0 0 15px 0;
+      }
+    }
+    &__auction {
+      margin: 0 0 15px 0;
+      display: flex;
+      align-items: center;
+      align-content: center;
+      justify-content: flex-start;
+
+      &__img {
+        width: 100%;
+        margin-right: 20px;
+        max-width: 100px;
+        //@media screen and (min-width: $sm-bp) {
+        //  margin-right: 20px;
+        //  max-width: 100px;
+        //}
+      }
+      &__info {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        align-content: flex-start;
+        &__h2 {
+          margin: 0 0 5px 0;
+          width: 100%;
+          @media screen and (min-width: $sm-bp) {
+            width: 75%;
+          }
+        }
+        &__p {
+          font-size: em(14, 16);
+          margin-top: 0;
+        }
+      }
+    }
+  }
+  &--buy-now {
+    padding-bottom: 0;
+  }
+  &--mobile {
+    margin-bottom: 20px;
+  }
+  &--tablet {
+    margin-bottom: 40px;
+  }
+}
+@include flockler-banner;
+@include sortfilter;
+
+/*styles for typeahead prototype to be used for filters
+    .typeahead {
+      line-height: 34px;
+      padding: 5px 0;
+      position: relative;
+      input {
+        line-height: 22px;
+        padding: 15px;
+
+        background: url(../../../images/search.svg) #fff 98% 50% no-repeat;
+        background-size: 24px 24px;
+        border: 1px solid rgb(238, 238, 238);
+        &::placeholder {
+          line-height: 22px;
+        }
+        width: 100%;
+      }
+    
+      ul {
+        margin: 0;
+        padding: 0;
+        border: 1px rgb(238, 238, 238) solid;
+        list-style-type: none;
+        background: rgb(255, 255, 255);
+      }
+      li {
+        padding: 7.5px 15px;
+        line-height: 16px;
+        font-size: 14px;
+
+        &:hover {
+          background-color: #ddd;
+        }
+        a {
+          text-decoration: none;
+        }
+      }
+    }
+    */

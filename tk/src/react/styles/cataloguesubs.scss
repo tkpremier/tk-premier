@@ -1,0 +1,125 @@
+@import 'vars';
+@import 'components';
+
+@include phillips-modal{
+    .modal {
+       width: 80%;
+       height: 80%;
+       .modal-content{
+           height: 100%;
+           iframe{
+             width: 100%;  
+             height: 100%;
+           }
+       }
+      }
+}
+
+    button.button.large{
+        width: 100%
+      }
+
+      h2.triple-top {
+         margin-top: 3em;
+      }
+
+      .accordion{
+        transition: ease;
+      .accordion__button{
+        -webkit-font-smoothing: antialiased;
+        list-style: none;
+        text-indent: 34px;
+        box-sizing: inherit;
+        background: none;
+        text-decoration: none;
+        color: black;
+        border: none;
+        outline: none;
+        display: block;
+        line-height: 44px;
+        font-size: 0.75em;
+        text-transform: uppercase;
+        background-image: url(/images/layout/aside-icons.png);
+        background-repeat: no-repeat;
+        font-family: SeroWebPro, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        background-position: -9px -156px;
+        &:active,
+        &:focus {
+          outline: none;
+        }
+        &:is-open{
+          background-position: -7px -54px;
+        }
+      }
+          
+      .accordion__content{
+        overflow: hidden;
+          transition: 0.9s ease;
+          border-top: 0px;
+              border-bottom: 0px;
+            ul{
+              border-top: 0px;
+              border-bottom: 0px;
+            }
+            li{
+              color: #000;
+              -webkit-font-smoothing: antialiased;
+              font-size: 16px;
+              font-family: SeroWebPro,"Helvetica Neue",Helvetica,Arial,sans-serif;
+              line-height: 44px;
+              text-transform: uppercase;
+              text-indent: 34px;
+              list-style: none;
+              box-sizing: inherit;
+              position: relative;
+              padding: 0 6px;
+              background-color: #f2f2f2;
+              border: none;
+              margin: 0 0 8px;
+              &.selected{
+                font-weight:bold;
+                color:black;
+              }
+              &.disabled{
+                text-decoration: line-through;
+              }
+            }
+          a{
+            overflow: hidden;
+          -webkit-font-smoothing: antialiased;
+          list-style: none;
+          box-sizing: inherit;
+          background: 0px 0px;
+          text-decoration: none;
+          display: block;
+          text-indent: 0;
+          font-family: SeroWebPro,"Helvetica Neue",Helvetica,Arial,sans-serif;
+          font-size: .6875em;
+          line-height: 12px;
+          padding: 0 20px 0 28px;
+          text-transform: uppercase;
+        &:hover{
+          font-weight:bold;
+          color:black;
+        }
+        span{
+          -webkit-font-smoothing: antialiased;
+          list-style: none;
+          text-indent: 0;
+          box-sizing: inherit;
+          text-decoration: none;
+          color: #000;
+          font-family: SeroWebPro,"Helvetica Neue",Helvetica,Arial,sans-serif;
+          text-transform: uppercase;
+          position: absolute;
+          top: -4px;
+          right: 18px;
+          height: 20px;
+          line-height: 20px;
+          font-size: 9px;
+          display: inline-block;
+        }
+      }
+        }
+    }
+    

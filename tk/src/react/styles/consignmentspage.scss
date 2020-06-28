@@ -1,0 +1,430 @@
+@import 'vars';
+@import 'components';
+
+.consignment-form-a {
+  // display: block;
+  width: 100%;
+  height: 56px;
+  margin-top: -56px;
+  @include hide-tablet;
+}
+.goto-form {
+  @include button(100%);
+  padding: 0;
+  height: 42px;
+  line-height: 42px;
+  @include hide-tablet;
+}
+.sell-page {
+  option {
+    &.placeholder {
+      color: $placeholder-grey;
+    }
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: $portrait;
+    text-transform: none;
+  }
+  h2,
+  h3 {
+    text-align: left;
+  }
+  h1 {
+    text-align: center;
+  }
+  h2 {
+    font-size: em(28);
+  }
+  a {
+    text-decoration: none;
+    &.prop-button {
+      @include button(200px);
+      margin-bottom: 20px;
+    }
+  }
+  p {
+    &.upload-photos {
+      margin: 25px 0 0 0;
+    }
+  }
+  button {
+    outline: none;
+  }
+  div.banner {
+    .content-body {
+      @media screen and (min-width: $md-bp) {
+        height: 400px;
+      }
+    }
+    .headline {
+      left: 50%;
+      position: absolute;
+      text-shadow: 1px 1px 2px $black;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      @media screen and (min-width: $md-bp) {
+        font-size: em(70);
+      }
+      @media screen and (min-width: $lg-bp) {
+        font-size: em(110);
+      }
+    }
+    .image {
+      @media screen and (min-width: $md-bp) {
+        background-position: 0px -322px;
+      }
+    }
+  }
+
+  .left-column {
+    margin-bottom: 15px;
+    p:nth-of-type(3) {
+      margin-bottom: em(32);
+    }
+    @media screen and (min-width: $md-bp) {
+      padding: 0px 2.5rem;
+      margin-bottom: 0;
+    }
+  }
+
+  .images-copy {
+    padding: 0;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: stretch;
+    align-content: center;
+    list-style: none;
+    &__item {
+      width: 100%;
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: flex-start;
+      align-items: center;
+      padding-bottom: 32px;
+      border-bottom: 1px solid #ccc;
+      @media screen and (min-width: $sm-bp) {
+        width: calc(33.33333% - 10px);
+      }
+      &__p {
+        margin-top: 0;
+        text-align: center;
+      }
+      &__h3 {
+        margin: 0;
+      }
+    }
+  }
+
+  .landing-copy {
+    @media screen and (min-width: $md-bp) {
+      padding-right: em(80);
+    }
+  }
+  &__faq {
+    a {
+      text-decoration: underline;
+    }
+  }
+  .consignment-form {
+    border: 1px solid #000;
+    padding: 1rem;
+    @include phillips-newsletter-checkbox;
+    &__p {
+      font-family: $seroWebPro;
+      margin: 0;
+      &--align-right {
+        text-align: right;
+      }
+      &--eleven-px {
+        font-size: 11px;
+      }
+      &--hidden {
+        visibility: hidden;
+      }
+    }
+    &__label {
+      display: block;
+      font-family: $seroWebPro;
+      font-size: 0.8125em;
+      height: 42px;
+      line-height: 2.09091em;
+      margin: 0 auto 15px;
+      padding: 10px;
+      width: 100%;
+      outline: none;
+      border: 1px solid #000;
+    }
+    // h2 {
+    //   font-size: em(18, 16);
+    // }
+    form {
+      input {
+        max-width: none;
+        width: 100%;
+        &::placeholder,
+        &::-webkit-input-placeholder,
+        &:-moz-placeholder,
+        &::-moz-placeholder,
+        &:-ms-input-placeholder {
+          color: rgb(117, 117, 117);
+        }
+      }
+      text-align: left;
+    }
+    select,
+    textarea,
+    button {
+      display: block;
+      font-family: $seroWebPro;
+      font-size: 0.8125em;
+      height: 42px;
+      line-height: 2.09091em;
+      margin: 0 auto 15px;
+      padding: 10px;
+      width: 100%;
+    }
+
+    input,
+    textarea,
+    select {
+      outline: none;
+      border: 1px solid #000;
+    }
+    textarea {
+      height: calc(42px * 3);
+      resize: none;
+      line-height: em(18, 13);
+    }
+    button,
+    label[for='images'] {
+      text-align: center;
+      line-height: em(19, 13);
+      @include override-button-defaults;
+      border: 1px solid #000;
+      font-size: em(14);
+    }
+    .consignment-success {
+      text-align: left;
+      p {
+        color: $black;
+      }
+      button {
+        margin-top: em(20);
+      }
+    }
+    .multiple-image-input {
+      position: relative;
+      .thumbnails {
+        margin: 5px 0 10px 0;
+        position: relative;
+        z-index: 10;
+        .thumbnail {
+          margin: 0 10px;
+          max-width: 100px;
+          position: relative;
+          &:first-child {
+            margin-left: 0;
+          }
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+        .thumbnail-delete {
+          @include override-button-defaults;
+          color: $slate-grey;
+          font-size: 13px;
+          height: auto;
+          line-height: 13px;
+          margin: 5px;
+          padding: 2px;
+          position: absolute;
+          right: 0;
+          top: 0;
+          width: auto;
+          background: #fff;
+          border-radius: 50%;
+          border: 2px solid #fff;
+          outline: none;
+        }
+      }
+      label {
+        display: block;
+        cursor: pointer;
+      }
+    }
+    .all-fields-required {
+      font-size: 11px;
+    }
+  }
+
+  @include user-form {
+    &--consignment {
+      margin-top: 15px;
+    }
+    &__form {
+      input {
+        outline: none;
+        border: 1px solid #000;
+        @media screen and (min-width: $md-bp) {
+          max-width: 100%;
+        }
+      }
+      @include phillips-box {
+        @media screen and (min-width: $md-bp) {
+          max-width: calc(100% - 30px);
+          margin: 15px auto;
+        }
+      }
+    }
+    &__label {
+      max-width: calc(100% - 30px);
+    }
+    &__message {
+      &--consent {
+        @media screen and(min-width: $md-bp) {
+          max-width: calc(100% - 30px);
+        }
+      }
+    }
+  }
+  .typeahead {
+    margin-bottom: 15px;
+    position: relative;
+    input {
+      margin: 0 auto;
+    }
+    .typeahead-selector {
+      position: absolute;
+      border: 1px solid $slate-grey;
+      padding: 0;
+      list-style: none;
+      margin: 0 auto;
+      width: 100%;
+      background: #f4f4f4;
+      z-index: 20;
+      .typeahead-option {
+        cursor: pointer;
+        margin: 0;
+        padding: 15px;
+        &--selected {
+          background: #dddddd;
+        }
+      }
+      a {
+        text-decoration: none;
+      }
+    }
+    .typeahead-error {
+      color: $error-red;
+      cursor: initial;
+    }
+  }
+  .contact {
+    background: $slate-grey;
+    // margin-top: 1em;
+    padding: 1rem;
+    p {
+      margin-top: 0;
+      font-size: 13px;
+    }
+  }
+
+  .right-column {
+    .consignment-form {
+      margin-bottom: 1em;
+    }
+  }
+  &--trusts {
+    &__banner-container {
+      @media screen and (min-width: $md-bp) {
+        max-width: 1400px;
+      }
+    }
+    &__headline {
+      text-align: center;
+    }
+    &__team {
+      width: calc(50% - 20px);
+      margin-right: 20px;
+      @media screen and (min-width: $sm-bp) {
+        width: calc(33.33333333% - 20px);
+      }
+      p {
+        font-size: em(13, 16);
+        strong {
+          font-family: $seroMedium;
+        }
+      }
+      &__image {
+        margin: 0;
+      }
+    }
+    &__copy {
+      padding-right: 0;
+      &--margin-btm-2x {
+        margin-bottom: 40px;
+      }
+    }
+  }
+}
+
+#private-sales {
+  .main-container {
+    margin-top: 0;
+  }
+  div.banner {
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-flow: row nowrap;
+    }
+    .headline {
+      margin-bottom: 0;
+      left: auto;
+      top: auto;
+      transform: none;
+      position: initial;
+    }
+  }
+  .landing-copy {
+    padding-top: 25px;
+    padding-bottom: 40px;
+    @media screen and (min-width: $sm-bp) {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .image {
+      margin: 24px 0;
+    }
+  }
+  .consignment-form {
+    padding: 2rem;
+    // @include phillips-newsletter-checkbox;
+    .phillips-newsletter-checkbox {
+      label {
+        max-width: 265px;
+      }
+    }
+    @media screen and (min-width: $sm-bp) {
+      padding: 1rem 2rem;
+    }
+    h2 {
+      font-family: $portrait;
+      font-size: em(28);
+    }
+  }
+  .description {
+    padding-top: em(16);
+    max-width: 220px;
+    .image {
+      margin: em(16) 0;
+    }
+    p {
+      margin: 0;
+    }
+  }
+}

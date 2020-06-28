@@ -1,0 +1,351 @@
+// asset paths
+$asideIcons: '/images/layout/aside-icons.png';
+$asideIcons2x: '/images/layout/aside-icons-2x.png';
+$limelight: 'https://phillips.vo.llnwd.net/v1/web_prod/';
+$marginsize: 40px;
+$mobileMargin: 15px;
+$asidewidth: 225px;
+$basefontsize: 16px;
+$seroWebPro: 'SeroWebPro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$seroBold: 'SeroBold', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$seroMedium: 'SeroMedium', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$seroItalic: 'SeroItalic', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$seroLight: 'SeroThin', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$portrait: 'Portrait', serif;
+$portraitItalic: 'PortraitItalic', serif;
+$jhengHei: 'Microsoft JhengHei', '微軟正黑體', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$mobileHeader: 56px;
+$saleBanner: 43px;
+$tiny-font: 11;
+$medium-font: 15;
+$lg-font: 18;
+$xlg-font: 25;
+$tiny-fontsize: 11px;
+$sm-fontsize: 13px;
+$medium-fontsize: 15px;
+$basefontsize: 16px;
+$lg-fontsize: 18px;
+$extra-large-fontsize: 25px;
+
+// marginsizes
+$marginsize: 40px;
+$sm-marginsize: 15px;
+$mobileMargin: 15px;
+$asidewidth: 225px;
+
+// responsive breakpoints
+$tiny-bp: 321px;
+$sm-bp: 480px;
+$md-bp: 768px;
+$show-info-bp: 867px;
+$ipad-landscape-bp: 1024px;
+$lg-bp: 1112px;
+$xl-bp: 1176px;
+$desktopHeader: 84px;
+$desktopHeaderBP: 1025px;
+$mobileSaleBanner: 65px;
+$desktopSaleBanner: 43px;
+
+// colors
+$sold-red: #e20078;
+$error-red: #ff0000;
+$opaque-grey: rgba(0, 0, 0, 0.9);
+$black: #333;
+$white: #fff;
+$slate-grey: #eaeaea;
+$success-green: rgba(0, 200, 0, 0.5);
+$failure-red: rgba(200, 0, 0, 0.5);
+$borderColor: #ccc;
+$placeholder-grey: rgb(117, 117, 117);
+$borderColor: #ccc; //used as border color and hr
+$borderDark: #000;
+$borderMid: #a4a4a4;
+$greyOfTheBeast: #666;
+$dark: #999;
+$midDark: #a4a4a4;
+$midLight: #dfdfdf;
+$light: #f2f2f2;
+$hairline-grey: #9b9b9b;
+
+// placeholders
+%absolute-center {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// grid row height
+$row-height: 397px;
+
+// functions
+
+// em to px
+@function em($px, $base: 16) {
+  @return ($px / $base) * 1em;
+}
+
+@function container-height($rows: 1) {
+  @return $row-height * $rows;
+}
+
+// mixins
+
+// global mixins
+@mixin phillips-lot-p {
+  font-size: em(13, 13);
+}
+
+@mixin parallax-container($perspective: 1) {
+  @include perspective($perspective * 1px);
+  position: relative;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+@mixin clearfix {
+  &::after {
+    clear: both;
+    content: '';
+    display: block;
+  }
+}
+
+@mixin parallax-element($distance, $perspective: 1) {
+  @include transform(translate3d(0, 0, $distance * 1px) scale(1 + ($distance * -1) / $perspective));
+  position: relative;
+}
+
+@mixin override-button-defaults {
+  background: none;
+  border: none;
+  outline: none;
+}
+
+// mixin for the language toggle styled input
+@mixin switch-input {
+  // switch input
+  input.switch:empty {
+    display: none;
+    & ~ label {
+      position: relative;
+      float: left;
+      height: 19px;
+      width: 44px;
+      line-height: 1.6em;
+      text-indent: 4em;
+      margin: 0.2em 5px;
+      cursor: pointer;
+      user-select: none;
+      &:before,
+      &:after {
+        position: absolute;
+        display: block;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        content: ' ';
+        width: 3.6em;
+        background-color: #e1e1e1;
+        border-radius: 1em;
+        box-shadow: inset 0.2em 0.2em 0 rgba(216, 216, 216, 0.3);
+        transition: all 100ms ease-in;
+      }
+      &:after {
+        border: 1px solid #d8d8d8;
+      }
+      &:after {
+        width: 1.4em;
+        top: 0.1em;
+        bottom: 0.1em;
+        margin-left: 0.1em;
+        background-color: #fff;
+        border-radius: 1em;
+        box-shadow: inset 0.2em 0 rgba(216, 216, 216, 0.1);
+      }
+    }
+  }
+
+  input.switch:checked {
+    & ~ label {
+      &:after {
+        margin-left: 2em;
+      }
+    }
+  }
+}
+
+// Consignment asides:
+@mixin consignment-aside {
+  .sell-consignment {
+    &.consignment-home {
+      h3 {
+        font-size: em(26);
+      }
+
+      p {
+        margin-top: em(10);
+        font-size: em(15);
+      }
+
+      .cms-banner-copy {
+        text-align: center;
+        margin-top: em(50);
+
+        h3 {
+          font-size: em(38);
+        }
+
+        .submit {
+          background-color: #fff;
+          border: 1px solid #000;
+          color: #000;
+          display: block;
+          font-family: $seroWebPro;
+          font-size: 16px;
+          height: 42px;
+          line-height: 42px;
+          margin: 2em auto;
+          text-align: center;
+          text-decoration: none;
+          text-transform: none;
+          vertical-align: middle;
+          width: em(198);
+        }
+      }
+    }
+
+    background: #eeeeee;
+    padding: 1.25rem;
+
+    h3 {
+      font-family: $portrait;
+      font-size: 24px;
+      margin-bottom: 0;
+      text-transform: none;
+    }
+
+    p {
+      font-family: $seroWebPro;
+      font-size: 13px;
+      text-transform: none;
+    }
+
+    a {
+      background-color: #fff;
+      border: 1px solid #000;
+      color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: $seroWebPro;
+      font-size: 16px;
+      height: 42px;
+      text-align: center;
+      text-transform: none;
+      text-decoration: none;
+      vertical-align: middle;
+      width: 100%;
+    }
+    &--margin-bottom-80 {
+      margin-bottom: 80px;
+    }
+    @media screen and (min-width: $md-bp) {
+      .horizontal-layout {
+        padding-left: 1.25em;
+      }
+
+      &.consignment-home {
+        margin: 0 em(60) em(30) em(60);
+      }
+    }
+    @content;
+  }
+}
+
+// New Phillips Social button
+// Artist Landing Page
+@mixin new-phillips-social {
+  h2 {
+    display: inline-block;
+  }
+
+  .artist-actions {
+    position: relative !important;
+    right: auto !important;
+    height: 25px !important;
+    margin: 25px 0 0 15px !important;
+  }
+
+  .phillips-social {
+    display: inline-block;
+    vertical-align: text-bottom;
+    p.message {
+      display: none !important;
+      opacity: 0 !important;
+    }
+    .phillips-favorite {
+      &[data-favorite='maker'] {
+        margin-top: 0;
+        margin-left: 0;
+        line-height: 36px;
+        .social-icon {
+          float: left;
+          height: 30px;
+          width: 30px;
+          margin-top: 3px;
+        }
+        &:after {
+          content: 'Follow';
+          display: block;
+          float: left;
+          line-height: 36px;
+          margin-left: 10px;
+          font-size: em(13);
+        }
+        &:hover {
+          &:before {
+            content: '';
+          }
+        }
+        &.favorite {
+          &:after {
+            content: 'Followed';
+          }
+          &:hover {
+            &:after {
+              content: 'Unfollow';
+            }
+          }
+        }
+        &.clicked {
+          &:before {
+            content: '';
+          }
+        }
+      }
+    }
+  }
+}
+
+@mixin show-more {
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  padding: 0.8125em em(30);
+  margin: 1em auto;
+  border: 1px solid #000;
+  color: #000;
+  text-align: center;
+  text-decoration: none;
+  background: #ffffff;
+  // width: 198px;
+}
+
+// css utility classes
+@mixin hide-tablet {
+  @media screen and (min-width: $sm-bp) {
+    display: none;
+  }
+}

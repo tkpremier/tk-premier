@@ -1,0 +1,45 @@
+@import 'components';
+@import 'vars';
+
+@include favorite-lot;
+@include follow-artist;
+@include phillips-lot-list;
+
+h2 {
+  width: 100%;
+  text-align: center;
+  text-transform: none;
+}
+
+ul {
+  padding: 0;
+  list-style-type: none;
+}
+
+.search-grid {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  .title, .phillips-grid {
+    width: 100%;
+  }
+  .phillips-grid {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+}
+
+// Makers
+@include phillips-maker;
+
+// Lots
+@include phillips-lot;
+
+// Auctions
+
+// Editorials
+
+// Teams

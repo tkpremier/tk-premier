@@ -1,0 +1,29 @@
+@import 'vars';
+@import 'sortable';
+@import 'alerts';
+@import 'editorials';
+@import 'lot-components';
+
+body {
+  background-color: $white;
+}
+
+.ckeditor {
+  h1 {
+    font-family: $portrait;
+    text-transform: none;
+  }
+}
+
+li {
+  list-style-type: none;
+}
+
+.image-preview {
+  i {
+    position: absolute;
+    right: 50px;
+    background-color: white;
+    cursor: pointer;
+  }
+}

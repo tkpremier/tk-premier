@@ -1,0 +1,28 @@
+@import 'vars';
+@import 'components';
+
+@include phillips-modal{
+    .modal {
+       width: 80%;
+       height: 80%;
+       .modal-content{
+           height: 100%;
+           iframe{
+             width: 100%;  
+             height: 100%;
+           }
+       }
+      }
+}
+@include grey-box{
+  .button{
+    margin-left: 15px;
+  }
+}
+    button.button.large{
+        width: 100%
+      }
+
+      h2.triple-top {
+         margin-top: 3em;
+      }

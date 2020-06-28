@@ -1,0 +1,192 @@
+﻿{
+  "en": {
+    "headline": "Sell with us.",
+    "landingCopy": {
+      "submitConsignmentHeader": "How to submit a consignment.",
+      "submitConsignment": [
+        {
+          "imgSrc": "https://phillips.vo.llnwd.net/v1/web_prod/images/layout/share_details.svg",
+          "h3": "Share details",
+          "p": "Complete the form opposite with as much detail as possible."
+        },
+        {
+          "imgSrc": "https://phillips.vo.llnwd.net/v1/web_prod/images/layout/upload_photos.svg",
+          "h3": "Upload photos",
+          "p": "Upload up to six images of the property including front and back and artist / maker signatures or marks."
+        },
+        {
+          "imgSrc": "https://phillips.vo.llnwd.net/v1/web_prod/images/layout/receive_feedback.svg",
+          "h3": "Submit request",
+          "p": "Our specialists will review your submission and we will do our best to respond to you within 5 business days."
+        }
+      ],
+      "howItWorks": "How it works.",
+      "howItWorksCopy": [
+        "Send us images and a description of an individual item from your collection and we will provide complimentary auction estimates for items that we propose for auction.",
+        "If you do not see the artist or maker of your item in the menu, you will not be able submit online. You are always welcome to contact our departments directly by phone or email for further information.",
+        "If your item is accepted you will be contacted by a Phillips specialist who will discuss the most appropriate timing, auction and location to ensure the successful sale of your property."
+      ],
+      "whyPhillips": "Why Phillips?",
+      "whyPhillipsCopy": [
+        "We’re focused. Phillips is the only international auction house to focus exclusively on the defining movements of the 20th and 21st centuries. We reflect contemporary culture in everything we do, and have set ourselves apart as a vibrant force in the art market because of it.",
+        "We’re global. Our clients have collections all over the world. Along with our salerooms in New York, London, Geneva and Hong Kong, Phillips has specialists throughout the Americas, Europe and Asia. We can help you get your work to the right auction in the right place at the right time.",
+        "We’re innovative. Phillips is committed to helping clients enjoy and engage with our auctions in ways that are best suited to them, reimagining what it means to be a global platform for buying and selling contemporary art and design in the digital age."
+      ]
+    },
+    "consignmentForm": {
+      "formTitle": "Submit details and images",
+      "secondaryMktNote": "Please note that we cannot accept consignments for artists who have no secondary market history.",
+      "placeholders": {
+        "email": "Your email address",
+        "name": "Your name",
+        "artistMaker": "Artist / Maker",
+        "artistMakerOptional": "Artist / Maker (Optional)",
+        "title": "Title of item",
+        "year": "Year of production",
+        "location": "Location of item?",
+        "dimension": "Dimensions",
+        "additionalDetails": "Additional details (optional)\nE.g. history of ownership, price history, literature",
+        "watchDetails": "Please provide details on materials, accessories, and reference number",
+        "medium": "Category",
+        "optional": " (Optional)"
+      },
+      "makerNotAvailable": "Online consignments aren’t available for that artist/maker right now. Please contact our Client Services team for further information",
+      "uploadPhotos": "Upload images",
+      "buttonLabels": {
+        "photos": "Click to add images",
+        "submitLabel": "Submit"
+      },
+      "allFieldsRequired": "All fields required",
+      "errorMsg": {
+        "email": "Your e-mail address is required",
+        "name": "Your name is required",
+        "artistMaker": "Artist or Maker name is required",
+        "title": "Title is required",
+        "year": "Year is required. You may also enter an approximate year",
+        "location": "Location is required.",
+        "medium": "Medium is required",
+        "dimension": "Dimensions are required. You can enter exact dimensions or approximate sizes (for example: small, medium or large)"
+      },
+      "stateMessages": {
+        "submitting": "Submitting details...",
+        "successHeadline": "Consignment request received",
+        "submitAnother": "Submit another item"
+      }
+    },
+    "contactInfo": {
+      "header": "Questions? Contact Us",
+      "locations": [
+        {
+          "city": "New York",
+          "email": "ClientServicesNewYork@phillips.com",
+          "tel": "+1 212 940 1200"
+        },
+        {
+          "city": "London",
+          "email": "ClientServicesLondon@phillips.com",
+          "tel": "+44 20 7318 4010"
+        },
+        {
+          "city": "Hong Kong",
+          "email": "ClientServicesHongKong@phillips.com",
+          "tel": "+852 2318 2000"
+        }
+      ]
+    }
+  },
+  "ch": {
+    "headline": "共創佳績",
+    "landingCopy": {
+      "submitConsignmentHeader": "如何委託富藝斯拍賣",
+      "submitConsignment": [
+        {
+          "imgSrc": "https://phillips.vo.llnwd.net/v1/web_prod/images/layout/share_details.svg",
+          "h3": "提供資料",
+          "p": "填寫右方表格並提供所知詳情"
+        },
+        {
+          "imgSrc": "https://phillips.vo.llnwd.net/v1/web_prod/images/layout/upload_photos.svg",
+          "h3": "上載圖片",
+          "p": "最多可上載6張圖片，展示藏品的正面、背面、藝術家/設計師的簽名或標記。"
+        },
+        {
+          "imgSrc": "https://phillips.vo.llnwd.net/v1/web_prod/images/layout/receive_feedback.svg",
+          "h3": "提交申請",
+          "p": "富藝斯專家將審查提交內容，盡力在5個工作日提供答覆。"
+        }
+      ],
+      "howItWorks": "程序介紹",
+      "howItWorksCopy": [
+        "傳送藏品的圖片及簡述給我們，專家團隊將為閣下提供免費估價。",
+        "如果閣下藏品的藝術家或設計師未有包括在表格內，你將無法在網上遞交表格。歡迎閣下透過電話或電郵與我們直接聯絡。",
+        "當閣下的藏品獲接納為拍品，富藝斯專家團隊將會與閣下商討最合適的拍賣時間、類別和地點，確保藏品能成功拍出。"
+      ],
+      "whyPhillips": "為何選擇富藝斯？",
+      "whyPhillipsCopy": [
+        "專注。富藝斯是唯一專注二十及二十一世紀藝術與設計品的國際拍賣行，以嶄新模式呈獻當代藝術文化，在拍賣市場上佔有獨特地位。",
+        "全球性。富藝斯的客戶網絡遍佈全球，於紐約、倫敦、日內瓦及香港均設有拍賣中心，定期舉行拍賣會及展覽，並不斷積極拓展歐美及亞洲各地的專家團隊及代辦處，確保閣下的藏品在合適的時間、拍賣類別及地點推出。",
+        "創新。富藝斯致力為收藏家提供專業卓越的服務及意見，透過網上拍賣平台，讓世界各地的藏家體驗現今數碼時代的當代藝術和設計的交易。"
+      ]
+    },
+    "consignmentForm": {
+      "formTitle": "拍品徵集表格",
+      "secondaryMktNote": "我們一律不接受沒有二級市場記錄之藝術家委託拍品。",
+      "placeholders": {
+        "email": "電郵",
+        "name": "姓名",
+        "artistMaker": "藝術家或設計師",
+        "artistMakerOptional": "藝術家或設計師 (可選的)",
+        "title": "作品名稱",
+        "year": "作品年份",
+        "location": "藏品所在地",
+        "dimension": "尺寸",
+        "additionalDetails": "如有其他額外資料，舉例來源、成交紀錄、文學",
+        "watchDetails": "請提供作品的物料、配件及參考編號",
+        "medium": "品類",
+        "optional": " (可選的)"
+      },
+      "makerNotAvailable": "網上徵集平台暫時無法確認該藝術家或設計師。請與富藝斯客戶服務部聯絡。",
+      "uploadPhotos": "上傳圖片",
+      "buttonLabels": {
+        "photos": "加入更多圖片",
+        "submitLabel": "確認遞交"
+      },
+      "allFieldsRequired": "所有字段必需",
+      "errorMsg": {
+        "email": "請提供電郵",
+        "name": "請提供姓名",
+        "artistMaker": "請選擇藝術家或設計師名稱",
+        "title": "請提供作品名稱",
+        "year": "請提供年份，你可以輸入大概的年份",
+        "location": "位置是必需的。",
+        "medium": "請選擇品類",
+        "dimension": "請提供尺寸，你可以輸入準確尺寸或大概的尺寸（例如：大、中或小）"
+      },
+      "stateMessages": {
+        "submitting": "系統處理中",
+        "successHeadline": "成功遞交",
+        "submitAnother": "遞交更多藏品"
+      }
+    },
+    "contactInfo": {
+      "header": "如有任何問題，歡迎隨時聯絡我們。",
+      "locations": [
+        {
+          "city": "紐約",
+          "email": "clientservicesnewyork@phillips.com",
+          "tel": "+1 212 940 1200"
+        },
+        {
+          "city": "倫敦",
+          "email": "clientserviceslondon@phillips.com",
+          "tel": "+44 20 7318 4010"
+        },
+        {
+          "city": "香港",
+          "email": "clientserviceshongkong@phillips.com",
+          "tel": "+852 2318 2000"
+        }
+      ]
+    }
+  }
+}

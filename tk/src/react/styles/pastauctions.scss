@@ -1,0 +1,252 @@
+@import 'vars';
+@import 'components';
+@include sortfilter;
+/// RESETS/DEFAULTS
+// .main-container{
+// background-color: red;
+// }
+
+.expandable {
+  button {
+    -webkit-font-smoothing: antialiased;
+    list-style: none;
+    text-indent: 34px;
+    box-sizing: inherit;
+    background: none;
+    text-decoration: none;
+    color: black;
+    border: none;
+    outline: none;
+    display: block;
+    line-height: 44px;
+    font-size: 0.75em;
+    text-transform: uppercase;
+    background-image: url(/images/layout/aside-icons.png);
+    background-repeat: no-repeat;
+    font-family: 'SeroWebPro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-position: -9px -156px;
+    &:active,
+    &:focus {
+      outline: none;
+    }
+  }
+}
+    .expandable.filter {
+      // background-image: url(/images/layout/aside-icons.png);
+      background-position: -7px -54px;
+      &.closed{
+        background-position: -9px -156px;
+      }
+      button.filter {
+        -webkit-font-smoothing: antialiased;
+        list-style: none;
+box-sizing: inherit;
+text-decoration: none;
+color: #000;
+display: block;
+font-size: .75em;
+text-transform: uppercase;
+padding: 12px 0 12px 28px;
+line-height: 18px;
+text-indent: 0;
+background-image: url(/images/layout/aside-icons.png);
+background-repeat: no-repeat;
+// background-position: -7px -54px;
+font-family: SeroWebPro,"Helvetica Neue",Helvetica,Arial,sans-serif;
+font-weight: 400;
+&:closed{
+  background-position: -9px -156px;
+  outline:0px;
+}
+        }
+        ul{
+          border-top: 0px
+        }
+        li{
+          color: #000;
+-webkit-font-smoothing: antialiased;
+font-size: 16px;
+font-family: SeroWebPro,"Helvetica Neue",Helvetica,Arial,sans-serif;
+line-height: 44px;
+text-transform: uppercase;
+text-indent: 34px;
+list-style: none;
+box-sizing: inherit;
+position: relative;
+padding: 0 6px;
+background-color: #f2f2f2;
+border: none;
+margin: 0 0 8px;
+&.selected{
+  font-weight:bold;
+  color:black;
+}
+&.disabled{
+  text-decoration: line-through;
+}
+        }
+  .panel{
+    a{
+    -webkit-font-smoothing: antialiased;
+list-style: none;
+box-sizing: inherit;
+background: 0px 0px;
+text-decoration: none;
+display: block;
+text-indent: 0;
+font-family: SeroWebPro,"Helvetica Neue",Helvetica,Arial,sans-serif;
+font-size: .6875em;
+line-height: 12px;
+padding: 0 20px 0 28px;
+// color: #666;
+text-transform: uppercase;
+&:hover{
+  font-weight:bold;
+  color:black;
+}
+span{
+  -webkit-font-smoothing: antialiased;
+list-style: none;
+text-indent: 0;
+box-sizing: inherit;
+text-decoration: none;
+color: #000;
+font-family: SeroWebPro,"Helvetica Neue",Helvetica,Arial,sans-serif;
+text-transform: uppercase;
+position: absolute;
+top: -4px;
+right: 18px;
+height: 20px;
+line-height: 20px;
+font-size: 9px;
+display: inline-block;
+}
+    }
+  }
+  
+}
+
+
+button.back-to-top{
+  -webkit-font-smoothing: antialiased;
+  box-sizing: inherit;
+  background: 0px 0px;
+  color: #000;
+  background-repeat: no-repeat;
+  font-size: .8125em;
+  text-decoration: none;
+  text-transform: uppercase;
+  line-height: 20px;
+  background-color: #fff;
+  border: 1px solid #000;
+  background-image: url(/images/layout/aside-icons.png);
+  background-position: 94px -10px;
+  width: 134px;
+  padding: 5px 10px;
+  font-weight: 400;
+  font-family: SeroBold,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  z-index: 10000;
+  position: fixed;
+  bottom: 40px;
+  display: inline;
+}
+
+.accordion{
+  transition: ease;
+.accordion__button{
+  -webkit-font-smoothing: antialiased;
+  list-style: none;
+  text-indent: 34px;
+  box-sizing: inherit;
+  background: none;
+  text-decoration: none;
+  color: black;
+  border: none;
+  outline: none;
+  display: block;
+  line-height: 44px;
+  font-size: 0.75em;
+  text-transform: uppercase;
+  background-image: url(/images/layout/aside-icons.png);
+  background-repeat: no-repeat;
+  font-family: SeroWebPro, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-position: -9px -156px;
+  &:active,
+  &:focus {
+    outline: none;
+  }
+  &:is-open{
+    background-position: -7px -54px;
+  }
+}
+    
+.accordion__content{
+  overflow: hidden;
+    transition: 0.9s ease;
+    border-top: 0px;
+        border-bottom: 0px;
+      ul{
+        border-top: 0px;
+        border-bottom: 0px;
+      }
+      li{
+        color: #000;
+        -webkit-font-smoothing: antialiased;
+        font-size: 16px;
+        font-family: SeroWebPro,"Helvetica Neue",Helvetica,Arial,sans-serif;
+        line-height: 44px;
+        text-transform: uppercase;
+        text-indent: 34px;
+        list-style: none;
+        box-sizing: inherit;
+        position: relative;
+        padding: 0 6px;
+        background-color: #f2f2f2;
+        border: none;
+        margin: 0 0 8px;
+        &.selected{
+          font-weight:bold;
+          color:black;
+        }
+        &.disabled{
+          text-decoration: line-through;
+        }
+      }
+    a{
+      overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    list-style: none;
+    box-sizing: inherit;
+    background: 0px 0px;
+    text-decoration: none;
+    display: block;
+    text-indent: 0;
+    font-family: SeroWebPro,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: .6875em;
+    line-height: 12px;
+    padding: 0 20px 0 28px;
+    text-transform: uppercase;
+  &:hover{
+    font-weight:bold;
+    color:black;
+  }
+  span{
+    -webkit-font-smoothing: antialiased;
+    list-style: none;
+    text-indent: 0;
+    box-sizing: inherit;
+    text-decoration: none;
+    color: #000;
+    font-family: SeroWebPro,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    text-transform: uppercase;
+    position: absolute;
+    top: -4px;
+    right: 18px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 9px;
+    display: inline-block;
+  }
+}
+  }
+}
