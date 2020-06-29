@@ -1,33 +1,37 @@
-const path = require("path");
-const webpack = require("webpack");
-const LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
+const path = require('path');
+const webpack = require('webpack');
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
+/*
+  clientside entries:
+    auctionPage: './auctionPageClient.entry',
+    buyNow: './buyNow.entry',
+    homepage: './homepage.entry',
+    lotPage: './LotPage.entry',
+*/
 const entries = {
-  auctionPage: './auctionPageClient.entry',
-  buyNow: './buyNow.entry',
   homepage: './homepage.entry',
-  lotPage: './LotPage.entry',
-  tk: '../App.jsx',
+  tk: '../App.jsx'
 };
 
 module.exports = {
-  context: path.join(__dirname, "PhillipsPublic.JavaScript/tk/src/react"),
+  context: path.join(__dirname, 'tk/src/react'),
   entry: entries,
   stats: {
     errorDetails: true
   },
   optimization: {
-    minimizer: [new UglifyJsPlugin()],
+    minimizer: [new UglifyJsPlugin()]
   },
   output: {
     filename: '[name].bundle.js',
     library: 'ssr',
     libraryExport: 'default',
     libraryTarget: 'commonjs2',
-    path: path.resolve(__dirname, 'PhillipsPublic.JavaScript/dist/tk'),
-    publicPath: '/assets',
+    path: path.resolve(__dirname, 'tk/dist'),
+    publicPath: '/dist',
     pathinfo: true
   },
   module: {
@@ -37,25 +41,28 @@ module.exports = {
         test: /\.jsx$/,
         exclude: /(node_modules|bower_components)/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
             presets: [
               [
-                "@babel/preset-env",
+                '@babel/preset-env',
                 {
                   targets: {
-                    browsers: ["last 2 versions", "safari >= 7"],
-                    node: "current"
+                    browsers: ['last 2 versions', 'safari >= 7'],
+                    node: 'current'
                   }
                 }
               ],
-              "@babel/preset-react"
+              '@babel/preset-react'
             ],
             plugins: [
               'lodash',
               'syntax-async-functions',
-              ['@babel/plugin-proposal-decorators', { 'legacy': true }], ['@babel/plugin-proposal-class-properties', { 'loose': true }],
-              '@babel/plugin-proposal-object-rest-spread', '@babel/plugin-transform-object-assign', '@babel/plugin-proposal-optional-chaining'
+              ['@babel/plugin-proposal-decorators', { legacy: true }],
+              ['@babel/plugin-proposal-class-properties', { loose: true }],
+              '@babel/plugin-proposal-object-rest-spread',
+              '@babel/plugin-transform-object-assign',
+              '@babel/plugin-proposal-optional-chaining'
             ]
           }
         }
@@ -64,15 +71,15 @@ module.exports = {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
             presets: [
               [
-                "@babel/preset-env",
+                '@babel/preset-env',
                 {
                   targets: {
-                    browsers: ["last 2 versions", "safari >= 7"],
-                    node: "current"
+                    browsers: ['last 2 versions', 'safari >= 7'],
+                    node: 'current'
                   }
                 }
               ]
@@ -80,8 +87,8 @@ module.exports = {
             plugins: [
               'lodash',
               'syntax-async-functions',
-              ['@babel/plugin-proposal-decorators', { 'legacy': true }],
-              ['@babel/plugin-proposal-class-properties', { 'loose': true }],
+              ['@babel/plugin-proposal-decorators', { legacy: true }],
+              ['@babel/plugin-proposal-class-properties', { loose: true }],
               '@babel/plugin-proposal-object-rest-spread',
               '@babel/plugin-transform-object-assign',
               '@babel/plugin-proposal-optional-chaining'
@@ -93,10 +100,10 @@ module.exports = {
         test: /\.scss/,
         exclude: /(node_modules|bower_components)/,
         use: [
-          "style-loader",
-          "css-loader",
+          'style-loader',
+          'css-loader',
           {
-            loader: "sass-loader"
+            loader: 'sass-loader'
           }
         ]
       }
@@ -104,10 +111,7 @@ module.exports = {
   },
   resolve: {
     // Allow require('./blah') to require blah.jsx
-    extensions: [".js", ".jsx"],
-    alias: {
-      _: path.join(__dirname, "PhillipsPublic.Web/Scripts/Libraries/lodash.min")
-    }
+    extensions: ['.js', '.jsx']
   },
   // externals: {
   //   react: "React",
@@ -120,12 +124,6 @@ module.exports = {
       collections: true,
       currying: true,
       flattening: true
-    }),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    // new webpack.SourceMapDevToolPlugin(),
-    new webpack.ProvidePlugin({
-      "window.phillips": "phillips",
-      "window.Backbone": "Backbone"
-    }),
+    })
   ]
 };
