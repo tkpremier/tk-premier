@@ -1,15 +1,17 @@
-var sass = require('node-sass');
-var autoPrefixer = require('autoprefixer');
+const sass = require('node-sass');
+const autoPrefixer = require('autoprefixer');
 var postCSS = require('postcss');
 var bourbon = require('bourbon');
 var winston = require('winston');
 var fs = require('fs');
 
-var paths = [
+const paths = [
   './tk/src/styles/_components.scss',
   './tk/src/styles/_vars.scss',
   './tk/src/styles/fonts.scss',
-  './tk/src/styles/home.scss'
+  './tk/src/styles/home.scss',
+  './tk/src/styles/lotpage.scss',
+  './tk/src/styles/main.scss'
 ];
 
 function compile(path) {
@@ -43,8 +45,7 @@ function compile(path) {
                   throw Error;
                 } else {
                   winston.log('info', 'successfully saved css');
-                  console.log('buildPath: ', buildPath);
-                  fs.writeFile(buildPath + '.map', res.map, e => {
+                  fs.writeFile(`${buildPath}.map`, res.map, e => {
                     if (e) {
                       winston.log('error', 'error: ', e);
                       throw e;

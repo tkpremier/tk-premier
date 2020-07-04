@@ -11,7 +11,11 @@ import sendAnalytics from '../../utils/sendAnalytics';
 
 const FollowArtist = ({ makerId, makerName }) => {
   const bbEvent = useRef(null);
-  useEffect(() => { getPhillipsBackboneProperty('Events').then(eventEmitter => bbEvent.current = eventEmitter); }, []);
+  useEffect(() => {
+    getPhillipsBackboneProperty('Events')
+      .then(eventEmitter => (bbEvent.current = eventEmitter))
+      .catch(() => (bbEvent.current = null));
+  }, []);
   const { error, followedMakers, user } = useSelector(({ followedMakers, user, error }) => ({
     error: matchError('FOLLOW_MAKER', maker => maker.makerId === makerId)(error) ? error : null,
     followedMakers,
@@ -19,15 +23,9 @@ const FollowArtist = ({ makerId, makerName }) => {
   }));
   const dispatch = useDispatch();
   const active = followedMakers.indexOf(makerId) > -1;
-  const toolTipMessage = isNull(error)
-    ? active
-      ? 'Followed'
-      : 'Follow'
-    : error.message;
+  const toolTipMessage = isNull(error) ? (active ? 'Followed' : 'Follow') : error.message;
   const trackActivity = () => {
-    const page = document
-      ? document.title
-      : 'placeholder';
+    const page = document ? document.title : 'placeholder';
     const analyticsData = {
       eventCategory: `Follow Maker / ${page} / Maker: ${makerName}`,
       eventAction: 'Follow Maker',
@@ -37,14 +35,16 @@ const FollowArtist = ({ makerId, makerName }) => {
   };
   const onClick = () => {
     if (!user.loggedIn) {
-      bbEvent.current.trigger('openRegister');
+      if (!isNull(bbEvent.current)) {
+        bbEvent.current.trigger('openRegister');
+      }
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem('followedMaker', makerId);
       }
       return;
     }
     if (active) {
-      dispatch(deleteMaker(user.id, makerId))
+      dispatch(deleteMaker(user.id, makerId));
     } else {
       trackActivity();
       dispatch(saveMaker(user.id, makerId));

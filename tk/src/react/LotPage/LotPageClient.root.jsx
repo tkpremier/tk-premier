@@ -10,19 +10,22 @@ import { bidButton, inquireForm } from '../BidButtons/reducers';
 import * as modalReducers from '../PhillipsModal/reducer';
 import * as lotPageReducers from './reducers';
 import LotPageContainer from './LotPage.container';
-// import auction from './mock.json';
+import lotpage from '../../../mock/lotpage.json';
 
-const LotPage = ({ auction, loginRequired, userJSON, lotNumber, buyNowSaleNumber, language }) => {
-  const store = configureStoreWithRouter({
-    bidButton,
-    inquireForm,
-    ...languageReducers,
-    ...userReducers,
-    ...modalReducers,
-    ...lotPageReducers
-  },
+const LotPage = () => {
+  const { auction, loginRequired, userJSON, lotNumber, buyNowSaleNumber, language } = lotpage;
+  const store = configureStoreWithRouter(
+    {
+      bidButton,
+      inquireForm,
+      ...languageReducers,
+      ...userReducers,
+      ...modalReducers,
+      ...lotPageReducers
+    },
     setInitalState({ userJSON, lotNumber, auction, buyNowSaleNumber, language }),
-    routesMap);
+    routesMap
+  );
   return (
     <Provider store={store}>
       <LotPageContainer isServer={false} loginRequired={loginRequired} />

@@ -30,35 +30,31 @@ import getAmWidget from '../utils/getAmWidget';
 import lotPagePropTypes from './proptypes';
 
 const showLanguageToggle = ({ departmentName, departments, locationName, isChineseTranslate }) => {
-  return isChineseTranslate
-    || (
-      locationName === 'Hong Kong'
-      && (
-        departmentName === 'Contemporary'
-        || departments.filter(dept => dept.departmentID === 1)
-      )
-    );
+  return (
+    isChineseTranslate ||
+    (locationName === 'Hong Kong' &&
+      (departmentName === 'Contemporary' || departments.filter(dept => dept.departmentID === 1)))
+  );
 };
 
 class LotPage extends Component {
-
-  bbUserModel = null
+  bbUserModel = null;
 
   state = {
     showViewInRoom: false,
     isMobile: false
-  }
+  };
 
   componentDidMount() {
     const { dispatch, user } = this.props;
-    getPhillipsBackboneProperty('user').then((userModel) => {
+    getPhillipsBackboneProperty('user').then(userModel => {
       bindUserModel(userModel, dispatch);
       if (userModel.loggedIn && !user.loggedIn) {
         dispatch(loggedIn(userModel.toJSON()));
       }
       this.bbUserModel = userModel;
     });
-    getPhillipsBackboneProperty('Events').then((event) => {
+    getPhillipsBackboneProperty('Events').then(event => {
       event.on('loginSuccess logoutSuccess', () => {
         if (this.props.auction.saleTypeID === 3 && this.props.auction.auctionBidPartner === 1) {
           location.reload(true);
@@ -69,8 +65,8 @@ class LotPage extends Component {
       handleMql('screen and (min-width: 768px)', this.setIsMobile);
     }
     if (typeof document !== 'undefined') {
-      document.addEventListener('keyup', (event) => {
-        const currentIndex = findIndex((lot) => {
+      document.addEventListener('keyup', event => {
+        const currentIndex = findIndex(lot => {
           return lot.lotNumberFull === this.props.currentLot.lotNumberFull;
         })(this.props.lots);
         const totalCount = this.props.lots.length;
@@ -85,17 +81,18 @@ class LotPage extends Component {
             // /${maker}/${saleNumber}/${lotNumberFull}
             // uriEncoder(maker) transform happens in ./routesMap.js
             // dispatch action to change url
-            dispatch(!makerName || makerName.toUpperCase() === 'NOARTIST'
-              ? changeLotNoMaker({
-                saleNumber,
-                lotNumberFull: trim(lotNumberFull)
-              })
-              : changeLot({
-                makerName: makerUrl,
-                saleNumber,
-                lotNumberFull: trim(lotNumberFull)
-              })
-            )
+            dispatch(
+              !makerName || makerName.toUpperCase() === 'NOARTIST'
+                ? changeLotNoMaker({
+                    saleNumber,
+                    lotNumberFull: trim(lotNumberFull)
+                  })
+                : changeLot({
+                    makerName: makerUrl,
+                    saleNumber,
+                    lotNumberFull: trim(lotNumberFull)
+                  })
+            );
             break;
           }
           case 39: {
@@ -108,16 +105,17 @@ class LotPage extends Component {
             // uriEncoder(maker) transform happens in ./routesMap.js
             // dispatch action to change url
 
-            dispatch(!makerName || makerName.toUpperCase() === 'NOARTIST'
-              ? changeLotNoMaker({
-                saleNumber,
-                lotNumberFull: trim(lotNumberFull)
-              })
-              : changeLot({
-                makerName: makerUrl,
-                saleNumber,
-                lotNumberFull: trim(lotNumberFull)
-              })
+            dispatch(
+              !makerName || makerName.toUpperCase() === 'NOARTIST'
+                ? changeLotNoMaker({
+                    saleNumber,
+                    lotNumberFull: trim(lotNumberFull)
+                  })
+                : changeLot({
+                    makerName: makerUrl,
+                    saleNumber,
+                    lotNumberFull: trim(lotNumberFull)
+                  })
             );
             break;
           }
@@ -144,18 +142,17 @@ class LotPage extends Component {
     if (this.props.auction.saleTypeID === 3 && this.props.auction.auctionBidPartner === 1) {
       // check to see if isMobile or if it's desktop and re-initializing
       if (
-        (!has('detailLotWidget')(window) && (this.state.isMobile || prevState.isMobile === this.state.isMobile))
-        || (prevProps.currentLot.auctionMobilityLotRowId !== this.props.currentLot.auctionMobilityLotRowId)
-        || (startsWith('widgetConnect')(this.props.bidButton.status)
-          && prevProps.bidButton.status !== this.props.bidButton.status
-          && !(prevProps.bidButton.status === '' && this.props.bidButton.status === 'widgetConnectSuccess')
-        )
+        (!has('detailLotWidget')(window) && (this.state.isMobile || prevState.isMobile === this.state.isMobile)) ||
+        prevProps.currentLot.auctionMobilityLotRowId !== this.props.currentLot.auctionMobilityLotRowId ||
+        (startsWith('widgetConnect')(this.props.bidButton.status) &&
+          prevProps.bidButton.status !== this.props.bidButton.status &&
+          !(prevProps.bidButton.status === '' && this.props.bidButton.status === 'widgetConnectSuccess'))
       ) {
         this.setAmWidget();
       }
     }
     return !isNull(this.bbUserModel)
-      ? (this.props.user.loggedIn && !this.bbUserModel.loggedIn)
+      ? this.props.user.loggedIn && !this.bbUserModel.loggedIn
         ? this.bbUserModel.trigger('reduxUpdate', this.props.user)
         : null
       : null;
@@ -190,7 +187,7 @@ class LotPage extends Component {
             }
           });
         })
-        .catch((error) => {
+        .catch(error => {
           console.log('AM Error: ', error);
         });
     } else {
@@ -198,7 +195,7 @@ class LotPage extends Component {
     }
   }
 
-  setIsMobile = (mql) => {
+  setIsMobile = mql => {
     if (mql.matches) {
       if (this.state.isMobile) {
         this.setState(state => ({ ...state, isMobile: false }));
@@ -213,16 +210,13 @@ class LotPage extends Component {
       this.setState(state => ({ ...state, isMobile: true }));
     }
     return this.state.isMobile;
-  }
+  };
 
-  getModal = (type) => {
+  getModal = type => {
     switch (type) {
       case 'cloudinary':
         return (
-          <PhillipsModal
-            {...this.props.modal}
-            customClasses={['phillips-modal--image']}
-          >
+          <PhillipsModal {...this.props.modal} customClasses={['phillips-modal--image']}>
             <PhillipsImage
               alt={this.props.modal.alt}
               cloudinary
@@ -230,31 +224,22 @@ class LotPage extends Component {
               transformation="TwoRows"
             />
           </PhillipsModal>
-        )
+        );
       case 'html':
         return (
-          <PhillipsModal
-            {...this.props.modal}
-            customClasses={['phillips-modal--html']}
-          >
+          <PhillipsModal {...this.props.modal} customClasses={['phillips-modal--html']}>
             <div dangerouslySetInnerHTML={{ __html: this.props.modal.html }} />
           </PhillipsModal>
         );
       case 'offer':
         return (
-          <PhillipsModal
-            {...this.props.modal}
-            customClasses={['offer-modal']}
-          >
+          <PhillipsModal {...this.props.modal} customClasses={['offer-modal']}>
             <OfferModalContainer />
           </PhillipsModal>
         );
       case 'iframe':
         return (
-          <PhillipsModal
-            {...this.props.modal}
-            customClasses={['phillips-modal--iframe']}
-          >
+          <PhillipsModal {...this.props.modal} customClasses={['phillips-modal--iframe']}>
             <iframe
               allow="fullscreen"
               height={this.props.modal.height}
@@ -267,23 +252,21 @@ class LotPage extends Component {
         );
       case 'inquire':
         return (
-          <PhillipsModal
-            {...this.props.modal}
-            customClasses={['phillips-modal--inquire']}
-          >
+          <PhillipsModal {...this.props.modal} customClasses={['phillips-modal--inquire']}>
             <InquireForm {...this.props.currentLot} formOpen />
           </PhillipsModal>
         );
 
-      default: return null;
+      default:
+        return null;
     }
-  }
+  };
 
   render() {
     const { loginRequired, user } = this.props;
     let languageToggle = null;
     let stickyBtmOffset = 125;
-    const toggleViewInRoom = (e) => {
+    const toggleViewInRoom = e => {
       e.preventDefault();
       this.setState(state => ({ ...state, showViewInRoom: !state.showViewInRoom }));
     };
@@ -316,224 +299,181 @@ class LotPage extends Component {
     //     }));
     //   }
     // };
-    const viewInRoomInfo = find(image => image.isViewInRoom === true)(
-      this.props.currentLot.lotImages
-    );
-    return loginRequired && !user.loggedIn
-      ? (
-        <div className="main-container">
-          <LoginPaywall user={user} />
-        </div>
-      )
-      : (
-        <div
-          className={classNames('lot-page main-container', { viewInRoom: this.state.showViewInRoom })}
-        >
-          {/* boolean to add client-side metatag updates via react-helmet */}
-          {this.props.isServer ? null : (
-            <LotPageMeta {...this.props.currentLot} auction={this.props.auction} />
-          )}
-          {this.props.auction.saleTypeID !== 5
-            ? (
-              <SaleBanner
-                currentLanguage={this.props.currentLanguage}
-                {...this.props.auction}
-                truncateTitle
-              />
-            )
-            : null
-          }
-          {this.props.modal.show
-            ? this.getModal(this.props.modal.type)
-            : null
-          }
+    const viewInRoomInfo = find(image => image.isViewInRoom === true)(this.props.currentLot.lotImages);
+    return loginRequired && !user.loggedIn ? (
+      <div className="main-container">
+        <LoginPaywall user={user} />
+      </div>
+    ) : (
+      <div className={classNames('lot-page main-container', { viewInRoom: this.state.showViewInRoom })}>
+        {/* boolean to add client-side metatag updates via react-helmet */}
+        {this.props.isServer ? null : <LotPageMeta {...this.props.currentLot} auction={this.props.auction} />}
+        {this.props.auction.saleTypeID !== 5 ? (
+          <SaleBanner currentLanguage={this.props.currentLanguage} {...this.props.auction} truncateTitle />
+        ) : null}
+        {this.props.modal.show ? this.getModal(this.props.modal.type) : null}
 
-          {this.state.showViewInRoom ? (
-            <ViewInRoom
-              image={viewInRoomInfo.imagePath}
-              width={this.props.currentLot.width}
-              height={this.props.currentLot.height}
-              transformation="LotDetailMainImage"
-              cloudinary={this.props.auction.useCloudinary}
-              description={this.props.currentLot.description}
-              onClose={toggleViewInRoom}
-            />
-          ) : null}
-          <div className="container content-area has-sale-banner">
-            <div className="col-xs-12">
-              <div className="lot-detail-content row">
-                <div className="left-column col-xs-12 col-md-7">
-                  {this.state.isMobile && this.props.auction.saleTypeID !== 5
-                    ? (
-                      <div className="page-controls">
-                        <LotPageNavigation
-                          saleNumber={this.props.auction.saleNumber}
-                          lots={this.props.lots}
-                          currentLotNumberFull={this.props.currentLot.lotNumberFull}
-                          dispatch={this.props.dispatch}
-                        />
-                        {languageToggle}
-                      </div>
-                    )
-                    : null
-                  }
-                  {this.props.currentLot.isNoLot
-                    ? null
-                    : (
-                      <LotPageImage
+        {this.state.showViewInRoom ? (
+          <ViewInRoom
+            image={viewInRoomInfo.imagePath}
+            width={this.props.currentLot.width}
+            height={this.props.currentLot.height}
+            transformation="LotDetailMainImage"
+            cloudinary={this.props.auction.useCloudinary}
+            description={this.props.currentLot.description}
+            onClose={toggleViewInRoom}
+          />
+        ) : null}
+        <div className="container content-area has-sale-banner">
+          <div className="lot-detail-content row">
+            <div className="left-column col-xs-12 col-md-7">
+              {this.state.isMobile && this.props.auction.saleTypeID !== 5 ? (
+                <div className="page-controls">
+                  <LotPageNavigation
+                    saleNumber={this.props.auction.saleNumber}
+                    lots={this.props.lots}
+                    currentLotNumberFull={this.props.currentLot.lotNumberFull}
+                    dispatch={this.props.dispatch}
+                  />
+                  {languageToggle}
+                </div>
+              ) : null}
+              {this.props.currentLot.isNoLot ? null : (
+                <LotPageImage
+                  {...this.props.currentLot}
+                  imagePath={this.props.currentLot.lotImages[0].imagePath}
+                  isMobile={this.state.isMobile}
+                />
+              )}
+              {this.props.currentLot.isNoLot === false ? (
+                <PhillipsLotList
+                  key={`lot-list-main-${this.props.currentLot.lotNumberFull.trim()}-${
+                    this.props.currentLot.saleNumber
+                  }`}
+                  lot={this.props.currentLot}
+                >
+                  {eventHandlers => (
+                    <div className="phillips-social">
+                      <FavoriteLot
                         {...this.props.currentLot}
-                        imagePath={this.props.currentLot.lotImages[0].imagePath}
-                        isMobile={this.state.isMobile}
+                        onPress={eventHandlers.onPress}
+                        onMouseEnter={eventHandlers.onMouseEnter}
+                        onMouseLeave={eventHandlers.onMouseLeave}
                       />
-                    )
-                  }
-                  {this.props.currentLot.isNoLot === false ? (
-                    <PhillipsLotList
-                      key={`lot-list-main-${this.props.currentLot.lotNumberFull.trim()}-${this.props.currentLot.saleNumber}`}
-                      lot={this.props.currentLot}
-                    >
-                      {eventHandlers => (
-                        <div className="phillips-social">
-                          <FavoriteLot
-                            {...this.props.currentLot}
-                            onPress={eventHandlers.onPress}
-                            onMouseEnter={eventHandlers.onMouseEnter}
-                            onMouseLeave={eventHandlers.onMouseLeave}
-                          />
-                          {viewInRoomInfo && !this.state.isMobile ? (
-                            <div
-                              role="button"
-                              tabIndex={0}
-                              className="view-in-room-button"
-                              onClick={toggleViewInRoom}
-                            >
-                              <span className="icon" />
-                              <span className="tooltip">View in Room</span>
-                            </div>
-                          ) : null}
-                          <Share path={this.props.currentLot.detailLink} />
+                      {viewInRoomInfo && !this.state.isMobile ? (
+                        <div role="button" tabIndex={0} className="view-in-room-button" onClick={toggleViewInRoom}>
+                          <span className="icon" />
+                          <span className="tooltip">View in Room</span>
                         </div>
-                      )}
-                    </PhillipsLotList>
-                  ) : null}
-                  {this.state.isMobile ? (
-                    <LotPageAside
-                      {...this.props.currentLot}
-                      auctionBidPartner={this.props.auction.auctionBidPartner}
-                      auctionContactEmail={this.props.auction.contactEmail}
-                      auctionTimeState={this.props.auction.timeState}
-                      conditionRequestEmail={this.props.auction.conditionRequestEmail}
-                      currentLanguage={this.props.currentLanguage}
-                      endDate={this.props.auction.endDate}
-                      endSale={this.props.auction.endSale}
-                      isMobile={this.state.isMobile}
-                      saleTypeId={this.props.auction.saleTypeID}
-                      showAdvanceBidButton={this.props.currentLot.showAdvanceBidButton}
-                      startDate={this.props.auction.startDate}
+                      ) : null}
+                      <Share path={this.props.currentLot.detailLink} />
+                    </div>
+                  )}
+                </PhillipsLotList>
+              ) : null}
+              {this.state.isMobile ? (
+                <LotPageAside
+                  {...this.props.currentLot}
+                  auctionBidPartner={this.props.auction.auctionBidPartner}
+                  auctionContactEmail={this.props.auction.contactEmail}
+                  auctionTimeState={this.props.auction.timeState}
+                  conditionRequestEmail={this.props.auction.conditionRequestEmail}
+                  currentLanguage={this.props.currentLanguage}
+                  endDate={this.props.auction.endDate}
+                  endSale={this.props.auction.endSale}
+                  isMobile={this.state.isMobile}
+                  saleTypeId={this.props.auction.saleTypeID}
+                  showAdvanceBidButton={this.props.currentLot.showAdvanceBidButton}
+                  startDate={this.props.auction.startDate}
+                />
+              ) : null}
+
+              <LotPageDetails
+                {...this.props.currentLot}
+                auctionTimeState={this.props.auction.timeState}
+                conditionRequestEmail={this.props.auction.conditionRequestEmail}
+                currentLanguage={this.props.currentLanguage}
+                endDate={this.props.auction.endDate}
+                saleTypeId={this.props.auction.saleTypeID}
+                showAdvanceBidButton={this.props.currentLot.showAdvanceBidButton}
+                startDate={this.props.auction.startDate}
+                timeZone={this.props.auction.timeZone}
+              />
+            </div>
+            {this.state.isMobile ? null : (
+              <div
+                className={classNames('right-column col-xs-12 col-md-5', {
+                  'widget-enabled': this.props.auction.saleTypeID === 3 && this.props.auction.auctionBidPartner === 1
+                })}
+              >
+                <div className="page-controls">
+                  {this.props.auction.saleTypeID !== 5 ? (
+                    <LotPageNavigation
+                      saleNumber={this.props.saleNumber}
+                      lots={this.props.lots}
+                      currentLotNumberFull={this.props.currentLot.lotNumberFull}
+                      dispatch={this.props.dispatch}
                     />
                   ) : null}
-
-                  <LotPageDetails
-                    {...this.props.currentLot}
-                    auctionTimeState={this.props.auction.timeState}
-                    conditionRequestEmail={this.props.auction.conditionRequestEmail}
-                    currentLanguage={this.props.currentLanguage}
-                    endDate={this.props.auction.endDate}
-                    saleTypeId={this.props.auction.saleTypeID}
-                    showAdvanceBidButton={this.props.currentLot.showAdvanceBidButton}
-                    startDate={this.props.auction.startDate}
-                    timeZone={this.props.auction.timeZone}
-                  />
+                  {languageToggle}
                 </div>
-                {this.state.isMobile
-                  ? null
-                  : (
-                    <div
-                      className={classNames('right-column col-xs-12 col-md-5', {
-                        'widget-enabled':
-                          this.props.auction.saleTypeID === 3 &&
-                          this.props.auction.auctionBidPartner === 1
-                      })}
-                    >
-                      <div className="page-controls">
-                        {this.props.auction.saleTypeID !== 5
-                          ? (
-                            <LotPageNavigation
-                              saleNumber={this.props.saleNumber}
-                              lots={this.props.lots}
-                              currentLotNumberFull={this.props.currentLot.lotNumberFull}
-                              dispatch={this.props.dispatch}
-                            />
-                          )
-                          : null
-                        }
-                        {languageToggle}
-                      </div>
-                      <StickyContainer className="sticky-container">
-                        <Sticky
-                          topOffset={-95}
-                          bottomOffset={stickyBtmOffset}
-                        >
-                          {(props) => {
-                            let styles = props.style;
-                            if (props.isSticky) {
-                              styles = { ...styles, top: styles.top + 95 };
-                            }
-                            return (
-                              <div className="sticky-container__sticky-wrapper" style={styles}>
-                                <LotPageAside
-                                  {...this.props.currentLot}
-                                  currentLanguage={this.props.currentLanguage}
-                                  auctionTimeState={this.props.auction.timeState}
-                                  showAdvanceBidButton={this.props.currentLot.showAdvanceBidButton}
-                                  saleTypeId={this.props.auction.saleTypeID}
-                                  startDate={this.props.auction.startDate}
-                                  endDate={this.props.auction.endDate}
-                                  endSale={this.props.auction.endSale}
-                                  auctionBidPartner={this.props.auction.auctionBidPartner}
-                                  conditionRequestEmail={this.props.auction.conditionRequestEmail}
-                                  isMobile={this.state.isMobile}
-                                />
-                              </div>
-                            );
-                          }}
-                        </Sticky>
-                      </StickyContainer>
-                    </div>
-                  )
-                }
+                <StickyContainer className="sticky-container">
+                  <Sticky topOffset={-95} bottomOffset={stickyBtmOffset}>
+                    {props => {
+                      let styles = props.style;
+                      if (props.isSticky) {
+                        styles = { ...styles, top: styles.top + 95 };
+                      }
+                      return (
+                        <div className="sticky-container__sticky-wrapper" style={styles}>
+                          <LotPageAside
+                            {...this.props.currentLot}
+                            currentLanguage={this.props.currentLanguage}
+                            auctionTimeState={this.props.auction.timeState}
+                            showAdvanceBidButton={this.props.currentLot.showAdvanceBidButton}
+                            saleTypeId={this.props.auction.saleTypeID}
+                            startDate={this.props.auction.startDate}
+                            endDate={this.props.auction.endDate}
+                            endSale={this.props.auction.endSale}
+                            auctionBidPartner={this.props.auction.auctionBidPartner}
+                            conditionRequestEmail={this.props.auction.conditionRequestEmail}
+                            isMobile={this.state.isMobile}
+                          />
+                        </div>
+                      );
+                    }}
+                  </Sticky>
+                </StickyContainer>
               </div>
-            </div>
-            {this.props.auction.saleTypeID !== 5
-              ? (
-                <Fragment>
-                  <div className="auction-grid-header col-xs-12">
-                    <h2 dangerouslySetInnerHTML={{ __html: this.props.auction.auctionTitle }} />
-                    <p dangerouslySetInnerHTML={{ __html: this.props.auction.auctionDetailsSmall }} />
-                  </div>
-                  <div className="auction-grid col-xs-12">
-                    <PhillipsGrid columns={{ lg: 3, md: 4, sm: 6, xs: 6 }}>
-                      {this.props.lots.map(lotData => (
-                        <PhillipsLot
-                          key={`grid-${lotData.lotNumberFull.trim()}-${lotData.saleNumber}`}
-                          currentLanguage={this.props.currentLanguage}
-                          useCloudinary={this.props.auction.useCloudinary}
-                          hasRouter
-                          lazyLoadOffset={0}
-                          {...lotData}
-                          auctionMobilityLotRowIds={auctionMobilityLotRowIds}
-                          saleTypeId={this.props.auction.saleTypeID}
-                        />
-                      ))}
-                    </PhillipsGrid>
-                  </div>
-                </Fragment>
-              )
-              : null
-            }
+            )}
           </div>
+          {this.props.auction.saleTypeID !== 5 ? (
+            <Fragment>
+              <div className="auction-grid-header row">
+                <h2 dangerouslySetInnerHTML={{ __html: this.props.auction.auctionTitle }} />
+                <p dangerouslySetInnerHTML={{ __html: this.props.auction.auctionDetailsSmall }} />
+              </div>
+              <div className="auction-grid row">
+                <PhillipsGrid columns={{ lg: 3, md: 4, sm: 6, xs: 6 }}>
+                  {this.props.lots.map(lotData => (
+                    <PhillipsLot
+                      key={`grid-${lotData.lotNumberFull.trim()}-${lotData.saleNumber}`}
+                      currentLanguage={this.props.currentLanguage}
+                      useCloudinary={this.props.auction.useCloudinary}
+                      hasRouter
+                      lazyLoadOffset={0}
+                      {...lotData}
+                      auctionMobilityLotRowIds={auctionMobilityLotRowIds}
+                      saleTypeId={this.props.auction.saleTypeID}
+                    />
+                  ))}
+                </PhillipsGrid>
+              </div>
+            </Fragment>
+          ) : null}
         </div>
-      );
+      </div>
+    );
   }
 }
 

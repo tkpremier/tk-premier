@@ -10,20 +10,22 @@ import { bidButton, inquireForm } from '../BidButtons/reducers';
 import * as modalReducers from '../PhillipsModal/reducer';
 import * as lotPageReducers from './reducers';
 import LotPageContainer from './LotPage.container';
-// import auction from './mock.json';
+import lotpage from '../../../mock/lotpage.json';
 
-const LotPage = ({ auction, lotNumber, userJSON, location, loginRequired, buyNowSaleNumber, language }) => {
+const LotPage = () => {
+  const { auction, lotNumber, userJSON, location, loginRequired, buyNowSaleNumber, language } = lotpage;
   // ({combineReducer params}, initialState, routesMap, history)
   // routesMap is currently imported from ./routesMap
   // sets the routes with payload props as params
-  const store = configureStoreWithRouter({
-    bidButton,
-    inquireForm,
-    ...languageReducers,
-    ...userReducers,
-    ...modalReducers,
-    ...lotPageReducers
-  },
+  const store = configureStoreWithRouter(
+    {
+      bidButton,
+      inquireForm,
+      ...languageReducers,
+      ...userReducers,
+      ...modalReducers,
+      ...lotPageReducers
+    },
     setInitialState({ userJSON, lotNumber, auction, buyNowSaleNumber, language }),
     routesMap,
     { initialEntries: [location] }
@@ -35,12 +37,12 @@ const LotPage = ({ auction, lotNumber, userJSON, location, loginRequired, buyNow
   );
 };
 
-LotPage.propTypes = {
-  location: PropTypes.string.isRequired,
-  loginRequired: PropTypes.bool.isRequired,
-  auction: PropTypes.object.isRequired,
-  userJSON: PropTypes.string.isRequired,
-  lotNumber: PropTypes.number.isRequired
-};
+// LotPage.propTypes = {
+//   location: PropTypes.string.isRequired,
+//   loginRequired: PropTypes.bool.isRequired,
+//   auction: PropTypes.object.isRequired,
+//   userJSON: PropTypes.string.isRequired,
+//   lotNumber: PropTypes.number.isRequired
+// };
 
 export { LotPage };

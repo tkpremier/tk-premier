@@ -38,7 +38,7 @@ module.exports = {
                 '@babel/preset-env',
                 {
                   targets: {
-                    node: '^13.0.0'
+                    node: 'current'
                   }
                 }
               ],
@@ -58,7 +58,7 @@ module.exports = {
                 '@babel/preset-env',
                 {
                   targets: {
-                    node: '^13.0.0'
+                    node: 'current'
                   }
                 }
               ]

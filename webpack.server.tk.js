@@ -1,8 +1,8 @@
 const path = require('path');
-const webpack = require('webpack');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const NodemonPlugin = require('nodemon-webpack-plugin');
 
 /*
   clientside entries:
@@ -12,7 +12,6 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
     lotPage: './LotPage.entry',
 */
 const entries = {
-  homepage: './homepage.entry',
   tk: '../App.jsx'
 };
 
@@ -124,6 +123,11 @@ module.exports = {
       collections: true,
       currying: true,
       flattening: true
-    })
+    }),
+    // new NodemonPlugin({
+    //   script: `${path.join(__dirname, 'tk')}/index.js`,
+    //   watch: path.join(__dirname, 'tk/src'),
+    //   args: ['--exec', 'babel-node']
+    // })
   ]
 };

@@ -1,12 +1,11 @@
 // Include the cluster module
 const createError = require('http-errors');
 const express = require('express');
-const fsp = require('fs').promises;
 const path = require('path');
 const dotenv = require('dotenv');
 const logger = require('morgan');
 const layout = require('./src/layout');
-const ServerFactory = require('../dist/tk/tk.bundle');
+const ServerFactory = require('./dist/tk.bundle');
 
 dotenv.config();
 
@@ -14,26 +13,21 @@ dotenv.config();
 const app = express();
 const serverFactory = new ServerFactory();
 
-// react state
-const initialState = {
-  isFetching: true,
-  name: 'Kyungtae',
-  type: 'server'
-};
-
-async function Data() {
-  return fsp.readFile(path.resolve(__dirname, './mock/home.json'), { encoding: 'utf-8' })
-    .then(res => JSON.parse(res))
-    .catch((err => { console.log('err: ', err); return {}; }));
-}
-
-async function getIndex(req, res) {
-  const data = await Data();
-  const content = serverFactory.getSsr('Home', data);
+async function getLotPage(req, res) {
+  const content = serverFactory.getSsr('LotPage');
   const response = layout({
-    initialState,
-    title: 'Google T',
-    componentType: 'Main',
+    title: 'PhillipsTK - Lot',
+    componentType: 'lotpage',
+    content
+  });
+  res.setHeader('Cache-Control', 'assets, max-age=604800');
+  res.send(response);
+}
+async function getIndex(req, res) {
+  const content = serverFactory.getSsr('Home');
+  const response = layout({
+    title: 'PhillipsTK',
+    componentType: 'home',
     content
   });
   res.setHeader('Cache-Control', 'assets, max-age=604800');
@@ -53,11 +47,13 @@ const mochaTest = (req, res) => {
 };
 // END controller fns
 app.use('/assets', express.static(path.resolve(__dirname, 'assets')));
+app.use('/dist', express.static(path.resolve(__dirname, 'dist')));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get('/', getIndex);
+app.get('/lot', getLotPage);
 app.get('/web-workers', webWorkers);
 app.get('/test', mochaTest);
 

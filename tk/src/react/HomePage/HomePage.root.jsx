@@ -5,6 +5,7 @@ import createInitialUserState from '../PhillipsUser/createInitialUserState';
 import * as homePageReducers from './reducers';
 import * as userReducers from '../PhillipsUser/reducers';
 import HomePageContainer from './HomePage.container';
+import home from '../../../mock/home.json';
 
 const initialState = props => {
   return {
@@ -31,7 +32,7 @@ class HomePage extends React.PureComponent {
         ...homePageReducers,
         ...userReducers
       },
-      initialState(this.props)
+      initialState(home)
     );
     return hasError ? (
       <section className="homepage" id="homepage">

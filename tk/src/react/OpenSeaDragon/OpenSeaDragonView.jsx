@@ -12,8 +12,8 @@ class OpenSeaDragonView extends Component {
   componentDidMount() {
     this.viewer = window.OpenSeadragon(this.config());
     this.viewer.addHandler('open', () => {
-      this.setState((state) => {
-        return { ...state, initialized: true, currentZoom: this.viewer.viewport.getZoom() }
+      this.setState(state => {
+        return { ...state, initialized: true, currentZoom: this.viewer.viewport.getZoom() };
       });
     });
     this.viewer.addHandler('zoom', () => {
@@ -67,7 +67,7 @@ class OpenSeaDragonView extends Component {
       controls = (
         <OpenSeaDragonControls
           minZoom={this.viewer.viewport.getMinZoom()}
-          maxZoom={this.viewer.viewport.getMaxZoom()} 
+          maxZoom={this.viewer.viewport.getMaxZoom()}
           currentZoom={this.state.currentZoom}
           onChange={e => this.updateZoom(e)}
           onZoomIn={() => this.zoomIn()}

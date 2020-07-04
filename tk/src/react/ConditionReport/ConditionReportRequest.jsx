@@ -12,9 +12,9 @@ export default class ConditionReportRequest extends Component {
   }
 
   render() {
-    const changeContactType = (changeEvent) => {
+    const changeContactType = changeEvent => {
       this.setState({ contactType: changeEvent.target.value });
-    }
+    };
     const closeOrCancel = this.props.requestSucceeded ? 'Close' : 'Cancel';
     return (
       <div className="report panel">
@@ -30,44 +30,28 @@ export default class ConditionReportRequest extends Component {
           <h2>Thank you</h2>
           <h3>for your request.</h3>
           <br />
-          <h4>The Condition Report<br />will be sent shortly.</h4>
+          <h4>
+            The Condition Report
+            <br />
+            will be sent shortly.
+          </h4>
         </div>
-        <div className={classNames('cond-report', {show: this.props.showReport, hidden: !this.props.showReport || this.props.requestSucceeded})} >
+        <div
+          className={classNames('cond-report', {
+            show: this.props.showReport,
+            hidden: !this.props.showReport || this.props.requestSucceeded
+          })}
+        >
           <form id="condition-form" className="condition-report-form" onSubmit={this.props.onSubmit}>
             <div id="status-info" />
             <div>
               <h2>Contact Us</h2>
               <p className="required">* Required</p>
-              <input
-                type="hidden"
-                className="hidden"
-                value={this.props.lotNumberFull}
-                name="lotNumber"
-              />
-              <input
-                type="hidden"
-                className="hidden"
-                value={this.props.saleNumber}
-                name="saleNumber"
-              />
-              <input
-                type="hidden"
-                className="hidden"
-                value={this.props.makerName}
-                name="maker"
-              />
-              <input
-                type="hidden"
-                className="hidden"
-                value={this.props.conditionRequestEmail}
-                name="emailTo"
-              />
-              <input
-                type="hidden"
-                className="hidden"
-                value={2}
-                name="activityTypeID"
-              />
+              <input type="hidden" className="hidden" value={this.props.lotNumberFull} name="lotNumber" />
+              <input type="hidden" className="hidden" value={this.props.saleNumber} name="saleNumber" />
+              <input type="hidden" className="hidden" value={this.props.makerName} name="maker" />
+              <input type="hidden" className="hidden" value={this.props.conditionRequestEmail} name="emailTo" />
+              <input type="hidden" className="hidden" value={2} name="activityTypeID" />
               <input
                 type="text"
                 defaultValue={isNull(this.props.user) ? '' : this.props.user.firstName}
@@ -96,7 +80,7 @@ export default class ConditionReportRequest extends Component {
                 alt="E-Mail"
                 required={this.state.contactType === 'email'}
               />
-              {this.state.contactType === 'fax' ?
+              {this.state.contactType === 'fax' ? (
                 <input
                   type="tel"
                   id="fax"
@@ -105,8 +89,8 @@ export default class ConditionReportRequest extends Component {
                   placeholder="Fax Number*"
                   alt="Fax Number"
                   required={this.state.contactType === 'fax'}
-                /> : null
-              }
+                />
+              ) : null}
               <div className="send-switch">
                 <p>Send me the Report Via</p>
                 <input
@@ -130,12 +114,16 @@ export default class ConditionReportRequest extends Component {
                 />
                 <label htmlFor="option_fax">Fax</label>
               </div>
-              <div classNme="form-controls">
-                <button className="submit" type="submit">Contact Specialist</button>
+              <div className="form-controls">
+                <button className="submit" type="submit">
+                  Contact Specialist
+                </button>
               </div>
             </div>
           </form>
-          <button className="request-cancel" onClick={this.props.toggleReport}>{closeOrCancel}</button>
+          <button className="request-cancel" onClick={this.props.toggleReport}>
+            {closeOrCancel}
+          </button>
         </div>
       </div>
     );

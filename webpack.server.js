@@ -1,20 +1,5 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const webpack = require('webpack');
-
-/**
- * dist
- * output: {
-    filename: '[name].bundle.js',
-    library: 'ssr',
-    libraryExport: 'default',
-    libraryTarget: 'commonjs2',
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: '/assets',
-    pathinfo: true
-  },
- */
 
 module.exports = {
   mode: 'development',
@@ -43,7 +28,7 @@ module.exports = {
                 '@babel/preset-env',
                 {
                   targets: {
-                    node: '^13.0.0'
+                    node: 'current'
                   }
                 }
               ],
@@ -63,7 +48,7 @@ module.exports = {
                 '@babel/preset-env',
                 {
                   targets: {
-                    node: '^13.0.0'
+                    node: 'current'
                   }
                 }
               ]

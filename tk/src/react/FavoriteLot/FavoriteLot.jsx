@@ -10,7 +10,11 @@ import sendAnalytics from '../../utils/sendAnalytics';
 
 const FavoriteLot = ({ lotNumberFull, saleNumber, onMouseEnter, onMouseLeave }) => {
   const bbEvent = useRef(null);
-  useEffect(() => { getPhillipsBackboneProperty('Events').then(Events => bbEvent.current = Events); }, []);
+  useEffect(() => {
+    getPhillipsBackboneProperty('Events')
+      .then(eventEmitter => (bbEvent.current = eventEmitter))
+      .catch(() => (bbEvent.current = null));
+  }, []);
   const { error, favoriteLots, user } = useSelector(({ favoriteLots, user, error }) => ({
     error: matchError('FAVORITE_LOT', ({ lot }) => lot.lotNumberFull.trim() === lotNumberFull.trim())(error)
       ? error
@@ -19,19 +23,11 @@ const FavoriteLot = ({ lotNumberFull, saleNumber, onMouseEnter, onMouseLeave }) 
     user
   }));
   const dispatch = useDispatch();
-  const faveSaleIndex = favoriteLots
-    .map(({ saleNumber: faveSaleNumber }) => faveSaleNumber)
-    .indexOf(saleNumber);
+  const faveSaleIndex = favoriteLots.map(({ saleNumber: faveSaleNumber }) => faveSaleNumber).indexOf(saleNumber);
   const active = faveSaleIndex > -1 && favoriteLots[faveSaleIndex]?.lots?.indexOf(lotNumberFull.trim()) > -1;
-  const toolTipMessage = isNull(error)
-    ? active
-      ? 'Unfavorite lot'
-      : 'Favorite lot'
-    : error.message;
+  const toolTipMessage = isNull(error) ? (active ? 'Unfavorite lot' : 'Favorite lot') : error.message;
   const trackActivity = () => {
-    const page = document
-      ? document.title
-      : 'placeholder';
+    const page = document ? document.title : 'placeholder';
     const analyticsData = {
       eventCategory: `Favorite Lot / ${page} / SaleNumber ${saleNumber} / LotNumber ${lotNumberFull.trim()}`,
       eventAction: 'Favorite Lot',
@@ -41,14 +37,16 @@ const FavoriteLot = ({ lotNumberFull, saleNumber, onMouseEnter, onMouseLeave }) 
   };
   const onClick = () => {
     if (!user.loggedIn) {
-      bbEvent.current.trigger('openRegister');
+      if (!isNull(bbEvent.current)) {
+        bbEvent.current.trigger('openRegister');
+      }
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem('favoritedLot', `${saleNumber}-${lotNumberFull}`);
       }
       return;
     }
     if (active) {
-      dispatch(deleteLot(user.id, { lotNumber: lotNumberFull.trim(), saleNumber }))
+      dispatch(deleteLot(user.id, { lotNumber: lotNumberFull.trim(), saleNumber }));
     } else {
       trackActivity();
       dispatch(saveLot(user.id, { lotNumber: lotNumberFull.trim(), saleNumber }));

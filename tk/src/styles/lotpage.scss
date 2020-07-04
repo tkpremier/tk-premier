@@ -1,0 +1,1021 @@
+@import 'components';
+@import 'vars';
+// Included Components
+@include BidButton;
+@include condition-report;
+@include favorite-lot;
+@include follow-artist;
+@include language-select;
+@include offer-modal;
+@include openseadragon;
+@include phillips-360-view;
+@include phillips-carousel;
+@include phillips-grid {
+  background: none;
+  &.add-overlay {
+    .image:after {
+      content: ' ';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+    }
+  }
+}
+@include phillips-image;
+@include phillips-lot;
+@include phillips-lot-list;
+@include phillips-modal {
+  &--iframe {
+    iframe {
+      overflow: hidden;
+      border: none;
+      outline: none;
+    }
+  }
+}
+@include phillips-share;
+@include phillips-show-more;
+@include phillips-user-paywall;
+@include phillips-video {
+  &--main-lot-image {
+    width: 100%;
+    @media screen and (min-width: $sm-bp) {
+      max-width: calc(100% - 40px);
+      margin: 0 auto;
+    }
+  }
+  &--square-format {
+    .video-wrapper {
+      padding-bottom: 100%;
+    }
+  }
+}
+
+@include sale-offer;
+@include sticky-container;
+@include user-form {
+  &--private-sales {
+    position: relative;
+    margin: 15px auto;
+    display: flex;
+    width: 100%;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: center;
+
+    transition: height 400ms;
+    overflow: hidden;
+    &--close {
+      height: 40px;
+    }
+    &--open {
+      height: 200px;
+    }
+    &__title {
+      font-family: $seroMedium;
+      text-align: left;
+      font-size: em(20);
+      @media screen and (min-width: $sm-bp) {
+        font-family: $portrait;
+        text-align: center;
+      }
+    }
+    &__form {
+      width: 100%;
+      &__textarea,
+      &__submit {
+        background-color: transparent;
+        padding: 10px;
+        border-radius: 0;
+        box-sizing: border-box;
+        width: 100%;
+        border: 1px solid #000;
+        display: block;
+        margin-bottom: 15px;
+        outline: none;
+        &:active,
+        &:focus,
+        &:hover {
+          outline: none;
+        }
+      }
+    }
+
+    &__button {
+      width: 100%;
+      background-color: transparent;
+      border-radius: 0;
+      display: block;
+      box-sizing: border-box;
+      outline: none;
+      max-width: 184px;
+      padding: 0.5rem 0;
+      border: 1px solid #000;
+      margin-bottom: 15px;
+      &:active,
+      &:focus,
+      &:hover {
+        outline: none;
+      }
+    }
+    &__status-bar {
+      min-width: 200px;
+      width: 100%;
+      position: relative;
+      margin: 0;
+      padding: 10px;
+      text-align: center;
+    }
+    @media screen and (min-width: $sm-bp) {
+      &--desktop {
+        max-width: 240px;
+      }
+    }
+  }
+}
+@include view-in-room;
+.read-more-wrapper {
+  overflow: hidden;
+  height: 176px;
+  @include transition(height 0.6s);
+  will-change: height;
+  @include transform(translate3d(0, 0, 0));
+  .read-more {
+    width: 100%;
+    .toggle-more {
+      font-family: $seroMedium;
+      font-size: 0.8125em;
+      background-image: url('/images/layout/aside-icons.png');
+      @include media(min-resolution 192dpi) {
+        background-image: url('/images/layout/aside-icons-2x.png');
+        background-size: 50px 1250px;
+      }
+      @include media(-webkit-min-device-pixel-ratio 2) {
+        background-image: url('/images/layout/aside-icons-2x.png');
+        background-size: 50px 1250px;
+      }
+      background-position: -9px -53px;
+      background-repeat: no-repeat;
+      background-color: #fff;
+      border-bottom: 1px solid #fff;
+      display: block;
+      text-indent: 34px;
+      text-decoration: none;
+      text-transform: uppercase;
+      line-height: 44px;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+    }
+  }
+  &.open {
+    .toggle-more {
+      background-position: -9px -3px;
+    }
+  }
+  &.no-toggle {
+    height: auto;
+    overflow: auto;
+    .toggle-more {
+      display: none;
+    }
+  }
+  p {
+    &:empty {
+      margin: 0;
+    }
+  }
+}
+.sale-title-banner {
+  z-index: 97;
+  top: 56px;
+}
+
+.no-flex-block {
+  display: block !important;
+}
+
+h1 {
+  font-family: $seroMedium;
+  font-size: 2.25em;
+  margin-bottom: 5px;
+  margin-top: 3px;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1em;
+}
+
+img {
+  max-width: 100%;
+}
+
+p {
+  font-family: $seroWebPro;
+  font-size: 14px;
+  strong {
+    font-family: $seroMedium;
+    font-weight: normal;
+  }
+}
+
+p.sold {
+  color: $sold-red;
+  font-family: $seroMedium;
+  font-size: 13px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+input,
+button {
+  font-family: $seroWebPro;
+}
+
+*[role='button'] {
+  outline: none;
+}
+.online-only-disclaimer {
+  font-size: 12px !important;
+  color: #9b9b9b;
+}
+.phillips-dangerous {
+  &__image {
+    &--on-click {
+      cursor: pointer;
+    }
+  }
+}
+.lot-page {
+  .content-area {
+    padding-top: 96px;
+    @media screen and (min-width: $sm-bp) {
+      padding-top: 121px;
+    }
+  }
+
+  .left-column,
+  .right-column {
+    min-height: 480px;
+  }
+  .medium,
+  .dimension,
+  .signed {
+    margin: 0;
+  }
+
+  .medium {
+    margin-top: 15px;
+  }
+
+  .lot-symbol {
+    font-family: $seroBold;
+    font-size: 0.45em;
+    margin-right: 10px;
+    position: relative;
+  }
+
+  .phillips-share {
+    &::before {
+      top: -20px;
+    }
+  }
+
+  .left-column {
+    // hide mobile page controls
+    .page-controls {
+      margin-bottom: 15px;
+      @media screen and (min-width: $sm-bp) {
+        display: none;
+      }
+    }
+  }
+  .right-column {
+    padding-left: 1.5em;
+    &.widget-enabled {
+      z-index: 96;
+    }
+
+    .page-controls {
+      max-width: 320px;
+      padding-right: 2.5rem;
+    }
+    .language-select {
+      margin-bottom: 10px;
+    }
+  }
+  &__details {
+    &__list {
+      list-style: none;
+      padding: 0;
+      &__item {
+        margin: 0;
+        padding: 0 0 2rem;
+        &:first-child {
+          border-top: 1px solid #ccc;
+          padding-top: 1rem;
+        }
+        &__header {
+          margin: 0 0 16px;
+          font-family: $seroBold;
+          text-transform: none;
+          display: block;
+          @media screen and (min-width: $sm-bp) {
+            margin-bottom: 14px;
+          }
+          &--maker-name {
+            font-size: 18px;
+          }
+        }
+        &__carousel {
+          @media screen and(min-width: $sm-bp) {
+            max-width: calc(100% - 66px);
+            margin: 0 auto;
+          }
+          &__item {
+            &--button {
+              border: none;
+              padding: 0;
+              outline: none;
+              background: transparent;
+              outline: none;
+              &:active,
+              &:focus,
+              &:hover {
+                outline: none;
+              }
+            }
+          }
+        }
+        &__value {
+          margin: 0;
+        }
+        &--artist-bio {
+          a {
+            text-decoration: none;
+          }
+          .artist-info {
+            font-size: 12px;
+            margin-bottom: 1em;
+          }
+          .lot-essay-button {
+            @include button(173px);
+            margin-top: 2em;
+            font-style: italic;
+          }
+          .follow-artist {
+            .tooltip {
+              font-size: 1.3em;
+              margin-left: 5px;
+              margin-top: 3px;
+            }
+          }
+          .follow-artist:hover {
+            background-color: #fff;
+          }
+          .artist-bio {
+            margin-top: 15px;
+            > p {
+              margin-top: 0;
+              margin-bottom: 10px;
+            }
+          }
+        }
+        iframe {
+          width: 100%;
+        }
+        &__richtext {
+          @include rich-text;
+        }
+        // .phillips-gallery-embed-link {
+        //   @include button(230px);
+        // }
+      }
+      &--has-nav {
+        margin-top: 0;
+      }
+    }
+    .bullet-list {
+      list-style: disc;
+      padding-left: 15px;
+      li {
+        margin: 5px 0;
+      }
+      p {
+        margin: 0;
+      }
+    }
+  }
+  &__shipping-quote {
+    font-size: 14px;
+    text-decoration: underline;
+    font-family: $seroMedium;
+    outline: none;
+    border: none;
+    background: transparent;
+    padding: 0;
+  }
+}
+
+.auction-grid-header {
+  padding: 25px;
+  text-align: center;
+
+  h2 {
+    border-top: 1px solid #ccc;
+    font-family: $portrait;
+    margin-bottom: 0.75em;
+    padding-top: 30px;
+    text-transform: none;
+  }
+}
+
+.right-column {
+  display: none;
+  @media screen and (min-width: $md-bp) {
+    display: block;
+  }
+}
+
+.lot-detail-header {
+  padding-top: 20px;
+
+  @media screen and (min-width: $md-bp) {
+    .left-column > & {
+      display: none;
+    }
+  }
+  .lot-page-maker {
+    &__name {
+      border-bottom: 1px solid $white;
+      display: inline-block;
+      font-family: $seroMedium;
+      font-size: 25px;
+      margin-bottom: 5px;
+
+      &:hover {
+        border-bottom: 1px solid #ccc;
+      }
+    }
+    margin-bottom: 1em;
+    .follow-artist {
+      &:hover {
+        background-color: transparent;
+      }
+    }
+    .tooltip {
+      font-size: em(13, 10);
+      margin-left: 5px;
+      margin-top: 3px;
+    }
+    &.active {
+      .tooltip {
+        margin-top: 5px;
+      }
+    }
+  }
+  /**
+    phillips-lot description css
+    &__description {
+      position: relative;
+      min-height: 97px;
+      text-decoration: none;
+      font-size: em(13, 16);
+      width: 100%;
+      display: block;
+      @media screen and (min-width: $sm-bp) {
+        padding-top: 20px;
+      }
+      &__lot-number-wrapper {
+        display: block;
+        @include clearfix;
+      }
+      &--no-lot {
+        margin-bottom: 37px;
+      }
+      &__title,
+      &__artist {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      &__artist {
+        font-size: em(14, 13);
+        text-transform: uppercase;
+        font-family: $seroMedium;
+        font-weight: normal;
+      }
+      &__estimate {
+        font-size: em(13, 13);
+        &__strong {
+          font-family: $seroMedium;
+        }
+      }
+      &--is-watch {
+        min-height: 147px;
+      }
+      &--buy-now {
+        min-height: 118px;
+      }
+    }
+
+  */
+  font-size: 13px;
+  &__lot-number {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-family: $seroMedium;
+    font-size: em(36, 13);
+  }
+  &__lot-symbol {
+    font-size: em(13, 36);
+  }
+  &__title {
+    font-size: 24px;
+    hyphens: auto;
+    line-height: 1em;
+    margin: 0;
+    overflow-wrap: break-word;
+    padding: 4.5px 0;
+    word-wrap: break-word;
+  }
+  &__additional-info {
+    font-size: 13px;
+  }
+  &__estimate {
+    font-size: 13px;
+    margin-bottom: 0;
+    &__strong {
+      font-family: $seroMedium;
+    }
+  }
+  &__sold {
+    color: $sold-red;
+    font-family: $seroMedium;
+    font-size: 13px;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  h3 {
+    font-size: 12px;
+    margin-top: 0;
+    &.preface {
+      a {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  // a {
+  //   text-decoration: none;
+  // }
+
+  .lot-information {
+    max-width: 320px;
+  }
+  // BEGIN Styles to accomodate AM Timer on page
+  .has-am-timer {
+    position: relative;
+    margin-top: 101px;
+    .lot-information {
+      position: unset;
+    }
+    .am-timer {
+      position: absolute;
+      top: -101px;
+    }
+  }
+  // END Styles to accomodate AM Timer on page
+  .contact {
+    background: $slate-grey;
+    margin-top: em(16, 13);
+    padding: 1rem;
+    font-size: 13px;
+    line-height: 1.375em;
+    strong {
+      font-family: $seroMedium;
+      font-size: 13px;
+    }
+    a {
+      text-decoration: none;
+      font-size: 13px;
+    }
+    p {
+      margin-top: 0;
+      font-size: 13px;
+    }
+  }
+}
+
+.phillips-pagination {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  .arrow {
+    position: absolute;
+    top: 50%;
+    margin-top: -6px;
+    border-top: 2px solid $black;
+    border-left: 2px solid $black;
+    width: 12px;
+    height: 12px;
+  }
+  .previous {
+    left: 0;
+    transform: rotate(-45deg);
+  }
+  .next {
+    right: 0;
+    transform: rotate(135deg);
+  }
+  select {
+    font-size: 14px;
+    margin-right: 5px;
+  }
+  nav {
+    margin: 0 auto;
+  }
+}
+
+// START LotPageImage Styles
+.lot-image {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+
+  .image-container {
+    align-items: center;
+    cursor: zoom-in;
+    display: flex;
+    min-height: 325px;
+    opacity: 1;
+    position: relative;
+    text-align: center;
+    margin-top: 30px;
+    @media screen and (min-width: $sm-bp) {
+      margin-top: 0;
+      align-items: flex-start;
+    }
+    &.loading {
+      opacity: 0;
+      transition: opacity 250ms ease-in-out;
+    }
+    video {
+      position: relative;
+      width: 100%;
+      @media screen and (min-width: $sm-bp) {
+        margin-left: em(24);
+        width: calc(100% - 24px);
+      }
+    }
+  }
+  .is-video {
+    cursor: default;
+    align-items: flex-start;
+  }
+  &.vertical {
+    flex-direction: row;
+  }
+
+  &.hasThumbnails {
+    justify-content: space-around;
+
+    .main-lot-image {
+      max-width: calc(100% - 40px);
+      margin: 0 auto;
+    }
+    .thumbnails {
+      width: 100%;
+      overflow-y: hidden;
+      overflow-x: scroll;
+      @media screen and (min-width: $sm-bp) {
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+    }
+    .thumbnail-carousel {
+      display: flex;
+      margin-bottom: 15px;
+      transform: translateZ(0);
+      transition: transform 0.2s ease-in-out;
+      @media screen and (min-width: $sm-bp) {
+        flex-flow: column nowrap;
+        margin-bottom: 0;
+        //margin-right: 20px;
+        max-width: 120px;
+        min-height: 325px;
+      }
+    }
+
+    .thumbnail-slide {
+      cursor: pointer;
+      // display: inline-block;
+      margin-right: 10px;
+      position: relative;
+      border: 1px solid #fff;
+      flex-grow: 0;
+      flex-shrink: 0;
+      overflow: hidden;
+      @media screen and (min-width: $sm-bp) {
+        display: block;
+        margin-bottom: 15px;
+        margin-right: 0;
+      }
+      &.active {
+        border: 1px solid #000;
+      }
+      &--lot-video {
+        position: relative;
+        width: 160px;
+        @media screen and (min-width: $sm-bp) {
+          width: 100%;
+        }
+      }
+      &__button {
+        &--lot-video {
+          z-index: 10;
+          background: transparent;
+          border: none;
+          outline: none;
+          position: absolute;
+          width: 100%;
+          top: 0;
+          right: 0;
+          left: 0;
+          bottom: 0;
+        }
+      }
+      &__video {
+        position: relative;
+        z-index: 5;
+        width: 100%;
+        .video-wrapper {
+          margin-bottom: 0;
+        }
+      }
+    }
+    .show360View::after {
+      background: url('/images/icons/360icons/360icon.png');
+      background-size: cover;
+      bottom: 0;
+      content: '';
+      height: 23px;
+      position: absolute;
+      right: 0;
+      width: 34px;
+    }
+    .detail-video::after {
+      background: url('https://phillips.vo.llnwd.net/v1/web_prod/images/layout/detail-video-icon.png');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 50px 50px;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      content: '';
+    }
+  }
+
+  .thumbnail-carousel {
+    * {
+      min-height: 0;
+      min-width: 0;
+    }
+  }
+
+  .phillips-image {
+    width: 100%;
+  }
+}
+// END LotPageImageStyles
+
+// Start Phillips-social
+// contains all the lots user actions
+.phillips-social {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+  position: relative;
+
+  & > * {
+    margin: 10px;
+  }
+
+  .icon {
+    height: 45px;
+    width: 45px;
+    background-size: 100% 316.5px;
+  }
+  .favorite-lot {
+    .icon {
+      background-position-y: -120px;
+    }
+    .active {
+      background-position-y: -157px;
+    }
+  }
+}
+// End Phillips-social
+
+.view-in-room-button {
+  @extend %tooltip;
+  cursor: pointer;
+  .icon {
+    @include icon-background;
+    background-position: 50% 100%;
+    display: block;
+  }
+}
+
+//Lot page Grid Styles
+.phillips-grid-item {
+  .description {
+    width: 100%;
+  }
+}
+
+// BEGIN Lot Page Widget styles
+.widget-wrapper {
+  margin-top: 15px;
+}
+.widget-connect-failure {
+  background: #eaeaea;
+  padding: 30px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  img {
+    max-width: 32px;
+  }
+  h3 {
+    margin: 1em auto;
+    font-size: 18px;
+    font-family: $seroBold;
+    text-transform: none;
+  }
+  p {
+    margin: 0;
+  }
+}
+.am-lot-status-label {
+  font-family: $seroBold;
+  font-weight: normal;
+  padding-bottom: 15px;
+  .sold {
+    text-transform: uppercase;
+    font-weight: normal;
+  }
+}
+.am-reserve-label {
+  display: none;
+}
+.am-bid {
+  justify-content: space-between;
+  .am-bid-status-label {
+    width: 83.33333333%;
+    > div {
+      > span:first-child {
+        font-weight: normal !important;
+        font-family: $seroBold;
+      }
+    }
+  }
+}
+.am-bid-box {
+  .confirmation-modal {
+    height: 100vh;
+    width: 100%;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .confirmation-dialogue {
+      width: calc(100% - 30px);
+      max-width: 570px;
+      left: auto;
+      top: auto;
+    }
+    @media screen and (min-width: $md-bp) {
+      height: 10000px;
+      width: 10000px;
+      left: -5000px;
+      top: -5000px;
+      .confirmation-dialogue {
+        @media screen and (min-width: $sm-bp) {
+          display: none;
+        }
+        left: -80%;
+        top: 30%;
+        width: 570px;
+        &.show {
+          display: block;
+        }
+      }
+    }
+  }
+}
+.bid-controls {
+  > span {
+    font-family: $seroBold;
+    font-weight: normal !important;
+  }
+}
+// END LotPage Widget styles
+
+// START Print styles
+@media print {
+  #cookie-policy,
+  .off-campus-menu,
+  #primaryHeader,
+  .footer-parent,
+  .exit-off-canvas {
+    display: none !important;
+    position: relative !important;
+  }
+  * {
+    float: none !important;
+  }
+  html,
+  body,
+  div,
+  .content-area,
+  .sale-title-banner,
+  .content-area * {
+    position: relative !important;
+    overflow-x: visible;
+    break-inside: auto !important;
+  }
+  .content-area {
+    padding-top: 0 !important;
+    display: block !important;
+  }
+  .request-button,
+  .auction-grid-header,
+  .auction-grid,
+  .follow-artist,
+  .page-controls,
+  .phillips-lot-list-container,
+  .place-bid-button,
+  .sale-offer,
+  .show-more-overlay,
+  .show-more-button,
+  .widget-wrapper {
+    display: none !important;
+  }
+  .left-column,
+  .lot-image,
+  .lot-detail-header {
+    position: relative;
+  }
+
+  .left-column {
+    width: 100%;
+    display: block;
+  }
+  .lot-image {
+    width: 75%;
+    margin: 0 auto;
+  }
+  .thumbnail-carousel {
+    flex-flow: column;
+  }
+  .phillips-condition-report {
+    display: none;
+    &.has-report {
+      display: block;
+    }
+  }
+
+  .lot-detail-header {
+    width: 320px;
+    display: block;
+    margin: 0 auto;
+    break-after: always;
+    break-inside: avoid;
+  }
+  .lot-page-details {
+    break-before: always;
+    width: 100%;
+  }
+  .sale-title-banner {
+    top: 0;
+  }
+  .phillips-show-more {
+    height: auto !important;
+  }
+}
+// END Print styles
