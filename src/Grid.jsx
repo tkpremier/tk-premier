@@ -97,7 +97,6 @@ const Grid = ({ data, nextPageToken }) => {
       setSlice(total);
     }
   };
-  console.log('data: ', data);
   // const shownData = data.slice(0, sliceIndex);
   return (
     <div>
