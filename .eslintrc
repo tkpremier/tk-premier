@@ -1,0 +1,44 @@
+{
+    "extends": ["airbnb", "prettier"],
+    "plugins": ["prettier", "react"],
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "globals": {
+      "$": true,
+      "_": true,
+      "amw": true,
+      "analytics": true,
+      "Backbone": false,
+      "document": true,
+      "JST": true,
+      "phillips": true,
+      "React": true,
+      "ReactDOM": true,
+      "ReactBootstrap": true,
+      "window": true
+    },
+    "rules": {
+      "arrow-body-style": ["error", "as-needed", { "requireReturnForObjectLiteral": false }],
+      "comma-dangle": ["error", "never"],
+      "func-names": ["off"],
+      "linebreak-style": 0,
+      "no-confusing-arrow": ["warn"],
+      "no-console": ["warn", { "allow": ["warn", "error"] }],
+      "no-nested-ternary": ["off"],
+      "object-shorthand": ["error", "methods"],
+      "prettier/prettier": ["off"],
+      "quote-props": ["error", "as-needed", { "unnecessary": false }],
+      "react/destructuring-assignment": ["off"]
+    },
+    "parser": "babel-eslint",
+    "parserOptions": {
+      "ecmaVersion": 2016,
+      "ecmaFeatures": {
+        "experimentalObjectRestSpread": true,
+        "experimentalDecorators": true
+      }
+    }
+  }
+  

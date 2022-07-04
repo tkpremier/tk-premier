@@ -1,8 +1,8 @@
 import camelCase from 'lodash/camelCase';
 import format from 'date-fns/format';
-import isNull from 'lodash/isNull';
 import uniq from 'lodash/uniq';
 import dbQuery from '../../db/dev/dbQuery';
+const { google } = require('googleapis');
 import {
   hashPassword,
   comparePassword,
@@ -13,6 +13,42 @@ import {
 } from '../utils/validations';
 import { errorMessage, successMessage, status } from '../utils/status';
 
+const getExp = async () => {
+  const getModelQuery = `SELECT * FROM
+  exp ORDER BY id DESC`;
+  try {
+    const { rows } = await dbQuery.query(getModelQuery);
+    const dbResponse = rows;
+    if (dbResponse[0] === undefined) {
+      console.log('There are no models');
+      return { data: [] };
+      // errorMessage.error = 'There are no models';
+      // return res.status(status.notfound).send(errorMessage);
+    }
+    return { data: dbResponse };
+  } catch (error) {
+    console.log('An error occurred', error);
+    // errorMessage.error = 'An error Occured';
+    // return res.status(status.error).send(errorMessage);
+    return { data: [] };
+  }
+};
+const addExp = async (req, res) => {
+  const { name, description } = req.body;
+  const createExpQuery = `INSERT INTO exp(name, description) VALUES($1, $2) returning *`;
+  const values = [name, description];
+  try {
+    const { rows } = await dbQuery.query(createExpQuery, values);
+    const dbResponse = rows[0];
+    successMessage.data = dbResponse;
+    console.log('added');
+    return res.status(status.success).json(successMessage);
+  } catch (error) {
+    console.log('db error: ', error);
+    errorMessage.error = 'Operation was not successful';
+    return res.status(status.error).send(errorMessage);
+  }
+};
 const createAdmin = async (req, res) => {
   const { email, firstName, lastName, password } = req.body;
 
@@ -111,7 +147,7 @@ const createDriveFile = async values => {
   return rows;
 };
 const createDriveFileApi = async (req, res) => {
-  const { id, name, webViewLink, webContentLink, mimeType } = req;
+  const { id, name, webViewLink, webContentLink, mimeType, thumb } = req;
   const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
   let type = 'folder';
   if (mimeType.indexOf('image') > -1) {
@@ -324,12 +360,14 @@ const signInUser = async (req, res) => {
 };
 
 module.exports = {
+  addExp,
   createAdmin,
   createDriveFile,
   createDriveFileApi,
   createModel,
   createUser,
   getDriveFile,
+  getExp,
   getModel,
   getModelApi,
   signInUser,

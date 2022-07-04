@@ -1,6 +1,7 @@
 // Include the cluster module
 const createError = require('http-errors');
 const express = require('express');
+var cors = require('cors');
 const path = require('path');
 const fsp = require('fs').promises;
 const dotenv = require('dotenv');
@@ -18,11 +19,20 @@ const ServerFactory = require('./dist/app.bundle');
 dotenv.config();
 
 // google drive authenticate;
-async function getCredentials() {
-  return fsp.readFile(process.env.GDCREDPATH, { encoding: 'utf8' }).then(res => JSON.parse(res));
-}
+const getCredentials = () => ({
+  installed: {
+    client_id: '160250970666-eofi1rkudvcbhf3n3fheaf7acc3mak8c.apps.googleusercontent.com',
+    project_id: 'quickstart-1557442132353',
+    auth_uri: 'https://accounts.google.com/o/oauth2/auth',
+    token_uri: 'https://oauth2.googleapis.com/token',
+    auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
+    client_secret: '_SifxYsgMaLTGfTJdvHlNrhv',
+    redirect_uris: ['http://localhost:9000', 'http:// localhost:3000']
+  }
+});
 
 const app = express();
+app.use(cors());
 const serverFactory = new ServerFactory();
 
 /* 
@@ -103,8 +113,8 @@ async function movieGame(req, res) {
   // https://github.com/axios/axios/issues/836
   res.json(json.data);
 }
-async function getDrive(req, res) {
-  const credentials = await getCredentials().then(cred => cred);
+async function getDrive() {
+  const credentials = getCredentials();
   const auth = await authorize(credentials);
   const data = await listFiles(auth)
     .then(({ data }) => data.files)
@@ -112,6 +122,11 @@ async function getDrive(req, res) {
       console.log('listFiles err: ', err);
       return [];
     });
+  return data;
+}
+
+async function getList(req, res) {
+  const data = await getDrive();
   const content = serverFactory.getSsr('Grid', { data });
   const response = layout({
     initialState,
@@ -123,19 +138,7 @@ async function getDrive(req, res) {
   res.setHeader('Cache-Control', 'assets, max-age=604800');
   res.send(response);
 }
-async function getDriveList(req, res) {
-  const { data } = await getDriveFile();
-  const content = serverFactory.getSsr('Grid', { data });
-  const response = layout({
-    initialState,
-    title: 'Lists',
-    componentType: 'Grid',
-    data: JSON.stringify({ data }),
-    content
-  });
-  res.setHeader('Cache-Control', 'assets, max-age=604800');
-  res.send(response);
-}
+
 async function getModels(req, res) {
   const data = await getModel(req, res)
     .then(res => ({
@@ -159,7 +162,7 @@ async function getModels(req, res) {
   res.send(response);
 }
 async function getMore(req, res) {
-  const credentials = await getCredentials().then(cred => cred);
+  const credentials = getCredentials();
   const auth = await authorize(credentials);
   const listMore = await listFiles(auth, req.params.token)
     .then(moreRes => moreRes)
@@ -203,7 +206,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.get('/', getIndex);
 app.get('/get-more/:token', getMore);
-app.get('/list', getDrive);
+app.get('/list', getList);
 app.get('/model', getModels);
 app.get('/moviegame', movieGame);
 app.get('/web-workers', webWorkers);
@@ -228,7 +231,7 @@ app.use((err, req, res, next) => {
   res.send(err);
 });
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 9000;
 
 app.listen(port, function () {
   console.log('Server running at http://127.0.0.1:' + port + '/');
