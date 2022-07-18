@@ -1,13 +1,14 @@
+/* eslint-disable camelcase */
 const fs = require('fs');
 const fsp = require('fs').promises;
 const readline = require('readline');
 const { google } = require('googleapis');
 
 // If modifying these scopes, delete token.json.
-const SCOPES = [
-  'https://www.googleapis.com/auth/drive.readonly',
-  'https://www.googleapis.com/auth/drive.metadata.readonly'
-];
+// const SCOPES = [
+//   'https://www.googleapis.com/auth/drive.readonly',
+//   'https://www.googleapis.com/auth/drive.metadata.readonly'
+// ];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -35,7 +36,34 @@ const getCredentials = () => ({
     .then(values => values)
     .catch(err => err);
 } */
+/**
+ * Get and store new token after prompting for user authorization, and then
+ * execute the given callback with the authorized OAuth2 client.
+ * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
+ * @param {getEventsCallback} callback The callback for the authorized client.
+ */
+function getAccessToken(oAuth2Client) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+  rl.question('Enter the code from that page here: ', code => {
+    if (typeof code !== 'undefined') {
+      rl.close();
 
+      oAuth2Client.getToken(code, (err, token) => {
+        if (err) return console.error('Error retrieving access token', err);
+        oAuth2Client.setCredentials(token);
+        // Store the token to disk for later program executions
+        fs.writeFile(process.env.GDTOKENPATH, JSON.stringify(token), err => {
+          if (err) return console.error(err);
+          console.log('Token stored to', process.env.GDTOKENPATH);
+        });
+        return oAuth2Client;
+      });
+    }
+  });
+}
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
  * given callback function.
@@ -76,10 +104,28 @@ async function listFiles(auth, pageToken = '') {
   const fetch = await drive.files.list(opt);
   return fetch;
 }
+async function getDriveListApi(req, res) {
+  const credentials = getCredentials();
+  const auth = await authorize(credentials);
+  console.log(req.query);
+  const newData = await listFiles(auth, req.query.nextPage)
+    .then(({ data }) =>
+      res.status(200).send(
+        JSON.stringify({
+          files: data.files,
+          nextPageToken: data.nextPageToken
+        })
+      )
+    )
+    .catch(err => {
+      console.log('listFiles err: ', err);
+      return res.status(500).send(err);
+    });
+  return newData;
+}
 // id: "1Q9B8CAXbwqb43txdsz0BwYfbzr1tZQ2n"
 async function getFile(auth, driveId) {
   const drive = google.drive({ version: 'v3', auth });
-
   const fetchFile = await drive.files.get({
     fileId: driveId,
     fields:
@@ -105,41 +151,6 @@ async function getUser(auth) {
   return user;
 }
 
-/**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback for the authorized client.
- */
-function getAccessToken(oAuth2Client) {
-  const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: SCOPES
-  });
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  rl.question('Enter the code from that page here: ', code => {
-    if (typeof code !== 'undefined') {
-      rl.close();
-
-      oAuth2Client.getToken(code, (err, token) => {
-        if (err) return console.error('Error retrieving access token', err);
-        oAuth2Client.setCredentials(token);
-        // Store the token to disk for later program executions
-        fs.writeFile(process.env.GDTOKENPATH, JSON.stringify(token), err => {
-          if (err) return console.error(err);
-          console.log('Token stored to', process.env.GDTOKENPATH);
-        });
-        return oAuth2Client;
-      });
-    }
-  });
-}
-
-// Load client secrets from a local file.
-
 // INITIAL FUNCTION
 // Load client secrets from a local file.
 // fs.readFile('./credentials.json', (err, content) => {
@@ -148,4 +159,4 @@ function getAccessToken(oAuth2Client) {
 //   // Authorize a client with credentials, then call the Google Drive API.
 //   authorize(JSON.parse(content), listFiles);
 // });
-module.exports = { authorize, listFiles, getFileApi, getUser };
+module.exports = { authorize, getDriveListApi, getFileApi, getUser };

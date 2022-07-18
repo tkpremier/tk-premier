@@ -1,8 +1,8 @@
+/* eslint-disable no-param-reassign */
 import camelCase from 'lodash/camelCase';
 import format from 'date-fns/format';
 import uniq from 'lodash/uniq';
 import dbQuery from '../../db/dev/dbQuery';
-const { google } = require('googleapis');
 import {
   hashPassword,
   comparePassword,
@@ -41,7 +41,6 @@ const addExp = async (req, res) => {
     const { rows } = await dbQuery.query(createExpQuery, values);
     const dbResponse = rows[0];
     successMessage.data = dbResponse;
-    console.log('added');
     return res.status(status.success).json(successMessage);
   } catch (error) {
     console.log('db error: ', error);
@@ -49,6 +48,51 @@ const addExp = async (req, res) => {
     return res.status(status.error).send(errorMessage);
   }
 };
+const addInterview = async (data = []) => {
+  const createExpQuery = `INSERT INTO interview(company, retro, date) VALUES($1, $2, $3) returning *`;
+  if (data.length > 0) {
+    const { rows } = await dbQuery.query(createExpQuery, data);
+    return { rows };
+  }
+  return { rows: [] };
+};
+const addInterviewApi = async (req, res) => {
+  const { company, date, retro } = req.body;
+
+  const values = [company, retro, date];
+
+  try {
+    const { rows } = await addInterview(values);
+    const dbResponse = rows[0];
+    successMessage.data = dbResponse;
+    return res.status(status.success).json(successMessage);
+  } catch (error) {
+    console.log('db error: ', error);
+    errorMessage.error = 'Operation was not successful';
+    return res.status(status.error).send(errorMessage);
+  }
+};
+const getInterview = async () => {
+  const getModelQuery = `SELECT * FROM
+  interview ORDER BY id DESC`;
+  try {
+    const { rows } = await dbQuery.query(getModelQuery);
+    const dbResponse = rows;
+    if (dbResponse[0] === undefined) {
+      console.log('There are no interviews');
+      return { data: [] };
+      // errorMessage.error = 'There are no models';
+      // return res.status(status.notfound).send(errorMessage);
+    }
+    return { data: dbResponse };
+  } catch (error) {
+    console.log('An error occurred fetching interviews', error);
+    // errorMessage.error = 'An error Occured';
+    // return res.status(status.error).send(errorMessage);
+    return { data: [], error };
+  }
+};
+
 const createAdmin = async (req, res) => {
   const { email, firstName, lastName, password } = req.body;
 
@@ -236,23 +280,6 @@ const createUser = async (req, res) => {
     return res.status(status.error).send(errorMessage);
   }
 };
-const getModelDriveFiles = async ids => {
-  const getModelDriveFileQuery = `SELECT
-  drive.id,
-  drive.drive_id,
-  drive.name,
-  drive.type,
-  drive.web_content_link,
-  drive.web_view_link
-  FROM drive
-  WHERE drive.id=ANY($1)`;
-  try {
-    const query = await dbQuery.query(getModelDriveFileQuery, [ids]);
-    return query.rows;
-  } catch (e) {
-    throw new Error(e);
-  }
-};
 const getDriveFile = async () => {
   const getDriveFileQuery = `SELECT * FROM
   drive ORDER BY created_time ASC`;
@@ -265,12 +292,12 @@ const getDriveFile = async () => {
       // errorMessage.error = 'There are no models';
       // return res.status(status.notfound).send(errorMessage);
     }
-    const data = dbResponse.map(row => {
-      return Object.keys(row).reduce((o, key) => {
+    const data = dbResponse.map(row =>
+      Object.keys(row).reduce((o, key) => {
         o[camelCase(key)] = row[key];
         return o;
-      }, {});
-    });
+      }, {})
+    );
     return {
       data
     };
@@ -359,8 +386,66 @@ const signInUser = async (req, res) => {
   }
 };
 
+const updateInterview = async data => {
+  const createExpQuery = `UPDATE interview
+    SET company = $1, date = $2, retro = $3
+    WHERE id = $4
+    returning *`;
+  if (data.length > 0) {
+    const { rows } = await dbQuery.query(createExpQuery, data);
+    return { rows };
+  }
+  return { rows: [] };
+};
+
+const updateInterviewApi = async (req, res) => {
+  try {
+    const { rows } = await updateInterview([req.body.company, req.body.date, req.body.retro, req.body.interviewId]);
+    const dbResponse = rows;
+    if (dbResponse[0] === undefined) {
+      console.log('No updates made');
+      return { rows: [] };
+      // errorMessage.error = 'There are no models';
+      // return res.status(status.notfound).send(errorMessage);
+    }
+    successMessage.data = dbResponse;
+    return res.status(status.success).json(successMessage);
+  } catch (error) {
+    console.log('db error: ', error);
+    errorMessage.error = 'Operation was not successful';
+    return res.status(status.error).send(errorMessage);
+  }
+};
+
+const useInterviewApi = async (req, res) => {
+  try {
+    switch (req.method) {
+      case 'POST': {
+        const response = await addInterviewApi(req, res);
+        return response;
+      }
+      case 'PUT': {
+        const response = await updateInterviewApi(req, res);
+        return response;
+      }
+      default: {
+        const { data } = await getInterview();
+        if (data.length === 0) {
+          errorMessage.error = 'There are no interviews';
+          return res.status(status.notfound).send(errorMessage);
+        }
+        return res.status(status.success).send({ data });
+      }
+    }
+  } catch (error) {
+    console.log('An error occurred', error);
+    errorMessage.error = 'An error Occured';
+    return res.status(status.error).send(errorMessage);
+  }
+};
 module.exports = {
   addExp,
+  addInterviewApi,
   createAdmin,
   createDriveFile,
   createDriveFileApi,
@@ -368,8 +453,10 @@ module.exports = {
   createUser,
   getDriveFile,
   getExp,
+  getInterview,
   getModel,
   getModelApi,
   signInUser,
-  updateUserToAdmin
+  updateUserToAdmin,
+  useInterviewApi
 };
