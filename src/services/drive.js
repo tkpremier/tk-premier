@@ -107,7 +107,6 @@ async function listFiles(auth, pageToken = '') {
 async function getDriveListApi(req, res) {
   const credentials = getCredentials();
   const auth = await authorize(credentials);
-  console.log(req.query);
   const newData = await listFiles(auth, req.query.nextPage)
     .then(({ data }) =>
       res.status(200).send(
