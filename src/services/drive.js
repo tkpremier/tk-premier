@@ -116,9 +116,9 @@ async function getDriveListApi(req, res) {
         })
       )
     )
-    .catch(err => {
-      console.log('listFiles err: ', err);
-      return res.status(500).send(err);
+    .catch(({ response }) => {
+      console.log('listFiles err: ', response);
+      return res.status(response.status).send(JSON.stringify({ ...response.data, files: [], nextPageToken: '' }));
     });
   return newData;
 }
