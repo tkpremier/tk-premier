@@ -1,19 +1,21 @@
-import pool from './pool';
-
-export default {
+'use strict';
+exports.__esModule = true;
+var pool_1 = require('./pool');
+exports['default'] = {
   /**
    * DB Query
    * @param {string} queryText
    * @param {object} params
    * @returns {Promise}
    */
-  query(queryText, params) {
-    return new Promise((resolve, reject) => {
-      pool.query(queryText, params)
-        .then((res) => {
+  query: function (queryText, params) {
+    return new Promise(function (resolve, reject) {
+      pool_1['default']
+        .query(queryText, params)
+        .then(function (res) {
           resolve(res);
         })
-        .catch((err) => {
+        ['catch'](function (err) {
           reject(err);
         });
     });

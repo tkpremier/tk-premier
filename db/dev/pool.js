@@ -1,11 +1,10 @@
-
-import { Pool } from 'pg';
-import dotenv from 'dotenv';
-
+"use strict";
+exports.__esModule = true;
+/* eslint-disable @typescript-eslint/no-var-requires */
+var Pool = require('pg').Pool;
+var dotenv = require('dotenv');
 dotenv.config();
-
 // postgres://transportUser:develop@localhost:5235/transport
-const databaseConfig = { connectionString: `postgres://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}` };
-const pool = new Pool(databaseConfig);
-
-export default pool;
+var databaseConfig = { connectionString: "postgres://".concat(process.env.PGUSER, ":").concat(process.env.PGPASSWORD, "@").concat(process.env.PGHOST, ":").concat(process.env.PGPORT, "/").concat(process.env.PGDATABASE) };
+var pool = new Pool(databaseConfig);
+exports["default"] = pool;

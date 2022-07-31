@@ -1,67 +1,33 @@
-const path = require('path');
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { resolve } = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   mode: 'development',
   entry: {
-    app: './src/server-bundle.jsx'
+    server: './src/app.ts'
   },
+  devtool: 'inline-source-map',
   output: {
     filename: '[name].bundle.js',
     library: 'ssr',
-    libraryExport: 'default',
-    libraryTarget: 'commonjs2',
-    path: path.resolve(__dirname, 'dist'),
+    path: resolve(__dirname, 'dist'),
     publicPath: '/assets',
     pathinfo: true
   },
   module: {
     rules: [
       {
-        test: /\.jsx$/,
+        test: /\.tsx$/,
         exclude: /(node_modules)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              [
-                '@babel/preset-env',
-                {
-                  targets: {
-                    node: 'current'
-                  }
-                }
-              ],
-              '@babel/preset-react'
-            ]
-          }
-        }
-      },
-      {
-        test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              [
-                '@babel/preset-env',
-                {
-                  targets: {
-                    node: 'current'
-                  }
-                }
-              ]
-            ]
-          }
-        }
+        use: 'ts-loader'
       }
     ]
   },
   target: 'node',
   resolve: {
     // Allow require('./blah') to require blah.jsx
-    extensions: ['.js', '.jsx']
+    extensions: ['.tsx', '.ts', '.js', '.jsx']
   },
   stats: {
     errorDetails: true,

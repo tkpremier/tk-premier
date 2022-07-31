@@ -1,0 +1,27 @@
+{
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "compilerOptions": {
+    "target": "es5",
+    "declaration": true,
+    "outDir": "build",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    // "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "jsx": "react",
+    "sourceMap": true,
+    "incremental": true,
+    "declarationMap": true
+  },
+  "allowSyntheticDefaultImports": true,
+  "esModuleInerop": true,
+  "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", "src/app.ts"],
+  "exclude": ["node_modules", ".storybook", "ckeditor", "dist", "build", "webpack.client.js", "webpack.server.js"],
+  "typeRoots": ["src/@types", "node_modules/@types"]
+}

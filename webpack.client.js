@@ -1,7 +1,6 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { resolve } = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const webpack = require('webpack');
 
 /**
  * dist
@@ -16,10 +15,10 @@ const webpack = require('webpack');
   },
  */
 
-module.exports = {
+export default {
   entry: {
-    algos: './src/data-structures/contiguous.js',
-    client: './src/client.jsx'
+    algos: './src/data-structures/contiguous.ts',
+    client: './src/client.tsx'
   },
   output: {
     filename: '[name].bundle.js',
@@ -28,49 +27,15 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx$/,
+        test: /\.tsx$/,
         exclude: /(node_modules)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              [
-                '@babel/preset-env',
-                {
-                  targets: {
-                    node: 'current'
-                  }
-                }
-              ],
-              '@babel/preset-react'
-            ]
-          }
-        }
-      },
-      {
-        test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              [
-                '@babel/preset-env',
-                {
-                  targets: {
-                    node: 'current'
-                  }
-                }
-              ]
-            ]
-          }
-        }
+        use: 'ts-loader'
       }
     ]
   },
   resolve: {
     // Allow require('./blah') to require blah.jsx
-    extensions: ['.js', '.jsx']
+    extensions: ['.tsx', '.ts', '.js', '.jsx']
   },
   stats: {
     errorDetails: true,

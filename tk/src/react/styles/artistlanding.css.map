@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AACA,GAAI;EACF,KAAK,EAAE,IAAI;;AAEb,EAAG;EACD,cAAc,EAAE,IAAI;;AAGpB,WAAY;EACV,KAAK,EAAE,OAAO;EACd,eAAe,EAAE,SAAS",
-"sources": ["artistlanding.scss"],
-"names": [],
-"file": "artistlanding.css"
-}
