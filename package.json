@@ -19,9 +19,10 @@
     "presass": "yarn babel",
     "sass": "node ./views/styles.js ./src/styles.scss",
     "sass-watch": "node ./views/styles.js ./src/styles.scss watch",
-    "start": "ts-node app.ts",
-    "nodemon": "nodemon --exec babel-node app.js",
+    "start": "node dist/app.bundle.js",
+    "nodemon": "nodemon --exec node build/server.bundle.js",
     "watch": "concurrently \"yarn run webpack-server-watch\" \"yarn run webpack-client-watch\"",
+    "serve": "webpack serve --config webpack.server.js --open",
     "webpack-server": "webpack --config webpack.server.js",
     "webpack-server-watch": "webpack watch --config webpack.server.js",
     "webpack-client": "webpack --config webpack.client.js",
@@ -62,7 +63,6 @@
     "dotenv": "^8.0.0",
     "dsa.js": "^1.2.3",
     "expose-loader": "^1.0.0",
-    "express": "~4.16.0",
     "express-graphql": "^0.9.0",
     "fetch-ponyfill": "^6.1.0",
     "form-serialize": "^0.7.2",
@@ -180,6 +180,7 @@
     "webpack-dev-middleware": "latest",
     "webpack-dev-server": "latest",
     "webpack-hot-middleware": "latest",
+    "webpack-node-externals": "^3.0.0",
     "winston": "^3.2.1"
   },
   "keywords": [

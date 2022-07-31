@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { resolve } = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   mode: 'development',
@@ -13,7 +13,8 @@ module.exports = {
     library: 'ssr',
     path: resolve(__dirname, 'dist'),
     publicPath: '/assets',
-    pathinfo: true
+    pathinfo: true,
+    clean: true
   },
   module: {
     rules: [
@@ -24,6 +25,7 @@ module.exports = {
       }
     ]
   },
+  externals: [nodeExternals()],
   target: 'node',
   resolve: {
     // Allow require('./blah') to require blah.jsx
@@ -33,9 +35,5 @@ module.exports = {
     errorDetails: true,
     outputPath: true,
     publicPath: true
-  },
-  plugins: [
-    // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
-    new CleanWebpackPlugin()
-  ]
+  }
 };

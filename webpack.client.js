@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { resolve } = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 /**
  * dist
@@ -22,7 +21,8 @@ export default {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'assets')
+    path: resolve(__dirname, 'assets'),
+    clean: true
   },
   module: {
     rules: [
@@ -41,9 +41,5 @@ export default {
     errorDetails: true,
     outputPath: true,
     publicPath: true
-  },
-  plugins: [
-    // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
-    new CleanWebpackPlugin()
-  ]
+  }
 };
