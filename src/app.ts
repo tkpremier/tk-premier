@@ -127,8 +127,10 @@ async function getIndex(req, res) {
 // };
 // END controller fns
 
+console.log('dirname: ', __dirname);
+
 app.use('/dist', express.static(path.resolve(__dirname, 'dist')));
-app.use('/assets', express.static(path.resolve(__dirname, 'assets')));
+app.use('/build', express.static(path.resolve(__dirname, 'build')));
 app.use('/workers', express.static(path.resolve(__dirname, 'workers')));
 app.use(logger('dev'));
 app.use(express.json());

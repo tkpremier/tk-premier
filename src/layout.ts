@@ -1,4 +1,3 @@
-
 // const getWorkers = type => type === 'client'
 //   ? `<script src="/assets/workers.bundle.js" type="text/javascript"></script>`
 //   : ``;
@@ -6,12 +5,7 @@
 //   data: any,
 
 // }
-function template({
-  data,
-  title,
-  content = '',
-  componentType = 'Main'
-}) {
+function template({ data, title, content = '', componentType = 'Main' }) {
   const page = `
   <!DOCTYPE html>
   <html lang="en">
@@ -28,7 +22,7 @@ function template({
           </body>
           <script>if (typeof window !== 'undefined') { window.__client = \`${data}\`;
         window.__cType = \`${componentType}\`; }</script>
-          <script src="/assets/client.bundle.js" type="text/javascript"></script>
+          <script src="/build/client.bundle.js" type="text/javascript"></script>
           </html>
           `;
   return page;

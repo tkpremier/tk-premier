@@ -9,7 +9,7 @@ interface TKWindow extends Window {
 
 declare let window: TKWindow;
 
-(function (clientData = '[]', componentType = 'Main') : any {
+(function (clientData = '[]', componentType = 'Main'): any {
   class ComponentFactory {
     Main: (props: any) => any;
     constructor() {
@@ -18,6 +18,7 @@ declare let window: TKWindow;
     }
     hydrate(str = 'Main', props = {}) {
       const Component = this[str];
+      console.log('hello');
       hydrate(<Component {...props} />, document.querySelector('#app'));
     }
   }

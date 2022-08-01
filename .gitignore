@@ -5,8 +5,7 @@ node_modules
 assets
 build
 dist
-assets/client.bundle.js
-dist/app.bundle.js
+src/stories
 yarn-error.log
 credentials.json
 token.json

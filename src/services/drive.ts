@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable camelcase */
-const fs =  require('fs');
+const fs = require('fs');
 const fsp = fs.promises;
 const readline = require('readline');
-const {google} = require('googleapis');
+const { google } = require('googleapis');
 
 // If modifying these scopes, delete token.json.
 // const SCOPES = [
@@ -87,10 +87,6 @@ async function authorize(credentials) {
   return promise;
 }
 
-/**
- * Lists the names and IDs of up to 10 files.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
 async function listFiles(auth, pageToken = '') {
   const drive = google.drive({ version: 'v3', auth });
   // api ref for files properties https://developers.google.com/drive/api/v3/reference/files?hl=en_US

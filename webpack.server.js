@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { resolve } = require('path');
 const nodeExternals = require('webpack-node-externals');
+const DotEnv = require('dotenv-webpack');
 
 module.exports = {
   mode: 'development',
@@ -20,6 +21,11 @@ module.exports = {
     rules: [
       {
         test: /\.tsx$/,
+        exclude: /(node_modules|stories)/,
+        use: 'ts-loader'
+      },
+      {
+        test: /\.ts$/,
         exclude: /(node_modules)/,
         use: 'ts-loader'
       }
@@ -35,5 +41,6 @@ module.exports = {
     errorDetails: true,
     outputPath: true,
     publicPath: true
-  }
+  },
+  plugins: [new DotEnv()]
 };

@@ -14,15 +14,14 @@ const { resolve } = require('path');
   },
  */
 
-export default {
+module.exports = {
+  mode: 'development',
   entry: {
-    algos: './src/data-structures/contiguous.ts',
     client: './src/client.tsx'
   },
   output: {
     filename: '[name].bundle.js',
-    path: resolve(__dirname, 'assets'),
-    clean: true
+    path: resolve(__dirname, 'dist/build')
   },
   module: {
     rules: [
