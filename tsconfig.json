@@ -21,7 +21,7 @@
   },
   "allowSyntheticDefaultImports": true,
   "esModuleInerop": true,
-  "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", "src/app.ts"],
+  "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", "src/app.ts", "db/dev/*.ts"],
   "exclude": [
     "node_modules",
     ".storybook",
@@ -29,7 +29,7 @@
     "dist",
     "build",
     "webpack.client.js",
-    "webpack.server.js",
+    "webpack.config.js",
     "src/stories"
   ],
   "typeRoots": ["src/@types", "node_modules/@types"]
