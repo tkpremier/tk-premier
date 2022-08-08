@@ -3,7 +3,7 @@
 var express = require('express');
 import { getDriveListApi, getFileApi } from './services/drive';
 import {
-  //   addExp,
+    addExp,
   //   createModel,
   //   createUser,
   //   signInUser,
@@ -18,5 +18,5 @@ router.get('/drive-file', getFileApi);
 // router.get('/model', getModel);
 // router.post('/model', createModel);
 // router.post('/user', createUser);
-// router.post('/experience', addExp);
+router.post('/experience', addExp);
 export default router;

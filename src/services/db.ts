@@ -10,7 +10,7 @@ interface DbResponse {
   rows: Array<any>;
 }
 
-type ErrorResponse = {
+interface ErrorResponse {
   error: string;
 };
 
@@ -45,13 +45,14 @@ const addExp = async (req: Request, res: Response): Promise<any> => {
   try {
     const { rows } = (await dbQuery.query(createExpQuery, values)) as DbResponse;
     const dbResponse = rows[0];
+    console.log('dbResponse: ', dbResponse);
     let successMessage: SuccessResponse;
     successMessage.data = dbResponse;
     return res.status(status.success).json(successMessage);
   } catch (error) {
-    let errorMessage: ErrorResponse;
-    errorMessage.error = 'Operation was not successful';
-    return res.status(status.error).send(errorMessage);
+    console.log('add exp?');
+    console.log('Error: ', error);
+    return res.status(status.error).send(error);
   }
 };
 const addInterview = async (data = []) => {
@@ -435,7 +436,6 @@ const updateInterviewApi = async (req: Request, res: Response) => {
 };
 
 const useInterviewApi = async (req: Request, res: Response) => {
-  let errorMessage: ErrorResponse;
   try {
     switch (req.method) {
       case 'POST': {
@@ -449,16 +449,14 @@ const useInterviewApi = async (req: Request, res: Response) => {
       default: {
         const { data } = await getInterview();
         if (data.length === 0) {
-          errorMessage.error = 'There are no interviews';
-          return res.status(status.notfound).send(errorMessage);
+          return res.status(status.success).send({ data });
         }
         return res.status(status.success).send({ data });
       }
     }
   } catch (error) {
     console.log('An error occurred', error);
-    errorMessage.error = 'An error Occured';
-    return res.status(status.error).send(errorMessage);
+    return res.status(status.error).send({ data: []});
   }
 };
 
