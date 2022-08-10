@@ -16,6 +16,7 @@
     "sass": "node ./views/styles.js ./src/styles.scss",
     "sass-watch": "node ./views/styles.js ./src/styles.scss watch",
     "start": "node dist/server.bundle.js",
+    "nodemon": "nodemon dist/server.bundle.js",
     "prewatch": "yarn install",
     "watch": "concurrently \"yarn run webpack-server-watch\" \"yarn run webpack-client-watch\"",
     "serve": "webpack serve --config webpack.server.js --open"

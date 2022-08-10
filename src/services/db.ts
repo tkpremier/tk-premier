@@ -415,23 +415,19 @@ const updateInterview = async data => {
 };
 
 const updateInterviewApi = async (req: Request, res: Response) => {
-  let errorMessage: ErrorResponse;
   try {
     const { rows } = await updateInterview([req.body.company, req.body.date, req.body.retro, req.body.interviewId]);
-    const dbResponse = rows;
-    if (dbResponse[0] === undefined) {
+    const data = rows;
+    if (data[0] === undefined) {
       console.log('No updates made');
       return { rows: [] };
       // errorMessage.error = 'There are no models';
       // return res.status(status.notfound).send(errorMessage);
-    }
-    let successMessage: SuccessResponse;
-    successMessage.data = dbResponse;
-    return res.status(status.success).json(successMessage);
+    };
+    return res.status(status.success).json({ data });
   } catch (error) {
     console.log('db error: ', error);
-    errorMessage.error = 'Operation was not successful';
-    return res.status(status.error).send(errorMessage);
+    return res.status(status.error).send({ data: [] });
   }
 };
 
