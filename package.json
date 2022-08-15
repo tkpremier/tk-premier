@@ -2,7 +2,7 @@
   "name": "tk-premier",
   "version": "1.0.0",
   "description": "Tommy's side project",
-  "main": "dist/app.bundle.js",
+  "main": "dist/server.bundle.js",
   "scripts": {
     "create-drive-table": "node ./db/dev/dbConnection createDriveFilesTable",
     "create-all-tables": "node ./db/dev/dbConnection createAllTables",
