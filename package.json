@@ -11,7 +11,7 @@
     "jest-init": "jest --init",
     "test": "jest",
     "babel": "babel app.js -o app.babel.js",
-    "build": "yarn webpack",
+    "build": "webpack",
     "presass": "yarn babel",
     "sass": "node ./views/styles.js ./src/styles.scss",
     "sass-watch": "node ./views/styles.js ./src/styles.scss watch",

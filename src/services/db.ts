@@ -12,10 +12,10 @@ interface DbResponse {
 
 interface ErrorResponse {
   error: string;
-};
+}
 
 type SuccessResponse = {
-  data: Array<any>;
+  data: Array<any> | any;
 };
 
 const getExp = async () => {
@@ -44,11 +44,8 @@ const addExp = async (req: Request, res: Response): Promise<any> => {
   const values = [name, description];
   try {
     const { rows } = (await dbQuery.query(createExpQuery, values)) as DbResponse;
-    const dbResponse = rows[0];
-    console.log('dbResponse: ', dbResponse);
-    let successMessage: SuccessResponse;
-    successMessage.data = dbResponse;
-    return res.status(status.success).json(successMessage);
+    const data = rows[0];
+    return res.status(status.success).json({ data, status: 'success' });
   } catch (error) {
     console.log('add exp?');
     console.log('Error: ', error);
@@ -71,7 +68,7 @@ const addInterviewApi = async (req: Request, res: Response): Promise<any> => {
   try {
     const { rows } = await addInterview(values);
     const data = rows[0];
-    return res.status(status.success).json({ data });
+    return res.status(status.success).json({ data, status: 'success' });
   } catch (error) {
     let errorMessage: ErrorResponse;
     errorMessage.error = 'Operation was not successful';
@@ -423,7 +420,7 @@ const updateInterviewApi = async (req: Request, res: Response) => {
       return { rows: [] };
       // errorMessage.error = 'There are no models';
       // return res.status(status.notfound).send(errorMessage);
-    };
+    }
     return res.status(status.success).json({ data });
   } catch (error) {
     console.log('db error: ', error);
@@ -452,7 +449,7 @@ const useInterviewApi = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.log('An error occurred', error);
-    return res.status(status.error).send({ data: []});
+    return res.status(status.error).send({ data: [] });
   }
 };
 
