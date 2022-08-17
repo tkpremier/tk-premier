@@ -7,8 +7,8 @@ COPY package*.json /tmp/
 
 # Install npm production packages 
 RUN npm install yarn --location=global --force
-RUN yarn install
 WORKDIR /api
+RUN yarn install
 COPY . .
 ENV NODE_ENV=production
 ENV PORT=9000
