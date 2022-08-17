@@ -1,18 +1,21 @@
 FROM node:16 as builder
 
+RUN mkdir -p /home/node/api/node_modules && chown -R node:node /home/node/api
+
 # Change working directory
-WORKDIR /tmp
+WORKDIR /home/node/api
 # Copy package.json and package-lock.json
-COPY package*.json /tmp/
+COPY package*.json ./
 
-# Install npm production packages 
-RUN npm install yarn --location=global --force
-WORKDIR /api
-RUN yarn install
-COPY . .
-ENV NODE_ENV=production
-ENV PORT=9000
-RUN yarn build
+USER node
+# Install npm production packages
+RUN npm install --production
+COPY --chown=node:node . .
+ENV NODE_ENV production
+ENV PORT 9000
+ENV NODE_OPTIONS=--max_old_space_size=1184
+RUN npm run build
 
+EXPOSE 9000
 
-CMD ["yarn", "start"]
+CMD ["npm", "run", "start"]

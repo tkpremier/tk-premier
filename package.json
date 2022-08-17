@@ -2,7 +2,7 @@
   "name": "tk-premier",
   "version": "1.0.0",
   "description": "Tommy's side project",
-  "main": "dist/app.bundle.js",
+  "main": "dist/server.bundle.js",
   "scripts": {
     "create-drive-table": "node ./db/dev/dbConnection createDriveFilesTable",
     "create-all-tables": "node ./db/dev/dbConnection createAllTables",
@@ -11,7 +11,7 @@
     "jest-init": "jest --init",
     "test": "jest",
     "babel": "babel app.js -o app.babel.js",
-    "build": "yarn webpack",
+    "build": "webpack",
     "presass": "yarn babel",
     "sass": "node ./views/styles.js ./src/styles.scss",
     "sass-watch": "node ./views/styles.js ./src/styles.scss watch",
@@ -65,9 +65,13 @@
     "title-case": "^3.0.2",
     "ts-loader": "^9.3.1",
     "typescript": "^4.7.4",
-    "yarn": "latest"
-  },
-  "devDependencies": {
+    "yarn": "latest",
+    "webpack": "^5.74.0",
+    "webpack-cli": "latest",
+    "webpack-dev-middleware": "latest",
+    "webpack-dev-server": "latest",
+    "webpack-hot-middleware": "latest",
+    "webpack-node-externals": "^3.0.0",
     "@types/lodash": "^4.14.182",
     "@types/pg": "^8.6.5",
     "@typescript-eslint/eslint-plugin": "^5.31.0",
@@ -99,12 +103,6 @@
     "sass-loader": "latest",
     "style-loader": "latest",
     "ts-node": "^10.9.1",
-    "webpack": "^5.74.0",
-    "webpack-cli": "latest",
-    "webpack-dev-middleware": "latest",
-    "webpack-dev-server": "latest",
-    "webpack-hot-middleware": "latest",
-    "webpack-node-externals": "^3.0.0",
     "winston": "^3.2.1"
   },
   "keywords": [
