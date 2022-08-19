@@ -7,7 +7,7 @@ const cors = require('cors');
 const path = require('path');
 const logger = require('morgan');
 import layout from './layout';
-import { getDriveListApi } from './services/drive';
+import { getDriveList } from './services/drive';
 import apiRoutes from './routes';
 import getMovie from './services/movie';
 import ServerFactory from './server-bundle';
@@ -74,26 +74,26 @@ app.use(cors());
 // }));
 
 // BEGIN controller fns
-async function movieGame(req, res) {
-  res.setHeader('Cache-Control', 'assets, max-age=604800');
-  const json = await getMovie()
-    .then(movie => movie)
-    .catch(err => {
-      console.log('movie err: ', err);
-      res.send(err);
-    });
-  const data = await json;
-  // weird axios quirk
-  // https://github.com/axios/axios/issues/836
-  res.json(data);
-}
+// async function movieGame(req, res) {
+//   res.setHeader('Cache-Control', 'assets, max-age=604800');
+//   const json = await getMovie()
+//     .then(movie => movie)
+//     .catch(err => {
+//       console.log('movie err: ', err);
+//       res.send(err);
+//     });
+//   const data = await json;
+//   // weird axios quirk
+//   // https://github.com/axios/axios/issues/836
+//   res.json(data);
+// }
 
 async function getList(req, res) {
-  const json = await getDriveListApi(req, res);
+  const json = await getDriveList(req.query.nextPage);
   const response = layout({
     title: 'Lists',
     componentType: 'Grid',
-    data: JSON.stringify({ data: json.data }),
+    data: JSON.stringify({ data: json }),
     content: 'Data'
   });
   res.setHeader('Cache-Control', 'assets, max-age=604800');
