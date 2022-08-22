@@ -18,7 +18,7 @@
     "start": "node dist/server.bundle.js",
     "nodemon": "nodemon dist/server.bundle.js",
     "prewatch": "yarn install",
-    "watch": "concurrently \"yarn run webpack-server-watch\" \"yarn run webpack-client-watch\"",
+    "watch": "webpack watch",
     "serve": "webpack serve --config webpack.server.js --open"
   },
   "dependencies": {

@@ -5,6 +5,7 @@ node_modules
 assets
 build
 dist
+Dockerfile
 src/stories
 yarn-error.log
 credentials.json

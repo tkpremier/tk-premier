@@ -106,12 +106,13 @@ async function getFile(auth, driveId) {
 }
 
 async function getFileApi(req, res) {
-  const credentials = await fsp.readFile(process.env.GDCREDPATH);
+  const credentials = await fsp.readFile(process.env.GDCREDPATH, 'utf-8');
   try {
-    const auth = await authorize(credentials);
+    const auth = await authorize(JSON.parse(credentials));
     const data = await getFile(auth, req.query.driveId);
     return res.status(200).send(JSON.stringify(data));
   } catch (e) {
+    console.log(e);
     return res.status(500).send(e);
   }
 }
