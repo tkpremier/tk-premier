@@ -77,7 +77,7 @@ const addInterviewApi = async (req: Request, res: Response): Promise<any> => {
 };
 const getInterview = async () => {
   const getModelQuery = `SELECT * FROM
-  interview ORDER BY id DESC`;
+  interview ORDER BY date DESC`;
   try {
     const { rows } = (await dbQuery.query(getModelQuery, [])) as DbResponse;
     const dbResponse = rows;
