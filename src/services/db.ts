@@ -411,6 +411,28 @@ const updateInterview = async data => {
   return { rows: [] };
 };
 
+const updateExp = async (req: Request, res: Response) => {
+  try {
+    const query = `UPDATE exp
+    SET name = $1, description = $2
+    WHERE id = $3
+    returning *`;
+    const { rows } = await dbQuery.query(query, [req.body.name, req.body.description, req.body.id]);
+    // const { rows } = await updateInterview([req.body.company, req.body.date, req.body.retro, req.body.interviewId]);
+    const data = rows;
+    if (data[0] === undefined) {
+      console.log('No updates made');
+      return { rows: [] };
+      // errorMessage.error = 'There are no models';
+      // return res.status(status.notfound).send(errorMessage);
+    }
+    return res.status(status.success).json({ data });
+  } catch (error) {
+    console.log('db error: ', error);
+    return res.status(status.error).send({ data: [] });
+  }
+};
+
 const updateInterviewApi = async (req: Request, res: Response) => {
   try {
     const { rows } = await updateInterview([req.body.company, req.body.date, req.body.retro, req.body.interviewId]);
@@ -424,6 +446,31 @@ const updateInterviewApi = async (req: Request, res: Response) => {
     return res.status(status.success).json({ data });
   } catch (error) {
     console.log('db error: ', error);
+    return res.status(status.error).send({ data: [] });
+  }
+};
+
+const useExperienceApi = async (req: Request, res: Response) => {
+  try {
+    switch (req.method) {
+      case 'POST': {
+        const response = await addExp(req, res);
+        return response;
+      }
+      case 'PUT': {
+        const response = await updateExp(req, res);
+        return response;
+      }
+      default: {
+        const { data } = await getExp();
+        if (data.length === 0) {
+          return res.status(status.success).send({ data });
+        }
+        return res.status(status.success).send({ data });
+      }
+    }
+  } catch (error) {
+    console.log('An error occurred', error);
     return res.status(status.error).send({ data: [] });
   }
 };
@@ -453,4 +500,4 @@ const useInterviewApi = async (req: Request, res: Response) => {
   }
 };
 
-export { addExp, addInterviewApi, createModel, getExp, getInterview, useInterviewApi };
+export { addExp, addInterviewApi, createModel, getExp, getInterview, useExperienceApi, useInterviewApi };
