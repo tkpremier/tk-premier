@@ -92,22 +92,23 @@ async function getList(req, res) {
   res.setHeader('Cache-Control', 'assets, max-age=604800');
   try {
     const json = await getDriveList(req.query.nextPage);
-  const response = layout({
-    title: 'Lists',
-    componentType: 'Grid',
-    data: JSON.stringify({ data: json }),
-    content: 'Data'
-  });
-  res.send(response);
-  } catch(e) {
-    res.send(layout({
+    const response = layout({
       title: 'Lists',
       componentType: 'Grid',
-      data: JSON.stringify({ data: e }),
-      content: 'There was an error'
-    }));
+      data: JSON.stringify({ data: json }),
+      content: 'Data'
+    });
+    res.send(response);
+  } catch (e) {
+    res.send(
+      layout({
+        title: 'Lists',
+        componentType: 'Grid',
+        data: JSON.stringify({ data: e }),
+        content: 'There was an error'
+      })
+    );
   }
-  
 }
 
 async function getIndex(req, res) {
@@ -171,7 +172,7 @@ app.use((err, req, res, next) => {
   res.send(err);
 });
 
-const port = process.env.PORT || 9000;
+const port = 9001;
 
 app.listen(port, function () {
   console.log('Server running at http://127.0.0.1:' + port + '/');
