@@ -2,7 +2,8 @@
 /* eslint-disable camelcase */
 import fs, { promises as fsp } from 'fs';
 import readline from 'readline';
-import { google, Auth, drive_v3 } from 'googleapis';
+import { google, drive_v3 } from 'googleapis';
+import { OAuth2Client } from 'google-auth-library';
 // If modifying these scopes, delete token.json.
 // const SCOPES = [
 //   'https://www.googleapis.com/auth/drive.readonly',
@@ -72,7 +73,7 @@ type GoogleApiCredentials = {
     redirect_uris: string[];
   };
 };
-async function authorize(credentials: GoogleApiCredentials): Promise<Auth.OAuth2Client> {
+async function authorize(credentials: GoogleApiCredentials): Promise<OAuth2Client> {
   const { client_secret, client_id, redirect_uris } = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
   const response = await fsp.readFile(process.env.GDTOKENPATH, 'utf-8');
@@ -82,7 +83,7 @@ async function authorize(credentials: GoogleApiCredentials): Promise<Auth.OAuth2
 type GAPIList = {
   data: drive_v3.Schema$FileList;
 };
-async function listFiles(auth: Auth.OAuth2Client, pageToken = ''): Promise<GAPIList> {
+async function listFiles(auth: OAuth2Client, pageToken = ''): Promise<GAPIList> {
   const drive = google.drive({ version: 'v3', auth });
   // api ref for files properties https://developers.google.com/drive/api/v3/reference/files?hl=en_US
   const opt = {
