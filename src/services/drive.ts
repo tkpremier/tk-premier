@@ -2,7 +2,7 @@
 /* eslint-disable camelcase */
 import fs, { promises as fsp } from 'fs';
 import readline from 'readline';
-import { google, drive_v3 } from 'googleapis';
+import { google, Auth, drive_v3 } from 'googleapis';
 // If modifying these scopes, delete token.json.
 // const SCOPES = [
 //   'https://www.googleapis.com/auth/drive.readonly',
