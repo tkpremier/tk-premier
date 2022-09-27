@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable camelcase */
-const fs = require('fs');
-const fsp = fs.promises;
-const readline = require('readline');
-const { google } = require('googleapis');
-
+import fs, { promises as fsp } from 'fs';
+import readline from 'readline';
+import { google, Auth, drive_v3 } from 'googleapis';
 // If modifying these scopes, delete token.json.
 // const SCOPES = [
 //   'https://www.googleapis.com/auth/drive.readonly',
@@ -60,16 +58,31 @@ function getAccessToken(oAuth2Client) {
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-async function authorize(credentials) {
+type GoogleApiCredentials = {
+  installed: {
+    /**
+     * The application's client ID.
+     */
+    client_id: string;
+    project_id: string;
+    auth_uri: string;
+    token_uri: string;
+    auth_provider_x509_cert_url: string;
+    client_secret: string;
+    redirect_uris: string[];
+  };
+};
+async function authorize(credentials: GoogleApiCredentials): Promise<Auth.OAuth2Client> {
   const { client_secret, client_id, redirect_uris } = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-  const response = await fsp
-    .readFile(process.env.GDTOKENPATH, 'utf-8');
+  const response = await fsp.readFile(process.env.GDTOKENPATH, 'utf-8');
   oAuth2Client.setCredentials(JSON.parse(response));
   return oAuth2Client;
 }
-
-async function listFiles(auth, pageToken = '') {
+type GAPIList = {
+  data: drive_v3.Schema$FileList;
+};
+async function listFiles(auth: Auth.OAuth2Client, pageToken = ''): Promise<GAPIList> {
   const drive = google.drive({ version: 'v3', auth });
   // api ref for files properties https://developers.google.com/drive/api/v3/reference/files?hl=en_US
   const opt = {
@@ -80,8 +93,8 @@ async function listFiles(auth, pageToken = '') {
     fields:
       'files(kind, id, name, createdTime, mimeType, name, parents, spaces, imageMediaMetadata, webViewLink, webContentLink, thumbnailLink, createdTime, videoMediaMetadata, viewedByMeTime), nextPageToken'
   };
-  const fetch = await drive.files.list(opt);
-  return fetch;
+  const data = await drive.files.list(opt);
+  return data;
 }
 async function getDriveList(nextPage = '') {
   try {
@@ -89,10 +102,9 @@ async function getDriveList(nextPage = '') {
     const auth = await authorize(JSON.parse(credentials));
     const response = await listFiles(auth, nextPage);
     return response;
-  } catch(e) {
+  } catch (e) {
     console.log('err: ', e);
   }
-  
 }
 // id: "1Q9B8CAXbwqb43txdsz0BwYfbzr1tZQ2n"
 async function getFile(auth, driveId) {
