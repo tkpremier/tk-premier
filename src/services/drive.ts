@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable camelcase */
 import fs, { promises as fsp } from 'fs';
-import readline from 'readline';
+// import readline from 'readline';
 import { google, drive_v3 } from 'googleapis';
 import { OAuth2Client } from 'google-auth-library';
+import { Request, Response } from 'express';
 // If modifying these scopes, delete token.json.
 // const SCOPES = [
 //   'https://www.googleapis.com/auth/drive.readonly',
@@ -25,40 +26,6 @@ import { OAuth2Client } from 'google-auth-library';
     .then(values => values)
     .catch(err => err);
 } */
-/**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback for the authorized client.
- */
-function getAccessToken(oAuth2Client) {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  rl.question('Enter the code from that page here: ', code => {
-    if (typeof code !== 'undefined') {
-      rl.close();
-
-      oAuth2Client.getToken(code, (err, token) => {
-        if (err) return console.error('Error retrieving access token', err);
-        oAuth2Client.setCredentials(token);
-        // Store the token to disk for later program executions
-        fs.writeFile(process.env.GDTOKENPATH, JSON.stringify(token), err => {
-          if (err) return console.error(err);
-          console.log('Token stored to', process.env.GDTOKENPATH);
-        });
-        return oAuth2Client;
-      });
-    }
-  });
-}
-/**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
- */
 type GoogleApiCredentials = {
   installed: {
     /**
@@ -107,8 +74,7 @@ async function getDriveList(nextPage = '') {
     console.log('err: ', e);
   }
 }
-// id: "1Q9B8CAXbwqb43txdsz0BwYfbzr1tZQ2n"
-async function getFile(auth, driveId) {
+async function getFile(auth: OAuth2Client, driveId: string) {
   const drive = google.drive({ version: 'v3', auth });
   const fetchFile = await drive.files.get({
     fileId: driveId,
@@ -118,11 +84,11 @@ async function getFile(auth, driveId) {
   return fetchFile;
 }
 
-async function getFileApi(req, res) {
+async function getFileApi(req: Request, res: Response): Promise<Response> {
   const credentials = await fsp.readFile(process.env.GDCREDPATH, 'utf-8');
   try {
     const auth = await authorize(JSON.parse(credentials));
-    const data = await getFile(auth, req.query.driveId);
+    const data = await getFile(auth, req.params.driveId.toString());
     return res.status(200).send(JSON.stringify(data));
   } catch (e) {
     console.log(e);

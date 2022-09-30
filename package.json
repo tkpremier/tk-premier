@@ -17,8 +17,7 @@
     "sass-watch": "node ./views/styles.js ./src/styles.scss watch",
     "start": "node dist/server.bundle.js",
     "nodemon": "nodemon dist/server.bundle.js",
-    "prewatch": "yarn install",
-    "watch": "webpack watch",
+    "watch": "concurrently \"webpack watch\" \"nodemon dist/server.bundle.js\"",
     "serve": "webpack serve --config webpack.server.js --open"
   },
   "dependencies": {

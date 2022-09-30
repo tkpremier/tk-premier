@@ -7,6 +7,8 @@ import {
   //   createUser,
   //   signInUser,
   //   updateUserToAdmin,
+  useDriveApi,
+  useModelApi,
   useExperienceApi,
   useInterviewApi
 } from './services/db';
@@ -19,7 +21,7 @@ type RequestWithQuery = Request & {
 
 const router = express.Router();
 router.use('/interview', useInterviewApi);
-router.get('/drive-list', async (req: RequestWithQuery, res: Response) => {
+router.get('/drive-google', async (req: RequestWithQuery, res: Response) => {
   try {
     const response = await getDriveList(req.query.nextPage);
     res.status(200).send(
@@ -38,7 +40,11 @@ router.get('/drive-list', async (req: RequestWithQuery, res: Response) => {
     );
   }
 });
-router.get('/drive-file', getFileApi);
+router.use('/drive-list/:id', useDriveApi);
+router.use('/drive-list', useDriveApi);
+router.use('/model/:id', useModelApi);
+router.use('/model', useModelApi);
+router.get('/drive-file/:driveId', getFileApi);
 // router.get('/model', getModel);
 // router.post('/model', createModel);
 // router.post('/user', createUser);
