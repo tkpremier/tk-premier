@@ -7,10 +7,7 @@ const { authenticate } = require('@google-cloud/local-auth');
 const { google } = require('googleapis');
 import { Request, Response } from 'express';
 // If modifying these scopes, delete token.json.
-const SCOPES = [
-  'https://www.googleapis.com/auth/drive.metadata.readonly',
-  'https://www.googleapis.com/auth/drive.metadata.readonly'
-];
+const SCOPES = ['https://www.googleapis.com/auth/drive'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -105,7 +102,8 @@ async function listFiles(authClient, pageSize, pageToken) {
   const drive = google.drive({ version: 'v3', auth: authClient });
   const res = await drive.files.list({
     pageSize,
-    fields: 'nextPageToken, files(id, name)',
+    fields:
+      'nextPageToken, files(kind, id, name, createdTime, mimeType, name, imageMediaMetadata, webViewLink, webContentLink, thumbnailLink, videoMediaMetadata, viewedByMeTime)',
     pageToken
   });
   return res;
