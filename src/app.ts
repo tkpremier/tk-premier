@@ -9,7 +9,6 @@ const logger = require('morgan');
 import layout from './layout';
 import { getDriveList } from './services/drive';
 import apiRoutes from './routes';
-import getMovie from './services/movie';
 import ServerFactory from './server-bundle';
 
 const app = express();
@@ -172,7 +171,7 @@ app.use((err, req, res, next) => {
   res.send(err);
 });
 
-const port = process.env.PORT || 9000;
+const port = process.env.PORT || 8000;
 
 app.listen(port, function () {
   console.log('Server running at http://127.0.0.1:' + port + '/');

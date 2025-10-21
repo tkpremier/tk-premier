@@ -692,10 +692,10 @@ export const updateModelApi = async (req: Request, res: Response) => {
 const useModelApi = async (req: Request, res: Response) => {
   try {
     switch (req.method) {
-      // case 'POST': {
-      //   const response = await addInterviewApi(req, res);
-      //   return response;
-      // }
+      case 'POST': {
+        const response = await createModel(req, res);
+        return response;
+      }
       case 'PUT': {
         const response = await updateModelApi(req, res);
         return response;

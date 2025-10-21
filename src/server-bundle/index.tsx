@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import Main from '../Main';
+import {Main} from '../Main';
 
 class ServerFactory {
   Main: (props: any) => any;

@@ -39,12 +39,10 @@ async function loadSavedCredentialsIfExist() {
   return Promise.all(dbPromises)
     .then(values => values)
     .catch(err => err);
-} */
+}
 type GoogleApiCredentials = {
   installed: {
-    /**
-     * The application's client ID.
-     */
+    // The application's client ID.
     client_id: string;
     project_id: string;
     auth_uri: string;
@@ -53,7 +51,7 @@ type GoogleApiCredentials = {
     client_secret: string;
     redirect_uris: string[];
   };
-};
+}; */
 
 /**
  * Serializes credentials to a file compatible with GoogleAuth.fromJSON.
@@ -144,12 +142,4 @@ async function getUser(auth) {
   return user;
 }
 
-// INITIAL FUNCTION
-// Load client secrets from a local file.
-// fs.readFile('./credentials.json', (err, content) => {
-//   if (err) return console.log('Error loading client secret file:', err);
-//   console.log('readfile content: ', content);
-//   // Authorize a client with credentials, then call the Google Drive API.
-//   authorize(JSON.parse(content), listFiles);
-// });
 export { authorize, getDriveList, getFileApi, getUser };
