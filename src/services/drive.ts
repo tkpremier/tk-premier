@@ -101,7 +101,7 @@ async function listFiles(authClient, pageSize, pageToken) {
   const res = await drive.files.list({
     pageSize,
     fields:
-      'nextPageToken, files(kind, id, name, createdTime, mimeType, name, imageMediaMetadata, webViewLink, webContentLink, thumbnailLink, videoMediaMetadata, viewedByMeTime)',
+      'nextPageToken, files(description, kind, id, name, createdTime, mimeType, name, imageMediaMetadata, webViewLink, webContentLink, thumbnailLink, videoMediaMetadata, viewedByMeTime, size)',
     pageToken
   });
   return res;
@@ -120,7 +120,7 @@ async function getFile(auth, driveId: string) {
   const fetchFile = await drive.files.get({
     fileId: driveId,
     fields:
-      'kind, id, name, createdTime, mimeType, name, parents, spaces, imageMediaMetadata, webViewLink, webContentLink, thumbnailLink, createdTime, videoMediaMetadata, viewedByMeTime'
+      'description, kind, id, name, createdTime, mimeType, name, parents, spaces, imageMediaMetadata, webViewLink, webContentLink, thumbnailLink, createdTime, videoMediaMetadata, viewedByMeTime, size'
   });
   return fetchFile;
 }

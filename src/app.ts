@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 // Include the cluster module
 import createError from 'http-errors';
-import express from 'express';
+import express, { Request, Response } from 'express';
 const cors = require('cors');
 const path = require('path');
 const logger = require('morgan');
@@ -110,18 +110,9 @@ async function getList(req, res) {
   }
 }
 
-async function getIndex(req, res) {
-  const data = [];
-  console.log(ServerFactory);
-  const serverFactory = new ServerFactory();
-  const response = layout({
-    title: 'Google T',
-    componentType: 'Main',
-    content: serverFactory.getSsr(),
-    data: JSON.stringify(data)
-  });
+async function getIndex(_req: Request, res: Response) {
   res.setHeader('Cache-Control', 'assets, max-age=604800');
-  res.send(response);
+  res.send('Welcome to the server!');
 }
 
 // const webWorkers = (req, res) => {
