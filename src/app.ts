@@ -1,20 +1,30 @@
 /* eslint-disable no-var */
 /* eslint-disable @typescript-eslint/no-var-requires */
 // Include the cluster module
-import createError from 'http-errors';
+import cors from 'cors';
 import express, { Request, Response } from 'express';
-const cors = require('cors');
-const path = require('path');
-const logger = require('morgan');
+import { auth, requiresAuth } from 'express-openid-connect';
+import createError from 'http-errors';
+import logger from 'morgan';
+import path from 'path';
 import layout from './layout';
-import { getDriveList } from './services/drive';
 import apiRoutes from './routes';
-import ServerFactory from './server-bundle';
+import { getDriveList } from './services/drive';
 
 const app = express();
 app.use(cors());
-
+app.use(
+  auth({
+    authRequired: false,
+    auth0Logout: true,
+    secret: process.env.SECRET,
+    baseURL: process.env.BASE_URL,
+    clientID: process.env.AUTH0_CLIENT_ID,
+    issuerBaseURL: process.env.AUTH0_ISSUER_URL
+  })
+);
 /* 
+https://dev-5418udy41dhmsk1g.us.auth0.com/authorize?client_id=iYgPzR3POR7PfZyhrWsg6u1YSifttpp7&scope=openid%20profile%20email&response_type=id_token&redirect_uri=localhost%3A%2F%2F%24PORT%2Fcallback&response_mode=form_post&nonce=woFox-T-Kgh5QRNBP2ydhBiq8Y98KCBv7VqzaJuaKC4&state=eyJyZXR1cm5UbyI6ImxvY2FsaG9zdDokUE9SVCJ9
   // GRAPHQL //
   const modelSchema = {
     name: String,
@@ -110,9 +120,8 @@ async function getList(req, res) {
   }
 }
 
-async function getIndex(_req: Request, res: Response) {
-  res.setHeader('Cache-Control', 'assets, max-age=604800');
-  res.send('Welcome to the server!');
+async function getIndex(req: Request, res: Response) {
+  res.send(`Welcome to the server!  Are you authenticated? ${req.oidc.isAuthenticated()}`);
 }
 
 // const webWorkers = (req, res) => {
@@ -139,6 +148,9 @@ app.use(express.urlencoded({ extended: false }));
 
 app.get('/', getIndex);
 app.get('/list', getList);
+app.get('/profile', requiresAuth(), (req, res) => {
+  res.send(JSON.stringify(req.oidc.user));
+});
 // app.get('/moviegame', movieGame);
 // app.get('/web-workers', webWorkers);
 // app.get('/test', mochaTest);

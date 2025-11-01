@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "description": "Tommy's side project",
   "main": "dist/server.bundle.js",
+  "keywords": [
+    "tk-premier"
+  ],
+  "author": "Thomas Kim",
+  "license": "ISC",
+  "engines": {
+    "node": ">=22.18.0"
+  },
   "scripts": {
     "create-drive-table": "node ./db/dev/dbConnection createDriveFilesTable",
     "create-all-tables": "node ./db/dev/dbConnection createAllTables",
@@ -56,15 +64,8 @@
     "dotenv": "latest",
     "dotenv-webpack": "^8.0.0",
     "env2": "^2.1.1",
-    "eslint": "^8.20.0",
-    "eslint-config-airbnb": "latest",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.17.2",
-    "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-node": "^9.0.1",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.30.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "express": "^5.1.0",
+    "express-openid-connect": "^2.19.2",
     "fetch-ponyfill": "^6.1.0",
     "form-serialize": "^0.7.2",
     "googleapis": "105",
@@ -104,10 +105,13 @@
     "winston": "^3.2.1",
     "yarn": "latest"
   },
-  "keywords": [
-    "mfc",
-    "tk-premier"
-  ],
-  "author": "Thomas Kim",
-  "license": "ISC"
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/morgan": "^1.9.10",
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-n": "^17.23.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-unused-imports": "^4.3.0"
+  }
 }

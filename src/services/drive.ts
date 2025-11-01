@@ -1,32 +1,33 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable camelcase */
+import 'dotenv/config';
+import { Request, Response } from 'express';
+import { google } from 'googleapis';
 const fs = require('fs').promises;
 const path = require('path');
 const process = require('process');
 const { authenticate } = require('@google-cloud/local-auth');
-const { google } = require('googleapis');
-import { Request, Response } from 'express';
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/drive'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = path.join(process.cwd(), 'token.json');
-const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json');
+// const TOKEN_PATH = path.join(process.cwd(), 'token.json');
+// const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json');
 /**
  * Reads previously authorized credentials from the save file.
  *
  * @return {Promise<OAuth2Client|null>}
  */
-async function loadSavedCredentialsIfExist() {
-  try {
-    const content = await fs.readFile(TOKEN_PATH);
-    const credentials = JSON.parse(content);
-    return google.auth.fromJSON(credentials);
-  } catch (err) {
-    return null;
-  }
-}
+// async function loadSavedCredentialsIfExist() {
+//   try {
+//     const content = await fs.readFile(TOKEN_PATH);
+//     const credentials = JSON.parse(content);
+//     return google.auth.fromJSON(credentials);
+//   } catch (err) {
+//     return null;
+//   }
+// }
 /* async function dataDump(gDriveData) {
   const data = gDriveData.files.filter(file => file.mimeType.indexOf('google-apps') === -1).map(file => file);
   const dbPromises = data.map(async file => {
@@ -59,7 +60,7 @@ type GoogleApiCredentials = {
  * @param {OAuth2Client} client
  * @return {Promise<void>}
  */
-async function saveCredentials(client) {
+/* async function saveCredentials(client) {
   const content = await fs.readFile(CREDENTIALS_PATH);
   const keys = JSON.parse(content);
   const key = keys.installed || keys.web;
@@ -70,13 +71,22 @@ async function saveCredentials(client) {
     refresh_token: client.credentials.refresh_token
   });
   await fs.writeFile(TOKEN_PATH, payload);
-}
+} */
+
+const oauth2 = new google.auth.OAuth2(
+  process.env.GDCLIENTID!,
+  process.env.GD_CLIENT_SECRET!,
+  process.env.GD_REDIRECT_URI!
+);
+oauth2.setCredentials({ refresh_token: process.env.GD_REFRESH_TOKEN! });
+
+const drive = google.drive({ version: 'v3', auth: oauth2 });
 
 /**
  * Load or request or authorization to call APIs.
  *
  */
-async function authorize() {
+/* async function authorize() {
   let client = await loadSavedCredentialsIfExist();
   if (client) {
     return client;
@@ -90,14 +100,13 @@ async function authorize() {
     await saveCredentials(client);
   }
   return client;
-}
+} */
 
 /**
  * Lists the names and IDs of up to 10 files.
  * @param {OAuth2Client} authClient An authorized OAuth2 client.
  */
-async function listFiles(authClient, pageSize, pageToken) {
-  const drive = google.drive({ version: 'v3', auth: authClient });
+async function listFiles(pageSize, pageToken) {
   const res = await drive.files.list({
     pageSize,
     fields:
@@ -108,15 +117,13 @@ async function listFiles(authClient, pageSize, pageToken) {
 }
 async function getDriveList(nextPage = '', pageSize = 50) {
   try {
-    const auth = await authorize();
-    const res = await listFiles(auth, pageSize, nextPage);
+    const res = await listFiles(pageSize, nextPage);
     return res;
   } catch (e) {
     console.log('err: ', e);
   }
 }
-async function getFile(auth, driveId: string) {
-  const drive = google.drive({ version: 'v3', auth });
+async function getFile(driveId: string) {
   const fetchFile = await drive.files.get({
     fileId: driveId,
     fields:
@@ -127,8 +134,7 @@ async function getFile(auth, driveId: string) {
 
 async function getFileApi(req: Request, res: Response): Promise<Response> {
   try {
-    const auth = await authorize();
-    const data = await getFile(auth, req.params.driveId.toString());
+    const data = await getFile(req.params.driveId.toString());
     return res.status(200).send(JSON.stringify(data));
   } catch (e) {
     console.log(e);
@@ -136,10 +142,9 @@ async function getFileApi(req: Request, res: Response): Promise<Response> {
   }
 }
 
-async function getUser(auth) {
-  const drive = google.drive({ version: 'v3', auth });
+async function getUser() {
   const user = await drive.about.get({ fields: 'user' });
   return user;
 }
 
-export { authorize, getDriveList, getFileApi, getUser };
+export { getDriveList, getFileApi, getUser };
