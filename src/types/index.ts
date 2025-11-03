@@ -41,4 +41,22 @@ export type DriveFile = {
   modelId: Array<number>;
 };
 
+export interface ExpDB {
+  id: number;
+  name: string;
+  description: string;
+}
+
 export type ODriveFile = OptionalAll<DriveFile>;
+
+export interface DbResponse<T = Record<string, unknown>> {
+  rows: Array<T>;
+}
+
+export interface ErrorResponse {
+  error: string;
+}
+
+export type SuccessResponse<T = unknown> = {
+  data: T | Array<T>;
+};

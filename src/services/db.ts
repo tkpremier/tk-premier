@@ -1,23 +1,10 @@
-/* eslint-disable no-param-reassign */
 import { Response, Request } from 'express';
 import format from 'date-fns/format';
 import { camelCase, isNull, uniq } from 'lodash';
 import dbQuery from '../../db/dev/dbQuery';
 import { isEmpty } from '../utils/validations';
 import { status } from '../utils/status';
-import { ContactDB, DriveFile, ODriveFile } from '../types';
-
-interface DbResponse {
-  rows: Array<any>;
-}
-
-interface ErrorResponse {
-  error: string;
-}
-
-type SuccessResponse = {
-  data: Array<any> | any;
-};
+import { ContactDB, DriveFile, ODriveFile, DbResponse, ErrorResponse, SuccessResponse, ExpDB } from '../types';
 
 const getExp = async () => {
   const getModelQuery = `SELECT * FROM
@@ -39,12 +26,15 @@ const getExp = async () => {
     return { data: [] };
   }
 };
-const addExp = async (req: Request, res: Response): Promise<any> => {
+const addExp = async (
+  req: Request,
+  res: Response
+): Promise<Response<SuccessResponse<ExpDB>> | Response<ErrorResponse>> => {
   const { name, description } = req.body;
   const createExpQuery = `INSERT INTO exp(name, description) VALUES($1, $2) returning *`;
   const values = [name, description];
   try {
-    const { rows } = (await dbQuery.query(createExpQuery, values)) as DbResponse;
+    const { rows } = (await dbQuery.query(createExpQuery, values)) as DbResponse<ExpDB>;
     const data = rows[0];
     return res.status(status.success).json({ data, status: 'success' });
   } catch (error) {
@@ -572,7 +562,7 @@ const getAllContacts = async () => {
   const getModelQuery = `SELECT * FROM
   model ORDER BY id DESC`;
   try {
-    const { rows } = (await dbQuery.query(getModelQuery, [])) as DbResponse;
+    const { rows } = (await dbQuery.query(getModelQuery, [])) as DbResponse<ContactDB>;
     const dbResponse = rows;
     if (dbResponse[0] === undefined) {
       console.log('There are no models');
@@ -590,7 +580,7 @@ const getAllContacts = async () => {
       )
     };
   } catch (error) {
-    console.log('An error occurred');
+    console.error('An error occurred', error);
     // errorMessage.error = 'An error Occured';
     // return res.status(status.error).send(errorMessage);
     return { data: [] };
@@ -604,7 +594,9 @@ const getModel = async (id: number) => {
 	ORDER BY model.id ASC`;
   const value = [id];
   try {
-    const { rows } = (await dbQuery.query(getModelQuery, value)) as DbResponse;
+    const { rows } = (await dbQuery.query(getModelQuery, value)) as DbResponse<
+      ContactDB & { drive_ids?: Array<string> }
+    >;
     console.log('db response row: ', rows, rows.length);
     const dbResponse = rows;
     if (dbResponse[0] === undefined) {
@@ -614,7 +606,7 @@ const getModel = async (id: number) => {
       // return res.status(status.notfound).send(errorMessage);
     }
     return {
-      driveIds: dbResponse[0].drive_ids || [],
+      driveIds: (dbResponse[0] as ContactDB & { drive_ids?: Array<string> }).drive_ids || [],
       data: dbResponse.map((f: ContactDB) =>
         Object.keys(f).reduce((o: { [key: string]: Date | Array<string> | number | string }, k: keyof ContactDB) => {
           o[camelCase(k)] =
@@ -650,7 +642,7 @@ const updateModel = async (data: Array<string | number | Array<string>>) => {
   WHERE id = $2`;
   console.log('data: [model_id, id] ', data);
   try {
-    const { rows } = (await dbQuery.query(query, data)) as DbResponse;
+    const { rows } = (await dbQuery.query(query, data)) as DbResponse<ContactDB>;
     const dbResponse = rows;
     // if (dbResponse[0] === undefined) {
     //   console.log("No updates");
@@ -710,8 +702,7 @@ const useModelApi = async (req: Request, res: Response) => {
   }
 };
 
-const getDrive = async (id?: string) => {
-  ``;
+const getDrive = async (id: string) => {
   const getDriveFileQuery = `SELECT * FROM
   drive ORDER BY created_time DESC`;
   try {
@@ -753,7 +744,7 @@ const getDrive = async (id?: string) => {
 };
 const getDriveApi = async (req: Request, res: Response) => {
   try {
-    const { data } = await getDrive();
+    const { data } = await getDrive(req.params.id);
     const dbResponse = data;
     if (dbResponse[0] === undefined) {
       return res.status(status.notfound).send({ data: {} });

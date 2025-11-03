@@ -1,5 +1,3 @@
-/* eslint-disable no-var */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import express, { Request, Response, Router } from 'express';
 import {
   //   createModel,
@@ -10,8 +8,8 @@ import {
   useExperienceApi,
   useInterviewApi,
   useModelApi
-} from './services/db';
-import { getDriveList, getFileApi } from './services/drive';
+} from '../services/db';
+import { getDriveList, getFileApi } from '../services/drive';
 
 type RequestWithQuery = Request & {
   query?: {
@@ -24,20 +22,10 @@ router.use('/interview', useInterviewApi);
 router.get('/drive-google', async (req: RequestWithQuery, res: Response) => {
   try {
     const response = await getDriveList(req.query.nextPage);
-    res.status(200).send(
-      JSON.stringify({
-        files: response.data.files,
-        nextPageToken: response.data.nextPageToken
-      })
-    );
+    res.status(200).send(response.data);
   } catch (e) {
     console.log('there was an error: ', e);
-    res.status(500).send(
-      JSON.stringify({
-        files: [],
-        nextPageToken: ''
-      })
-    );
+    res.status(500).send({ files: [], nextPageToken: '' });
   }
 });
 router.use('/drive-list/:id', useDriveApi);

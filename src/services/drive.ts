@@ -112,7 +112,7 @@ async function getDriveList(nextPage = '', pageSize = 50) {
     const res = await listFiles(pageSize, nextPage);
     return res;
   } catch (e) {
-    console.log('err: ', e);
+    console.error('err: ', e);
   }
 }
 async function getFile(driveId: string) {
@@ -129,7 +129,7 @@ async function getFileApi(req: Request, res: Response): Promise<Response> {
     const data = await getFile(req.params.driveId.toString());
     return res.status(200).send(JSON.stringify(data));
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return res.status(500).send(e);
   }
 }

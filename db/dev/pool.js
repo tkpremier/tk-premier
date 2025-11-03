@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const pg = require('pg');
-const dotenv = require('dotenv');
+import pg from 'pg';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -10,4 +9,4 @@ const databaseConfig = {
 };
 const pool = new pg.Pool(databaseConfig);
 
-module.exports = pool;
+export default pool;

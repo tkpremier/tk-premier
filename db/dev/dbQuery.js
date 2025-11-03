@@ -1,17 +1,17 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-var pool = require('./pool');
+import pool from './pool';
 
 function query(queryText, params) {
   return new Promise((resolve, reject) => {
-    pool.query(queryText, params)
-      .then((res) => {
+    pool
+      .query(queryText, params)
+      .then(res => {
         resolve(res);
       })
-      .catch((err) => {
+      .catch(err => {
         reject(err);
       });
   });
 }
-module.exports = {
+export default {
   query
 };

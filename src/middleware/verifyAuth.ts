@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { errorMessage, status } from '../utils/status';
+import { ErrorResponse } from '../types';
 dotenv.config();
 /**
    * Verify Token
@@ -9,9 +10,6 @@ dotenv.config();
    * @param {object} next
    * @returns {object|void} response object 
    */
- type ErrorResponse = {
-  error: string
-}
 const verifyToken = async (req, res, next) => {
   const { token } = req.headers;
   let errorMessage: ErrorResponse;

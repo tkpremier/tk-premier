@@ -47,7 +47,7 @@ module.exports = [
       'comma-dangle': ['error', 'never'],
       'func-names': ['off'],
       'no-confusing-arrow': ['warn'],
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-console': ['warn', { allow: ['log', 'warn', 'error'] }],
       'object-shorthand': ['error', 'methods'],
       'prettier/prettier': ['off'],
       'arrow-body-style': ['error', 'as-needed'],

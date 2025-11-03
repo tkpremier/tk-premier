@@ -4,7 +4,7 @@ import { auth, requiresAuth } from 'express-openid-connect';
 import createError from 'http-errors';
 import logger from 'morgan';
 import path from 'path';
-import apiRoutes from './routes';
+import apiRoutes from './api/routes';
 
 const app = express();
 app.use(cors());
