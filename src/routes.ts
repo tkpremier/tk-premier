@@ -1,17 +1,17 @@
 /* eslint-disable no-var */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import express, { Request, Response } from 'express';
-import { getDriveList, getFileApi } from './services/drive';
+import express, { Request, Response, Router } from 'express';
 import {
   //   createModel,
   //   createUser,
   //   signInUser,
   //   updateUserToAdmin,
   useDriveApi,
-  useModelApi,
   useExperienceApi,
-  useInterviewApi
+  useInterviewApi,
+  useModelApi
 } from './services/db';
+import { getDriveList, getFileApi } from './services/drive';
 
 type RequestWithQuery = Request & {
   query?: {
@@ -19,7 +19,7 @@ type RequestWithQuery = Request & {
   };
 };
 
-const router = express.Router();
+const router = express.Router() as Router;
 router.use('/interview', useInterviewApi);
 router.get('/drive-google', async (req: RequestWithQuery, res: Response) => {
   try {
