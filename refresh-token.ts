@@ -1,5 +1,7 @@
 import 'dotenv/config';
+import fs from 'fs';
 import { google } from 'googleapis';
+import path from 'path';
 
 async function main() {
   const oauth2 = new google.auth.OAuth2(
@@ -18,9 +20,49 @@ async function main() {
 
   process.stdin.once('data', async buf => {
     const code = buf.toString().trim();
-    const { tokens } = await oauth2.getToken(code);
-    console.log('\nREFRESH TOKEN:', tokens.refresh_token);
-    process.exit(0);
+    try {
+      const { tokens } = await oauth2.getToken(code);
+
+      if (!tokens.refresh_token) {
+        console.error('No refresh_token returned. Make sure access_type=offline and prompt=consent.');
+        process.exit(1);
+      }
+
+      const refreshToken = tokens.refresh_token;
+      console.log('\nGot refresh token:\n', refreshToken);
+
+      // 👉 Write/update .env
+      const envPath = path.resolve(process.cwd(), '.env');
+      let env = '';
+
+      if (fs.existsSync(envPath)) {
+        env = fs.readFileSync(envPath, 'utf8');
+      }
+
+      const newLine = `GD_REFRESH_TOKEN=${refreshToken}`;
+
+      if (env.match(/^GD_REFRESH_TOKEN=.*$/m)) {
+        // replace existing line
+        env = env.replace(/^GD_REFRESH_TOKEN=.*$/m, newLine);
+      } else {
+        // append
+        if (!env.endsWith('\n') && env.length > 0) {
+          env += '\n';
+        }
+        env += newLine + '\n';
+      }
+
+      fs.writeFileSync(envPath, env);
+      console.log(`\n✅ .env updated with GD_REFRESH_TOKEN`);
+
+      process.exit(0);
+    } catch (err: any) {
+      console.error('Error exchanging code for tokens:', err.message || err);
+      process.exit(1);
+    }
   });
 }
-main().catch(console.error);
+main().catch(e => {
+  console.error(e);
+  process.exit(1);
+});

@@ -1,14 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable camelcase */
 import 'dotenv/config';
 import { Request, Response } from 'express';
 import { google } from 'googleapis';
-const fs = require('fs').promises;
-const path = require('path');
-const process = require('process');
-const { authenticate } = require('@google-cloud/local-auth');
-// If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/drive'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
