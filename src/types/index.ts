@@ -1,5 +1,15 @@
 import { Response } from 'express';
 
+export type DriveFile = {
+  id: string;
+  name: string;
+  webViewLink: string;
+  webContentLink: string;
+  thumbnailLink: string;
+  createdTime: string;
+  lastViewed: string;
+};
+
 type OptionalAll<Type> = {
   [Property in keyof Type]?: string | number | Array<number>;
 };
@@ -26,7 +36,7 @@ export interface Contact {
   platform: string;
 }
 
-export type DriveFile = {
+export type DriveDB = {
   id: string;
   driveId: string;
   type: string;
@@ -47,7 +57,7 @@ export interface ExpDB {
   description: string;
 }
 
-export type ODriveFile = OptionalAll<DriveFile>;
+export type ODriveFile = OptionalAll<DriveDB>;
 
 export interface DbResponse<T = Record<string, unknown>> {
   rows: Array<T>;

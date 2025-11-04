@@ -4,7 +4,7 @@ import { camelCase, isNull, uniq } from 'lodash';
 import dbQuery from '../../db/dev/dbQuery';
 import { isEmpty } from '../utils/validations';
 import { status } from '../utils/status';
-import { ContactDB, DriveFile, ODriveFile, DbResponse, ErrorResponse, SuccessResponse, ExpDB } from '../types';
+import { ContactDB, DriveDB, ODriveFile, DbResponse, ErrorResponse, SuccessResponse, ExpDB } from '../types';
 
 const getExp = async () => {
   const getModelQuery = `SELECT * FROM
@@ -716,24 +716,24 @@ const getDrive = async (id: string) => {
     }
 
     return {
-      data: dbResponse.map((f: DriveFile) =>
+      data: dbResponse.map((f: DriveDB) =>
         Object.keys(f).reduce(
-          (o: { [key: string]: string | number | null | Array<number> }, k: keyof DriveFile): ODriveFile => {
+          (o: { [key: string]: string | number | null | Array<number> }, k: keyof DriveDB): ODriveFile => {
             const dateKeys = ['createdOn', 'createdTime', 'lastViewed'];
             const key = camelCase(k);
             o[key] =
               dateKeys.indexOf(key) > -1
                 ? key === 'createdOn' || key === 'createdTime'
-                  ? format(new Date(f[k] as DriveFile['createdOn'] | DriveFile['createdTime']), "MM/dd/yyyy' 'HH:mm:ss")
+                  ? format(new Date(f[k] as DriveDB['createdOn'] | DriveDB['createdTime']), "MM/dd/yyyy' 'HH:mm:ss")
                   : !isNull(f[k])
-                  ? format(new Date(f[k] as DriveFile['lastViewed']), "MM/dd/yyyy' 'HH:mm:ss")
+                  ? format(new Date(f[k] as DriveDB['lastViewed']), "MM/dd/yyyy' 'HH:mm:ss")
                   : f[k]
                 : f[k];
             return o;
           },
           {}
         )
-      ) as Array<DriveFile>
+      ) as Array<DriveDB>
     };
   } catch (error) {
     console.log('An error occurred', error);
@@ -755,7 +755,7 @@ const getDriveApi = async (req: Request, res: Response) => {
     return res.status(status.error).send({ data: {} });
   }
 };
-const useDriveApi = async (req: Request, res: Response) => {
+const useDriveDB = async (req: Request, res: Response) => {
   switch (req.method) {
     case 'POST': {
       return await createDriveApi(req, res);
@@ -776,6 +776,6 @@ export {
   getInterview,
   useExperienceApi,
   useInterviewApi,
-  useDriveApi,
+  useDriveDB,
   useModelApi
 };

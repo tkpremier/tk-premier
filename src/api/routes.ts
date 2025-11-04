@@ -1,15 +1,7 @@
 import express, { Request, Response, Router } from 'express';
-import {
-  //   createModel,
-  //   createUser,
-  //   signInUser,
-  //   updateUserToAdmin,
-  useDriveApi,
-  useExperienceApi,
-  useInterviewApi,
-  useModelApi
-} from '../services/db';
-import { getDriveList, getFileApi } from '../services/drive';
+import { useDriveDB, useExperienceApi, useInterviewApi, useModelApi } from '../services/db';
+import { getDriveList } from '../services/drive';
+import { useDriveApi } from './drive';
 
 type RequestWithQuery = Request & {
   query?: {
@@ -28,13 +20,11 @@ router.get('/drive-google', async (req: RequestWithQuery, res: Response) => {
     res.status(500).send({ files: [], nextPageToken: '' });
   }
 });
-router.use('/drive-list/:id', useDriveApi);
-router.use('/drive-list', useDriveApi);
+router.use('/drive-list/:id', useDriveDB);
+router.use('/drive-list', useDriveDB);
 router.use('/model/:id', useModelApi);
 router.use('/model', useModelApi);
-router.get('/drive-file/:driveId', getFileApi);
-// router.get('/model', getModel);
-// router.post('/model', createModel);
-// router.post('/user', createUser);
+router.use('/drive-file/:driveId', useDriveApi);
 router.use('/experience', useExperienceApi);
+
 export default router;
