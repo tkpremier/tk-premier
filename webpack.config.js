@@ -1,10 +1,11 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+const dotenv = require('dotenv');
+dotenv.config();
 const { resolve } = require('path');
 const nodeExternals = require('webpack-node-externals');
 const DotEnv = require('dotenv-webpack');
 
 module.exports = {
-  mode: 'development',
+  mode: process.env.NODE_ENV || 'development',
   entry: {
     server: './src/app.ts'
   },

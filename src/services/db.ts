@@ -734,22 +734,21 @@ const getDrive = async () => {
       ) as Array<DriveDB>
     };
   } catch (error) {
-    console.log('An error occurred', error);
-    // errorMessage.error = 'An error Occured';
-    // return res.status(status.error).send(errorMessage);
-    return { data: [] };
+    return new Error(error);
   }
 };
 const getDriveApi = async (req: Request, res: Response) => {
   try {
-    const { data } = await getDrive();
-    const dbResponse = data;
-    if (dbResponse[0] === undefined) {
+    const response = await getDrive();
+    if (response instanceof Error) {
+      throw response;
+    }
+    if (response && response.data.length === 0) {
       return res.status(status.notfound).send({ data: {} });
     }
-    return res.status(status.success).send({ data });
+    return res.status(status.success).send({ data: response.data });
   } catch (error) {
-    console.log('error: ', error);
+    console.error('getDriveApi error: ', error);
     return res.status(status.error).send({ data: {} });
   }
 };

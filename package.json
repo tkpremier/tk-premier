@@ -16,6 +16,7 @@
     "create-all-tables": "node ./db/dev/dbConnection createAllTables",
     "drop-all-tables": "node ./db/dev/dbConnection dropAllTables",
     "drop-table": "node ./db/dev/dbConnection dropDriveFilesTable",
+    "disconnect-db": "node ./db/dev/disconnect-db.js",
     "jest-init": "jest --init",
     "test": "jest",
     "babel": "babel app.js -o app.babel.js",
