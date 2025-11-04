@@ -12,15 +12,15 @@ const getExp = async () => {
   try {
     const dbResponse = (await dbQuery.query(getModelQuery, [])) as DbResponse;
     const data = dbResponse.rows;
-    if (dbResponse[0] === undefined) {
-      console.log('There are no models');
+    if (data[0] === undefined) {
+      console.log('There are no job experiences');
       return { data: [] };
       // errorMessage.error = 'There are no models';
       // return res.status(status.notfound).send(errorMessage);
     }
     return { data };
   } catch (error) {
-    console.log('An error occurred', error);
+    console.error('An error occurred fetching job experiences', error);
     // errorMessage.error = 'An error Occured';
     // return res.status(status.error).send(errorMessage);
     return { data: [] };
@@ -61,6 +61,7 @@ const addInterviewApi = async (req: Request, res: Response): Promise<any> => {
     const data = rows[0];
     return res.status(status.success).json({ data, status: 'success' });
   } catch (error) {
+    console.error('An error occurred adding an interview', error);
     let errorMessage: ErrorResponse;
     errorMessage.error = 'Operation was not successful';
     return res.status(status.error).send(errorMessage);
@@ -523,9 +524,6 @@ const useExperienceApi = async (req: Request, res: Response) => {
       }
       default: {
         const { data } = await getExp();
-        if (data.length === 0) {
-          return res.status(status.success).send({ data });
-        }
         return res.status(status.success).send({ data });
       }
     }
@@ -702,7 +700,7 @@ const useModelApi = async (req: Request, res: Response) => {
   }
 };
 
-const getDrive = async (id: string) => {
+const getDrive = async () => {
   const getDriveFileQuery = `SELECT * FROM
   drive ORDER BY created_time DESC`;
   try {
@@ -744,7 +742,7 @@ const getDrive = async (id: string) => {
 };
 const getDriveApi = async (req: Request, res: Response) => {
   try {
-    const { data } = await getDrive(req.params.id);
+    const { data } = await getDrive();
     const dbResponse = data;
     if (dbResponse[0] === undefined) {
       return res.status(status.notfound).send({ data: {} });
