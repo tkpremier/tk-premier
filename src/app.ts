@@ -15,7 +15,11 @@ app.use(
     secret: process.env.SECRET,
     baseURL: process.env.BASE_URL,
     clientID: process.env.AUTH0_CLIENT_ID,
-    issuerBaseURL: process.env.AUTH0_ISSUER_URL
+    issuerBaseURL: process.env.AUTH0_ISSUER_URL,
+    routes: {
+      login: false,
+      logout: false
+    }
   })
 );
 
@@ -31,6 +35,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get('/', getIndex);
+app.get('/login', (_req, res) => {
+  res.oidc.login({ returnTo: `${process.env.CLIENT_URL}/` });
+});
+
+app.get('/logout', (_req, res) => {
+  res.oidc.logout({ returnTo: `${process.env.CLIENT_URL}/` });
+});
 app.get('/profile', requiresAuth(), (req, res) => {
   res.send(JSON.stringify(req.oidc.user));
 });
