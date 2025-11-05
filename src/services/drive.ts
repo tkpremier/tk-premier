@@ -20,7 +20,7 @@ async function listFiles(pageSize: number, pageToken: string) {
   });
   return res;
 }
-export const getDriveList = async (nextPage = '', pageSize = 50) => {
+export const getDriveList = async (nextPage = '', pageSize = 1000) => {
   try {
     const res = await listFiles(pageSize, nextPage);
     return res;

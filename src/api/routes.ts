@@ -1,8 +1,9 @@
 import express, { Request, Response, Router } from 'express';
+import pool from '../../db/dev/pool';
 import { useDriveDB, useExperienceApi, useInterviewApi, useModelApi } from '../services/db';
 import { getDriveList } from '../services/drive';
+import { getAuthentication } from './auth';
 import { useDriveApi } from './drive';
-import pool from '../../db/dev/pool';
 
 type RequestWithQuery = Request & {
   query?: {
@@ -27,7 +28,7 @@ router.use('/model/:id', useModelApi);
 router.use('/model', useModelApi);
 router.use('/drive-file/:driveId', useDriveApi);
 router.use('/experience', useExperienceApi);
-
+router.get('/authentication', getAuthentication);
 router.post('/disconnect-db', async (req: Request, res: Response) => {
   try {
     const poolStats = {
