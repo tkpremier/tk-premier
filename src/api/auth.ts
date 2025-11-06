@@ -8,6 +8,6 @@ export const getAuthentication = async (req: Request, res: Response) => {
     }
     res.status(200).json({ authenticated, user: req.oidc.user });
   } catch (error) {
-    res.status(401).json({ error, authenticated: false });
+    res.status(401).json({ error: error.message, authenticated: false });
   }
 };

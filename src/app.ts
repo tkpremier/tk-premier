@@ -1,4 +1,5 @@
 import cors from 'cors';
+import 'dotenv/config';
 import express, { ErrorRequestHandler, Request, Response } from 'express';
 import { auth, requiresAuth } from 'express-openid-connect';
 import createError from 'http-errors';
@@ -9,7 +10,7 @@ import apiRoutes from './api/routes';
 const app = express();
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: [process.env.CLIENT_URL, process.env.AUTH0_ISSUER_URL],
     credentials: true
   })
 );
