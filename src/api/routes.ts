@@ -27,7 +27,7 @@ router.use('/drive-list/:id', useDriveDB);
 router.use('/drive-list', useDriveDB);
 router.use('/model/:id', useModelApi);
 router.use('/model', useModelApi);
-router.use('/drive-file/:driveId', requiresAuth(), useDriveApi);
+router.use('/drive-file/:driveId', useDriveApi);
 router.use('/experience', useExperienceApi);
 router.get('/authentication', getAuthentication);
 router.post('/disconnect-db', async (req: Request, res: Response) => {
