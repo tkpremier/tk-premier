@@ -1,20 +1,19 @@
-import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { errorMessage, status } from '../utils/status';
+import jwt from 'jsonwebtoken';
 import { ErrorResponse } from '../types';
+import { status } from '../utils/status';
 dotenv.config();
 /**
-   * Verify Token
-   * @param {object} req expressjs req
-   * @param {object} res expressjs res
-   * @param {object} next
-   * @returns {object|void} response object 
-   */
+ * Verify Token
+ * @param {object} req expressjs req
+ * @param {object} res expressjs res
+ * @param {object} next
+ * @returns {object|void} response object
+ */
 const verifyToken = async (req, res, next) => {
   const { token } = req.headers;
   let errorMessage: ErrorResponse;
   if (!token) {
-  
     errorMessage.error = 'Token not provided';
     return res.status(status.bad).send(errorMessage);
   }

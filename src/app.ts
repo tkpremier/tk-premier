@@ -1,7 +1,7 @@
 import cors from 'cors';
 import 'dotenv/config';
 import express, { ErrorRequestHandler, Request, Response } from 'express';
-import { auth, requiresAuth } from 'express-openid-connect';
+import { auth, claimEquals } from 'express-openid-connect';
 import createError from 'http-errors';
 import logger from 'morgan';
 import path from 'path';
@@ -48,7 +48,8 @@ app.get('/login', (_req, res) => {
 app.get('/logout', (_req, res) => {
   res.oidc.logout({ returnTo: `${process.env.CLIENT_URL}/` });
 });
-app.get('/profile', requiresAuth(), (req, res) => {
+
+app.get('/profile', claimEquals('email', 'kkim31@gmail.com'), async (req, res) => {
   res.send(JSON.stringify(req.oidc.user));
 });
 
