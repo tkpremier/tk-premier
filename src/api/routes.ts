@@ -1,5 +1,5 @@
 import express, { Request, Response, Router } from 'express';
-// import { requiresAuth } from 'express-openid-connect';
+import { requiresAuth } from 'express-openid-connect';
 import pool from '../../db/dev/pool';
 import { useExperienceApi, useInterviewApi, useModelApi } from '../services/db';
 import { getDriveList, syncDriveFiles } from '../services/drive';
@@ -15,7 +15,7 @@ type RequestWithQuery = Request & {
 
 const router = express.Router() as Router;
 router.use('/interview', useInterviewApi);
-router.get('/drive-google', async (req: RequestWithQuery, res: Response) => {
+router.get('/drive-google', requiresAuth(), async (req: RequestWithQuery, res: Response) => {
   try {
     const response = await getDriveList(req.query.nextPage);
     res.status(200).send(response.data);

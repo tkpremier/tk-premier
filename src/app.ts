@@ -1,5 +1,3 @@
-import cors from 'cors';
-import 'dotenv/config';
 import express, { ErrorRequestHandler, Request, Response } from 'express';
 import { auth, claimEquals } from 'express-openid-connect';
 import createError from 'http-errors';
@@ -9,21 +7,7 @@ import apiRoutes from './api/routes';
 
 const app = express();
 app.set('trust proxy', 1);
-const allowed = new Set([
-  process.env.CLIENT_URL!, // e.g. https://tkpremier.com or http://localhost:3000
-  'https://www.tkpremier.com'
-]);
 
-const corsOptions: cors.CorsOptions = {
-  origin: (origin, cb) => {
-    if (!origin || allowed.has(origin)) return cb(null, true);
-    return cb(new Error('Not allowed by CORS'));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Authorization', 'Content-Type', 'Accept', 'X-Requested-With']
-};
-// app.use(cors(corsOptions));
 app.use(
   auth({
     authRequired: false,
@@ -54,16 +38,19 @@ app.get('/', getIndex);
 app.get('/login', (_req, res) => {
   res.oidc.login({ returnTo: `${process.env.CLIENT_URL}/` });
 });
-app.post('/callback', (req, res, next) => next()); // handled by express-openid-connect internally
+app.post('/callback', (_req, _res, next) => next()); // handled by express-openid-connect internally
 
 app.get('/logout', (_req, res) => {
   res.oidc.logout({ returnTo: `${process.env.CLIENT_URL}/` });
 });
-// app.get('/authentication', getAuthentication);
 
 app.get('/profile', claimEquals('email', 'kkim31@gmail.com'), async (req, res) => {
   res.send(JSON.stringify(req.oidc.user));
 });
+const allowed = new Set([
+  process.env.CLIENT_URL!, // e.g. https://tkpremier.com or http://localhost:3000
+  'https://www.tkpremier.com'
+]);
 app.use('/api', (req, res, next) => {
   const o = req.headers.origin as string | undefined;
   if (!o || allowed.has(o)) {
@@ -77,7 +64,6 @@ app.use('/api', (req, res, next) => {
   next();
 });
 
-app.use('/api', cors(corsOptions));
 app.use('/api', apiRoutes);
 
 app.get('/healthz', (_req, res) => {
