@@ -32,7 +32,7 @@ async function main() {
       console.log('\nGot refresh token:\n', refreshToken);
 
       // 👉 Write/update .env
-      const envPath = path.resolve(process.cwd(), '.env');
+      const envPath = path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`);
       let env = '';
 
       if (fs.existsSync(envPath)) {
@@ -53,7 +53,7 @@ async function main() {
       }
 
       fs.writeFileSync(envPath, env);
-      console.log(`\n✅ .env updated with GD_REFRESH_TOKEN`);
+      console.log(`\n✅ .env.${process.env.NODE_ENV} updated with GD_REFRESH_TOKEN`);
 
       process.exit(0);
     } catch (err: any) {

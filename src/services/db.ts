@@ -1,10 +1,10 @@
-import { Response, Request } from 'express';
 import format from 'date-fns/format';
-import { camelCase, isNull, uniq } from 'lodash';
+import { Request, Response } from 'express';
+import { camelCase, uniq } from 'lodash';
 import dbQuery from '../../db/dev/dbQuery';
-import { isEmpty } from '../utils/validations';
+import { ContactDB, DbResponse, ErrorResponse, ExpDB, SuccessResponse } from '../types';
 import { status } from '../utils/status';
-import { ContactDB, DriveDB, ODriveFile, DbResponse, ErrorResponse, SuccessResponse, ExpDB } from '../types';
+import { isEmpty } from '../utils/validations';
 
 const getExp = async () => {
   const getModelQuery = `SELECT * FROM
@@ -385,81 +385,7 @@ const createModel = async (req, res) => {
 //     return res.status(status.error).send(errorMessage);
 //   }
 // };
-const createDriveFile = async (values: string[]): Promise<DbResponse['rows']> => {
-  /*
-    (id VARCHAR(100) NOT NULL,
-    drive_id VARCHAR(100) NOT NULL,
-    type VARCHAR(100) NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    web_view_link VARCHAR(100) NOT NULL,
-    web_content_link VARCHAR(100) NOT NULL,
-    thumbnail_link VARCHAR(100),
-    created_time DATE NOT NULL,
-    viewed_time DATE NOT NULL,
-    created_on DATE NOT NULL)
-  */
-  const createDriveFileQuery = `INSERT INTO
-  drive(id, drive_id, type, name, web_view_link, web_content_link, thumbnail_link, created_time, last_viewed, duration, model_id, created_on)
-  VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-  returning *`;
-  const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-  values.push(createdOn);
-  const { rows } = (await dbQuery.query(createDriveFileQuery, values)) as DbResponse;
-  return rows;
-};
-const createDriveApi = async (req: Request, res: Response) => {
-  console.log('newDrive data: ', req.body);
-  const values = Object.keys(req.body).map(k => req.body[k]);
-  console.log('new drive files values: ', values);
-  try {
-    const rows = await createDriveFile(values);
-    const data = rows[0];
-    return res.status(status.created).send({ data });
-  } catch (error) {
-    console.log('error?: ', error);
-    return res.status(status.error).send({ data: [] });
-  }
-};
-const updateDrive = async data => {
-  const query = `UPDATE drive
-  SET ${data.shift()} = array_cat(model_id, $1)
-  WHERE id = $2`;
-  try {
-    const { rows } = (await dbQuery.query(query, data)) as DbResponse;
-    console.log('query', query, 'dta', data, rows);
-    const dbResponse = rows;
-    // if (dbResponse[0] === undefined) {
-    //   console.log("No updates");
-    //   return { data: [] };
-    //   // errorMessage.error = 'There are no models';
-    //   // return res.status(status.notfound).send(errorMessage);
-    // }
-    return {
-      data: dbResponse
-    };
-  } catch (error) {
-    console.log('An error occurred', error);
-    // errorMessage.error = 'An error Occured';
-    // return res.status(status.error).send(errorMessage);
-    return { data: [] };
-  }
-};
 
-export const updateDriveApi = async (req: Request, res: Response) => {
-  try {
-    const { data } = await updateDrive(req.body);
-    // if (data && data.length === 0) {
-    //   errorMessage.error = 'No updates to be made';
-    //   return res.status(status.notfound).send(errorMessage);
-    // }
-    return res.status(status.success).send(data);
-  } catch (error) {
-    console.log('An error occurred', error);
-    let errorMessage: ErrorResponse;
-    errorMessage.error = 'An error Occured';
-    return res.status(status.error).send(errorMessage);
-  }
-};
 const updateInterview = async data => {
   const createExpQuery = `UPDATE interview
     SET company = $1, date = $2, retro = $3
@@ -546,12 +472,11 @@ const useInterviewApi = async (req: Request, res: Response) => {
       }
       default: {
         const { data } = await getInterview();
-        console.log('data: ', data);
         return res.status(status.success).send({ data });
       }
     }
   } catch (error) {
-    console.log('An error occurred', error);
+    console.log('An error occurred with interviews', error);
     return res.status(status.error).send({ data: [] });
   }
 };
@@ -700,79 +625,4 @@ const useModelApi = async (req: Request, res: Response) => {
   }
 };
 
-const getDrive = async () => {
-  const getDriveFileQuery = `SELECT * FROM
-  drive ORDER BY created_time DESC`;
-  try {
-    const { rows } = (await dbQuery.query(getDriveFileQuery, [])) as DbResponse;
-    const dbResponse = rows;
-    if (dbResponse[0] === undefined) {
-      console.log('There are no drive files');
-      return { data: [] };
-      // errorMessage.error = 'There are no models';
-      // return res.status(status.notfound).send(errorMessage);
-    }
-
-    return {
-      data: dbResponse.map((f: DriveDB) =>
-        Object.keys(f).reduce(
-          (o: { [key: string]: string | number | null | Array<number> }, k: keyof DriveDB): ODriveFile => {
-            const dateKeys = ['createdOn', 'createdTime', 'lastViewed'];
-            const key = camelCase(k);
-            o[key] =
-              dateKeys.indexOf(key) > -1
-                ? key === 'createdOn' || key === 'createdTime'
-                  ? format(new Date(f[k] as DriveDB['createdOn'] | DriveDB['createdTime']), "MM/dd/yyyy' 'HH:mm:ss")
-                  : !isNull(f[k])
-                  ? format(new Date(f[k] as DriveDB['lastViewed']), "MM/dd/yyyy' 'HH:mm:ss")
-                  : f[k]
-                : f[k];
-            return o;
-          },
-          {}
-        )
-      ) as Array<DriveDB>
-    };
-  } catch (error) {
-    return new Error(error);
-  }
-};
-const getDriveApi = async (req: Request, res: Response) => {
-  try {
-    const response = await getDrive();
-    if (response instanceof Error) {
-      throw response;
-    }
-    if (response && response.data.length === 0) {
-      return res.status(status.notfound).send({ data: {} });
-    }
-    return res.status(status.success).send({ data: response.data });
-  } catch (error) {
-    console.error('getDriveApi error: ', error);
-    return res.status(status.error).send({ data: {} });
-  }
-};
-const useDriveDB = async (req: Request, res: Response) => {
-  switch (req.method) {
-    case 'POST': {
-      return await createDriveApi(req, res);
-    }
-    case 'PUT': {
-      return await updateDriveApi(req, res);
-    }
-    default: {
-      return await getDriveApi(req, res);
-    }
-  }
-};
-export {
-  addExp,
-  addInterviewApi,
-  createModel,
-  getExp,
-  getInterview,
-  useExperienceApi,
-  useInterviewApi,
-  useDriveDB,
-  useModelApi
-};
+export { addExp, addInterviewApi, createModel, getExp, getInterview, useExperienceApi, useInterviewApi, useModelApi };

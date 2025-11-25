@@ -1,11 +1,12 @@
-const dotenv = require('dotenv');
-dotenv.config();
 const { resolve } = require('path');
 const nodeExternals = require('webpack-node-externals');
 const DotEnv = require('dotenv-webpack');
 
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const envPath = resolve(__dirname, `.env.${NODE_ENV}`);
+
 module.exports = {
-  mode: process.env.NODE_ENV || 'development',
+  mode: NODE_ENV,
   entry: {
     server: './src/app.ts'
   },
@@ -38,5 +39,11 @@ module.exports = {
     outputPath: true,
     publicPath: true
   },
-  plugins: [new DotEnv()]
+  plugins: [
+    new DotEnv({
+      path: envPath, // loads .env.development in dev, .env.production in prod
+      systemvars: true, // let process.env override if present (e.g., Docker)
+      silent: true // don't crash if file is missing
+    })
+  ]
 };

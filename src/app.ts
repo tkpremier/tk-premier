@@ -8,12 +8,22 @@ import path from 'path';
 import apiRoutes from './api/routes';
 
 const app = express();
-app.use(
-  cors({
-    origin: [process.env.CLIENT_URL, process.env.AUTH0_ISSUER_URL],
-    credentials: true
-  })
-);
+app.set('trust proxy', 1);
+const allowed = new Set([
+  process.env.CLIENT_URL!, // e.g. https://tkpremier.com or http://localhost:3000
+  'https://www.tkpremier.com'
+]);
+
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, cb) => {
+    if (!origin || allowed.has(origin)) return cb(null, true);
+    return cb(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Authorization', 'Content-Type', 'Accept', 'X-Requested-With']
+};
+// app.use(cors(corsOptions));
 app.use(
   auth({
     authRequired: false,
@@ -38,23 +48,41 @@ app.use('/build', express.static(path.resolve(__dirname, 'build')));
 app.use('/workers', express.static(path.resolve(__dirname, 'workers')));
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', getIndex);
 app.get('/login', (_req, res) => {
   res.oidc.login({ returnTo: `${process.env.CLIENT_URL}/` });
 });
+app.post('/callback', (req, res, next) => next()); // handled by express-openid-connect internally
 
 app.get('/logout', (_req, res) => {
   res.oidc.logout({ returnTo: `${process.env.CLIENT_URL}/` });
 });
+// app.get('/authentication', getAuthentication);
 
 app.get('/profile', claimEquals('email', 'kkim31@gmail.com'), async (req, res) => {
   res.send(JSON.stringify(req.oidc.user));
 });
+app.use('/api', (req, res, next) => {
+  const o = req.headers.origin as string | undefined;
+  if (!o || allowed.has(o)) {
+    if (o) res.setHeader('Access-Control-Allow-Origin', o);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Authorization,Content-Type,Accept,X-Requested-With');
+  }
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
 
+app.use('/api', cors(corsOptions));
 app.use('/api', apiRoutes);
 
+app.get('/healthz', (_req, res) => {
+  res.status(200).send('ok');
+});
 // catch 404 and forward to error handler
 app.use((_req, _res, next) => {
   next(createError(404));
