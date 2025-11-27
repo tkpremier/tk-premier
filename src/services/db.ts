@@ -430,10 +430,10 @@ const updateInterviewApi = async (req: Request, res: Response) => {
       // errorMessage.error = 'There are no models';
       // return res.status(status.notfound).send(errorMessage);
     }
-    return res.status(status.success).json({ data });
+    return res.status(status.success).json({ data: data[0] });
   } catch (error) {
     console.log('db error: ', error);
-    return res.status(status.error).send({ data: [] });
+    return res.status(status.error).send({ data: {} });
   }
 };
 
