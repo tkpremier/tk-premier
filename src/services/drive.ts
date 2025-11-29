@@ -181,3 +181,20 @@ export const getUser = async () => {
   const user = await drive.about.get({ fields: 'user' });
   return user;
 };
+
+/* export const getMultipleFiles = async (fileIds: string[]) => {
+  const filePromises = fileIds.map(fileId =>
+    drive.files.get({
+      fileId: fileId,
+      fields: 'id, name, mimeType, size' // Specify the fields you need
+    })
+  );
+
+  try {
+    const results = await Promise.all(filePromises);
+    return results.map(res => res.data);
+  } catch (error) {
+    console.error('Error fetching files:', error);
+    throw error;
+  }
+}; */
