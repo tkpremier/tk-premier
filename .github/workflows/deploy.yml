@@ -1,0 +1,41 @@
+name: Deploy API
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy API to Digital Ocean
+        env:
+          SSH_KEY: ${{ secrets.DO_SSH_KEY }}
+          SSH_HOST: ${{ secrets.DO_HOST }}
+          SSH_USER: ${{ secrets.DO_USER }}
+        run: |
+          # Setup SSH
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          
+          # Sync only api folder
+          rsync -avz --delete \
+            --exclude 'node_modules/' \
+            --exclude 'dist/' \
+            --exclude 'build/' \
+            --exclude '.git/' \
+            -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key" \
+            ./ $SSH_USER@$SSH_HOST:/opt/tkpremier/api/
+          
+          # Rebuild and restart containers
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key \
+            $SSH_USER@$SSH_HOST << 'EOF'
+            cd /opt/tkpremier
+            docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build api
+          EOF
+
