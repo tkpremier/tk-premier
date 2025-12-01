@@ -88,7 +88,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 };
 app.use(errorHandler);
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3001;
 
 app.listen(port, function () {
   console.log('Server running at http://127.0.0.1:' + port + '/');
