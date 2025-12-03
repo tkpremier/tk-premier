@@ -4,9 +4,7 @@ import { ErrorResponse } from '../../../types';
 import { status } from '../../../utils/status';
 
 const createDriveRow = async (req: Request, res: Response) => {
-  console.log('newDrive data: ', req.body);
   const values = Object.keys(req.body).map(k => req.body[k]);
-  console.log('new drive files values: ', values);
   try {
     const rows = await createDrive(values);
     const data = rows[0];
@@ -33,9 +31,8 @@ export const updateDriveRow = async (req: Request, res: Response) => {
   }
 };
 
-const getDriveRows = async (req: Request, res: Response) => {
+const getDriveRows = async (_req: Request, res: Response) => {
   try {
-    console.log('getDriveRows');
     const response = await getDrive();
     if (response instanceof Error) {
       throw response;

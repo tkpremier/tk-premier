@@ -481,11 +481,11 @@ const useInterviewApi = async (req: Request, res: Response) => {
   }
 };
 
-const getAllContacts = async () => {
+const getAllModels = async () => {
   const getModelQuery = `SELECT * FROM
   model ORDER BY id DESC`;
   try {
-    const { rows } = (await dbQuery.query(getModelQuery, [])) as DbResponse<ContactDB>;
+    const { rows } = await dbQuery.query(getModelQuery, []);
     const dbResponse = rows;
     if (dbResponse[0] === undefined) {
       console.log('There are no models');
@@ -548,7 +548,7 @@ const getModel = async (id: number) => {
 
 const getModelApi = async (req: Request, res: Response) => {
   try {
-    const { data } = req.params.id ? await getModel(parseInt(req.params.id) || 0) : await getAllContacts();
+    const { data } = req.params.id ? await getModel(parseInt(req.params.id) || 0) : await getAllModels();
     const dbResponse = data;
     if (dbResponse[0] === undefined) {
       return res.status(status.notfound).send({ data: {} });
