@@ -20,7 +20,7 @@ export const createDrive = async (values: DriveInsertValue[]): Promise<DbRespons
   */
   const createDriveFileQuery = `INSERT INTO
   drive(id, drive_id, type, name, web_view_link, web_content_link, thumbnail_link, created_time, last_viewed, duration, model_id, description, size, created_on)
-  VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+  VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
   returning *`;
   const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
   values.push(createdOn);
