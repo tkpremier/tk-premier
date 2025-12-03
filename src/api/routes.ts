@@ -1,11 +1,12 @@
 import express, { Request, Response, Router } from 'express';
 import { requiresAuth } from 'express-openid-connect';
 import pool from '../../db/dev/pool';
-import { useExperienceApi, useInterviewApi, useModelApi } from '../services/db';
+import { useExperienceApi, useInterviewApi } from '../services/db';
 import { getDriveList, syncDriveFiles } from '../services/drive';
 import { getAuthentication } from './auth';
 import { useDriveDB } from './db/drive';
 import { useDriveApi } from './drive';
+import { useModelApi } from './db/model';
 
 type RequestWithQuery = Request & {
   query?: {

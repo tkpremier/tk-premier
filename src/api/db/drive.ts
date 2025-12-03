@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { createDrive, getDrive, updateDrive } from '../../../services/db/drive';
-import { ErrorResponse } from '../../../types';
-import { status } from '../../../utils/status';
+import { createDrive, getDrive, updateDrive } from '../../services/db/drive';
+import { ErrorResponse } from '../../types';
+import { status } from '../../utils/status';
 
 const createDriveRow = async (req: Request, res: Response) => {
   const values = Object.keys(req.body).map(k => req.body[k]);
