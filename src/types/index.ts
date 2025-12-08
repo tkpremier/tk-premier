@@ -21,7 +21,7 @@ export type NextApiRequestWithQuery = Response & {
 };
 
 export interface ContactDB {
-  createdOn: Date;
+  createdOn: string;
   driveIds: Array<string>;
   id: number;
   name: string;

@@ -1,9 +1,7 @@
 import format from 'date-fns/format';
-import camelCase from 'lodash/camelCase';
-import isNull from 'lodash/isNull';
 import dbQuery from '../../../db/dev/dbQuery';
 import { DbResponse, DriveDB, DriveInsertValue, DriveUpdatePayload, ODriveFile } from '../../types';
-import { normalizeColumnName } from './utils';
+import { camelCaseObjectWithDates, normalizeColumnName } from './utils';
 
 export const createDrive = async (values: DriveInsertValue[]): Promise<DbResponse['rows']> => {
   /*
@@ -42,23 +40,8 @@ export const getDrive = async () => {
 
     return {
       data: data.map((f: DriveDB) =>
-        Object.keys(f).reduce(
-          (o: { [key: string]: string | number | null | Array<number> }, k: keyof DriveDB): ODriveFile => {
-            const dateKeys = ['createdOn', 'createdTime', 'lastViewed'];
-            const key = camelCase(k);
-            o[key] =
-              dateKeys.indexOf(key) > -1
-                ? key === 'createdOn' || key === 'createdTime'
-                  ? format(new Date(f[k] as DriveDB['createdOn'] | DriveDB['createdTime']), "MM/dd/yyyy' 'HH:mm:ss")
-                  : !isNull(f[k])
-                  ? format(new Date(f[k] as DriveDB['lastViewed']), "MM/dd/yyyy' 'HH:mm:ss")
-                  : f[k]
-                : f[k];
-            return o;
-          },
-          {}
-        )
-      ) as Array<DriveDB>
+        camelCaseObjectWithDates(f, ['createdOn', 'createdTime', 'lastViewed'])
+      ) as Array<ODriveFile>
     };
   } catch (error) {
     return new Error(error);
@@ -125,25 +108,7 @@ export const updateDrive = async (
   try {
     const { rows } = (await dbQuery.query(query, values)) as DbResponse;
     return {
-      data: rows.map((f: DriveDB) =>
-        Object.keys(f).reduce(
-          (o: { [key: string]: string | number | null | Array<number> }, k: keyof DriveDB): ODriveFile => {
-            const dateKeys = ['createdOn', 'createdTime', 'lastViewed'];
-            const key = camelCase(k);
-            console.log(`original key: ${k}, camelCase key: ${key}`);
-            o[key] =
-              dateKeys.indexOf(key) > -1
-                ? key === 'createdOn' || key === 'createdTime'
-                  ? format(new Date(f[k] as DriveDB['createdOn'] | DriveDB['createdTime']), "MM/dd/yyyy' 'HH:mm:ss")
-                  : !isNull(f[k])
-                  ? format(new Date(f[k] as DriveDB['lastViewed']), "MM/dd/yyyy' 'HH:mm:ss")
-                  : f[k]
-                : f[k];
-            return o;
-          },
-          {}
-        )
-      )
+      data: rows.map((f: DriveDB) => camelCaseObjectWithDates(f, ['createdOn', 'createdTime', 'lastViewed']))
     };
   } catch (error) {
     console.log('An error occurred', error);

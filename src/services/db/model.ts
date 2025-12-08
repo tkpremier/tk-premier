@@ -1,8 +1,9 @@
+import { format } from 'date-fns';
+import camelCase from 'lodash/camelCase';
 import uniq from 'lodash/uniq';
 import dbQuery from '../../../db/dev/dbQuery';
 import { ContactDB, DbResponse } from '../../types';
-import camelCase from 'lodash/camelCase';
-import { format } from 'date-fns';
+import { camelCaseObjectWithDates } from './utils';
 
 export const createModel = async data => {
   const { createdOn, driveIds, modelName, platform } = data;
@@ -138,9 +139,8 @@ export const updateModel = async (modelId: number, driveIds: Array<string>) => {
   RETURNING *`;
   try {
     const { rows } = (await dbQuery.query(query, [driveIds, modelId])) as DbResponse<ContactDB>;
-    console.log('updateModel success');
     return {
-      data: rows
+      data: rows.map((f: ContactDB) => camelCaseObjectWithDates(f as unknown as Record<string, unknown>, ['createdOn']))
     };
   } catch (error) {
     console.log('An error occurred', error);

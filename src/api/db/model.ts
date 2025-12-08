@@ -1,8 +1,8 @@
 import { format } from 'date-fns';
 import { Request, Response } from 'express';
-import camelCase from 'lodash/camelCase';
 import uniq from 'lodash/uniq';
 import { createModel, getAllModels, getModel, updateModel } from '../../services/db/model';
+import { camelCaseObjectWithDates } from '../../services/db/utils';
 import { ContactDB } from '../../types';
 import { status } from '../../utils/status';
 import { isEmpty } from '../../utils/validations';
@@ -18,12 +18,7 @@ const createModelApi = async (req: Request, res: Response) => {
     const data = dbResponse.rows;
     return res.status(status.success).send({
       data: data.map((m: ContactDB) =>
-        Object.keys(m).reduce((o, k) => {
-          const key = camelCase(k);
-          o[key] =
-            key === 'createdOn' ? format(new Date(m[k] as ContactDB['createdOn']), "MM/dd/yyyy' 'HH:mm:ss") : m[k];
-          return o;
-        }, {} as ContactDB)
+        camelCaseObjectWithDates(m as unknown as Record<string, unknown>, ['createdOn'])
       ) as ContactDB[]
     });
   } catch (error) {
