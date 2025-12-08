@@ -32,9 +32,8 @@ export const getDrive = async () => {
   const getDriveFileQuery = `SELECT * FROM
   drive ORDER BY created_time DESC`;
   try {
-    const { rows } = (await dbQuery.query(getDriveFileQuery, [])) as DbResponse;
-    const dbResponse = rows;
-    if (dbResponse[0] === undefined) {
+    const { rows: data } = (await dbQuery.query(getDriveFileQuery, [])) as DbResponse;
+    if (data[0] === undefined) {
       console.log('There are no drive files');
       return { data: [] };
       // errorMessage.error = 'There are no models';
@@ -42,7 +41,7 @@ export const getDrive = async () => {
     }
 
     return {
-      data: dbResponse.map((f: DriveDB) =>
+      data: data.map((f: DriveDB) =>
         Object.keys(f).reduce(
           (o: { [key: string]: string | number | null | Array<number> }, k: keyof DriveDB): ODriveFile => {
             const dateKeys = ['createdOn', 'createdTime', 'lastViewed'];
@@ -125,7 +124,27 @@ export const updateDrive = async (
 
   try {
     const { rows } = (await dbQuery.query(query, values)) as DbResponse;
-    return { data: rows };
+    return {
+      data: rows.map((f: DriveDB) =>
+        Object.keys(f).reduce(
+          (o: { [key: string]: string | number | null | Array<number> }, k: keyof DriveDB): ODriveFile => {
+            const dateKeys = ['createdOn', 'createdTime', 'lastViewed'];
+            const key = camelCase(k);
+            console.log(`original key: ${k}, camelCase key: ${key}`);
+            o[key] =
+              dateKeys.indexOf(key) > -1
+                ? key === 'createdOn' || key === 'createdTime'
+                  ? format(new Date(f[k] as DriveDB['createdOn'] | DriveDB['createdTime']), "MM/dd/yyyy' 'HH:mm:ss")
+                  : !isNull(f[k])
+                  ? format(new Date(f[k] as DriveDB['lastViewed']), "MM/dd/yyyy' 'HH:mm:ss")
+                  : f[k]
+                : f[k];
+            return o;
+          },
+          {}
+        )
+      )
+    };
   } catch (error) {
     console.log('An error occurred', error);
     return { data: [] };

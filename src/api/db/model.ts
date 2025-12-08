@@ -1,24 +1,31 @@
-import { Request, Response } from 'express';
-import { getModel, getAllModels, updateModel, createModel } from '../../services/db/model';
-import { status } from '../../utils/status';
-import { ContactDB } from '../../types';
-import camelCase from 'lodash/camelCase';
 import { format } from 'date-fns';
+import { Request, Response } from 'express';
+import camelCase from 'lodash/camelCase';
+import uniq from 'lodash/uniq';
+import { createModel, getAllModels, getModel, updateModel } from '../../services/db/model';
+import { ContactDB } from '../../types';
+import { status } from '../../utils/status';
 import { isEmpty } from '../../utils/validations';
-import { ErrorResponse } from '../../types';
 
 const createModelApi = async (req: Request, res: Response) => {
   try {
     const { driveIds, modelName, platform } = req.body;
     const createdOn = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-    let errorMessage: ErrorResponse;
     if (isEmpty(modelName) || isEmpty(platform)) {
-      errorMessage.error = 'Name or platform cannot be empty';
-      return res.status(status.bad).send(errorMessage);
+      throw Error('Name or platform cannot be empty');
     }
     const dbResponse = await createModel({ driveIds, modelName, platform, createdOn });
     const data = dbResponse.rows;
-    return res.status(status.success).send({ data });
+    return res.status(status.success).send({
+      data: data.map((m: ContactDB) =>
+        Object.keys(m).reduce((o, k) => {
+          const key = camelCase(k);
+          o[key] =
+            key === 'createdOn' ? format(new Date(m[k] as ContactDB['createdOn']), "MM/dd/yyyy' 'HH:mm:ss") : m[k];
+          return o;
+        }, {} as ContactDB)
+      ) as ContactDB[]
+    });
   } catch (error) {
     console.error('createModelApi error: ', error);
     return res.status(status.error).send({ data: [] });
@@ -42,18 +49,8 @@ const getModelApi = async (req: Request, res: Response) => {
 const updateModelApi = async (req: Request, res: Response) => {
   try {
     const { id, driveIds } = req.body;
-    const { data } = await updateModel(id, driveIds);
-    const response = data.map((f: ContactDB) =>
-      Object.keys(f).reduce(
-        (o: { [key: string]: string | number | null | Array<string> | Date }, k: keyof ContactDB) => {
-          o[camelCase(k)] =
-            f[k] instanceof Date ? format(new Date(f[k] as ContactDB['createdOn']), "MM/dd/yyyy' 'HH:mm:ss") : f[k];
-          return o;
-        },
-        {}
-      )
-    );
-    return res.status(status.success).send(response);
+    const { data } = await updateModel(id, uniq(driveIds));
+    return res.status(status.success).send({ data });
   } catch (error) {
     console.log('error: ', error);
     return res.status(status.error).send(error);

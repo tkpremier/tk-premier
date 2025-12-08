@@ -22,7 +22,7 @@ export const updateDriveRow = async (req: Request, res: Response) => {
     //   errorMessage.error = 'No updates to be made';
     //   return res.status(status.notfound).send(errorMessage);
     // }
-    return res.status(status.success).send(data);
+    return res.status(status.success).send({ data });
   } catch (error) {
     console.log('An error occurred', error);
     let errorMessage: ErrorResponse;

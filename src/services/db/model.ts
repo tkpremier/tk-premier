@@ -8,22 +8,13 @@ export const createModel = async data => {
   const { createdOn, driveIds, modelName, platform } = data;
   const hasIds = Array.isArray(driveIds) && driveIds.length > 0;
   const createModelQuery = hasIds
-    ? `INSERT INTO model(name, platform, created_on, drive_ids) VALUES($1, $2, $3, $4) returning *`
-    : `INSERT INTO model(name, platform, created_on) VALUES($1, $2, $3) returning *`;
+    ? `INSERT INTO model(name, platform, created_on, drive_ids) VALUES($1, $2, $3, $4) RETURNING *`
+    : `INSERT INTO model(name, platform, created_on) VALUES($1, $2, $3) RETURNING *`;
   const values = [modelName, platform, createdOn];
   if (hasIds) {
     values.push(uniq(driveIds));
   }
   try {
-    // Check the actual table structure in the database
-    const tableInfo = await dbQuery.query(
-      `SELECT column_name, column_default, data_type 
-       FROM information_schema.columns 
-       WHERE table_name = 'model' AND column_name = 'id'`,
-      []
-    );
-    console.log('Table structure for id column:', tableInfo.rows[0]);
-
     // Check if the column is GENERATED ALWAYS AS IDENTITY
     const identityInfo = await dbQuery.query(
       `SELECT is_identity, identity_generation 
@@ -140,21 +131,16 @@ export const updateModel = async (modelId: number, driveIds: Array<string>) => {
   WHERE id = $2`;
   console.log('data: [model_id, id] ', data);
    */
+  console.log('driveIds: ', driveIds);
   const query = `UPDATE model
-  SET drive_ids = array_cat(drive_ids, $1)
-  WHERE id = $2`;
+  SET drive_ids = $1
+  WHERE id = $2
+  RETURNING *`;
   try {
     const { rows } = (await dbQuery.query(query, [driveIds, modelId])) as DbResponse<ContactDB>;
-    const dbResponse = rows;
-    // if (dbResponse[0] === undefined) {
-    //   console.log("No updates");
-    //   return { data: [] };
-    //   // errorMessage.error = 'There are no models';
-    //   // return res.status(status.notfound).send(errorMessage);
-    // }
-    console.log('updateModel success: ', rows);
+    console.log('updateModel success');
     return {
-      data: dbResponse
+      data: rows
     };
   } catch (error) {
     console.log('An error occurred', error);
