@@ -26,11 +26,15 @@ export const createDrive = async (values: DriveInsertValue[]): Promise<DbRespons
   return rows;
 };
 
-export const getDrive = async () => {
-  const getDriveFileQuery = `SELECT * FROM
+export const getDrive = async (id?: string) => {
+  const getDriveFileQuery = id
+    ? `SELECT * FROM
+  drive WHERE id = $1`
+    : `SELECT * FROM
   drive ORDER BY created_time DESC`;
+  const values = id ? [id] : [];
   try {
-    const { rows: data } = (await dbQuery.query(getDriveFileQuery, [])) as DbResponse;
+    const { rows: data } = (await dbQuery.query(getDriveFileQuery, values)) as DbResponse;
     if (data[0] === undefined) {
       console.log('There are no drive files');
       return { data: [] };

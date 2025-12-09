@@ -2,11 +2,11 @@ import express, { Request, Response, Router } from 'express';
 import { requiresAuth } from 'express-openid-connect';
 import pool from '../../db/dev/pool';
 import { useExperienceApi, useInterviewApi } from '../services/db';
-import { getDriveList, syncDriveFiles } from '../services/drive';
+import { getDriveList, getMultipleFiles, syncDriveFiles } from '../services/drive';
 import { getAuthentication } from './auth';
 import { useDriveDB } from './db/drive';
-import { useDriveApi } from './drive';
 import { useModelApi } from './db/model';
+import { useDriveApi } from './drive';
 
 type RequestWithQuery = Request & {
   query?: {
@@ -23,6 +23,15 @@ router.get('/drive-google', requiresAuth(), async (req: RequestWithQuery, res: R
   } catch (e) {
     console.log('there was an error: ', e);
     res.status(500).send({ files: [], nextPageToken: '' });
+  }
+});
+router.post('/drive-google-batch', async (req: RequestWithQuery, res: Response) => {
+  try {
+    const response = await getMultipleFiles(req.body.driveIds);
+    res.status(200).send(response);
+  } catch (e) {
+    console.log('there was an error: ', e);
+    res.status(500).send({ files: [] });
   }
 });
 router.get('/drive-google-sync', async (req: RequestWithQuery, res: Response) => {

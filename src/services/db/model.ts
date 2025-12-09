@@ -1,9 +1,10 @@
 import { format } from 'date-fns';
+import { omit } from 'lodash';
 import camelCase from 'lodash/camelCase';
 import uniq from 'lodash/uniq';
 import dbQuery from '../../../db/dev/dbQuery';
 import { ContactDB, DbResponse } from '../../types';
-import { camelCaseObjectWithDates } from './utils';
+import { camelCaseObject, camelCaseObjectWithDates } from './utils';
 
 export const createModel = async data => {
   const { createdOn, driveIds, modelName, platform } = data;
@@ -91,9 +92,9 @@ export const getAllModels = async () => {
 
 export const getModel = async (id: number) => {
   const getModelQuery = `SELECT
-	model.name as model_name, drive.name, drive.model_id, model.id, model.drive_ids, drive.drive_id, drive.type FROM model INNER JOIN drive
+	model.name as model_name, drive.name, drive.thumbnail_link, drive.model_id, model.id, model.drive_ids, drive.drive_id, drive.type, drive.created_time, drive.last_viewed FROM model INNER JOIN drive
 	ON drive.drive_id = ANY(model.drive_ids) WHERE model.id = $1
-	ORDER BY model.id ASC`;
+	ORDER BY drive.created_time DESC`;
   const value = [id];
   try {
     const { rows } = (await dbQuery.query(getModelQuery, value)) as DbResponse<
@@ -107,21 +108,33 @@ export const getModel = async (id: number) => {
       // errorMessage.error = 'There are no models';
       // return res.status(status.notfound).send(errorMessage);
     }
-    return {
-      driveIds: (dbResponse[0] as ContactDB & { drive_ids?: Array<string> }).drive_ids || [],
-      data: dbResponse.map((f: ContactDB) =>
-        Object.keys(f).reduce((o: { [key: string]: Date | Array<string> | number | string }, k: keyof ContactDB) => {
-          o[camelCase(k)] =
-            f[k] instanceof Date ? format(new Date(f[k] as ContactDB['createdOn']), "MM/dd/yyyy' 'HH:mm:ss") : f[k];
-          return o;
-        }, {})
+    const data = camelCaseObject(
+      omit(
+        dbResponse[0] as unknown as Record<string, unknown> & { drive_ids?: Array<string> },
+        'thumbnail_link',
+        'created_time',
+        'last_viewed',
+        'drive_ids',
+        'drive_id',
+        'name',
+        'type'
       )
+    );
+    data.driveFiles = dbResponse.map(
+      (f: ContactDB & { createdTime: Date; lastViewed: Date }) =>
+        camelCaseObjectWithDates(
+          omit(f as unknown as Record<string, unknown>, 'drive_ids', 'model_id', 'model_name', 'id'),
+          ['createdTime', 'lastViewed']
+        ) as unknown as Record<string, unknown> & { createdTime: Date; lastViewed: Date }
+    ) as Array<Record<string, unknown> & { createdTime: Date; lastViewed: Date }>;
+    return {
+      data: [data]
     };
   } catch (error) {
     console.log('An error occurred', error);
     // errorMessage.error = 'An error Occured';
     // return res.status(status.error).send(errorMessage);
-    return { data: [], driveIds: [] };
+    return { data: [] };
   }
 };
 

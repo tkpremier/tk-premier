@@ -31,9 +31,11 @@ export const updateDriveRow = async (req: Request, res: Response) => {
   }
 };
 
-const getDriveRows = async (_req: Request, res: Response) => {
+const getDriveRows = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  console.log('id: ', id);
   try {
-    const response = await getDrive();
+    const response = await getDrive(id);
     if (response instanceof Error) {
       throw response;
     }

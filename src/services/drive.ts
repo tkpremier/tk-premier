@@ -182,7 +182,7 @@ export const getUser = async () => {
   return user;
 };
 
-/* export const getMultipleFiles = async (fileIds: string[]) => {
+export const getMultipleFiles = async (fileIds: string[]) => {
   const filePromises = fileIds.map(fileId =>
     drive.files.get({
       fileId: fileId,
@@ -197,4 +197,4 @@ export const getUser = async () => {
     console.error('Error fetching files:', error);
     throw error;
   }
-}; */
+};
