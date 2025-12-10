@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import { Request, Response } from 'express';
 import uniq from 'lodash/uniq';
-import { createModel, getAllModels, getModel, updateModel } from '../../services/db/model';
+import { createModel, deleteModel, getAllModels, getModel, updateModel } from '../../services/db/model';
 import { camelCaseObjectWithDates } from '../../services/db/utils';
 import { ContactDB } from '../../types';
 import { status } from '../../utils/status';
@@ -51,9 +51,30 @@ const updateModelApi = async (req: Request, res: Response) => {
     return res.status(status.error).send(error);
   }
 };
+
+const deleteModelApi = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const response = await deleteModel(parseInt(id) || 0);
+    if (response instanceof Error) {
+      throw response;
+    }
+    if (response && response.data.length === 0) {
+      return res.status(status.notfound).send({ data: [] });
+    }
+    return res.status(status.success).send({ data: response.data });
+  } catch (error) {
+    console.log('error: ', error);
+    return res.status(status.error).send({ data: [] });
+  }
+};
+
 export const useModelApi = async (req: Request, res: Response) => {
   try {
     switch (req.method) {
+      case 'DELETE': {
+        return await deleteModelApi(req, res);
+      }
       case 'POST': {
         const response = await createModelApi(req, res);
         return response;

@@ -44,7 +44,47 @@ export const getDrive = async (id?: string) => {
 
     return {
       data: data.map((f: DriveDB) =>
-        camelCaseObjectWithDates(f, ['createdOn', 'createdTime', 'lastViewed'])
+        camelCaseObjectWithDates(f, ['createdOn', 'createdTime', 'lastViewed'], 'MM/dd/yyyy')
+      ) as Array<ODriveFile>
+    };
+  } catch (error) {
+    return new Error(error);
+  }
+};
+
+export const deleteDrive = async (id: string) => {
+  const deleteDriveFileQuery = `DELETE FROM drive WHERE id = $1 RETURNING *`;
+  const values = [id];
+  try {
+    const { rows: data } = (await dbQuery.query(deleteDriveFileQuery, values)) as DbResponse;
+    if (data[0] === undefined) {
+      console.log('Drive file not found');
+      return { data: [] };
+    }
+
+    const deletedDrive = data[0] as DriveDB & { model_id?: Array<number> | null; drive_id: string };
+    const modelIds = deletedDrive.model_id;
+    const driveId = deletedDrive.drive_id;
+
+    // If model_id is not empty, update each model's drive_ids array
+    if (modelIds && Array.isArray(modelIds) && modelIds.length > 0) {
+      for (const modelId of modelIds) {
+        const updateModelQuery = `UPDATE model
+          SET drive_ids = array_remove(drive_ids, $1)
+          WHERE id = $2`;
+        try {
+          console.log(`updating model ${modelId} by removing ${driveId} from drive_ids`);
+          await dbQuery.query(updateModelQuery, [driveId, modelId]);
+        } catch (error) {
+          console.log(`Error updating model ${modelId} after drive deletion:`, error);
+          // Continue with other model updates even if one fails
+        }
+      }
+    }
+
+    return {
+      data: data.map((f: DriveDB) =>
+        camelCaseObjectWithDates(f, ['createdOn', 'createdTime', 'lastViewed'], 'MM/dd/yyyy')
       ) as Array<ODriveFile>
     };
   } catch (error) {
@@ -64,12 +104,15 @@ export const updateDrive = async (
     }
     const query = `UPDATE drive
   SET ${column} = array_cat(model_id, $1)
-  WHERE id = $2`;
+  WHERE id = $2
+  RETURNING *`;
     try {
       const { rows } = (await dbQuery.query(query, mutableData)) as DbResponse;
       console.log('query', query, 'dta', mutableData, rows);
       return {
-        data: rows
+        data: rows.map((f: DriveDB) =>
+          camelCaseObjectWithDates(f, ['createdOn', 'createdTime', 'lastViewed'], 'MM/dd/yyyy')
+        )
       };
     } catch (error) {
       console.log('An error occurred', error);
@@ -112,7 +155,9 @@ export const updateDrive = async (
   try {
     const { rows } = (await dbQuery.query(query, values)) as DbResponse;
     return {
-      data: rows.map((f: DriveDB) => camelCaseObjectWithDates(f, ['createdOn', 'createdTime', 'lastViewed']))
+      data: rows.map((f: DriveDB) =>
+        camelCaseObjectWithDates(f, ['createdOn', 'createdTime', 'lastViewed'], 'MM/dd/yyyy')
+      )
     };
   } catch (error) {
     console.log('An error occurred', error);

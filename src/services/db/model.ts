@@ -100,7 +100,6 @@ export const getModel = async (id: number) => {
     const { rows } = (await dbQuery.query(getModelQuery, value)) as DbResponse<
       ContactDB & { drive_ids?: Array<string> }
     >;
-    console.log('db response row: ', rows, rows.length);
     const dbResponse = rows;
     if (dbResponse[0] === undefined) {
       console.log('There are no models');
@@ -124,7 +123,8 @@ export const getModel = async (id: number) => {
       (f: ContactDB & { createdTime: Date; lastViewed: Date }) =>
         camelCaseObjectWithDates(
           omit(f as unknown as Record<string, unknown>, 'drive_ids', 'model_id', 'model_name', 'id'),
-          ['createdTime', 'lastViewed']
+          ['createdTime', 'lastViewed'],
+          'MM/dd/yyyy'
         ) as unknown as Record<string, unknown> & { createdTime: Date; lastViewed: Date }
     ) as Array<Record<string, unknown> & { createdTime: Date; lastViewed: Date }>;
     return {
@@ -135,6 +135,51 @@ export const getModel = async (id: number) => {
     // errorMessage.error = 'An error Occured';
     // return res.status(status.error).send(errorMessage);
     return { data: [] };
+  }
+};
+
+export const deleteModel = async (id: number) => {
+  const deleteModelQuery = `DELETE FROM model WHERE id = $1 RETURNING *`;
+  const values = [id];
+  try {
+    const { rows: data } = (await dbQuery.query(deleteModelQuery, values)) as DbResponse<
+      ContactDB & { drive_ids?: Array<string> | null }
+    >;
+    if (data[0] === undefined) {
+      console.log('Model not found');
+      return { data: [] };
+    }
+
+    const deletedModel = data[0] as ContactDB & { drive_ids?: Array<string> | null };
+    const driveIds = deletedModel.drive_ids;
+
+    // If drive_ids is not empty, update each drive's model_id array
+    if (driveIds && Array.isArray(driveIds) && driveIds.length > 0) {
+      for (const driveId of driveIds) {
+        const updateDriveQuery = `UPDATE drive
+          SET model_id = array_remove(model_id, $1)
+          WHERE drive_id = $2`;
+        try {
+          console.log(`updating drive ${driveId} by removing model ${id} from model_id`);
+          await dbQuery.query(updateDriveQuery, [id, driveId]);
+        } catch (error) {
+          console.log(`Error updating drive ${driveId} after model deletion:`, error);
+          // Continue with other drive updates even if one fails
+        }
+      }
+    }
+
+    return {
+      data: data.map((f: ContactDB) =>
+        Object.keys(f).reduce((o: { [key: string]: Date | Array<string> | number | string }, k: keyof ContactDB) => {
+          o[camelCase(k)] =
+            f[k] instanceof Date ? format(new Date(f[k] as ContactDB['createdOn']), "MM/dd/yyyy' 'HH:mm:ss") : f[k];
+          return o;
+        }, {})
+      )
+    };
+  } catch (error) {
+    return new Error(error);
   }
 };
 

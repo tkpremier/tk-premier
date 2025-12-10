@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createDrive, getDrive, updateDrive } from '../../services/db/drive';
+import { createDrive, deleteDrive, getDrive, updateDrive } from '../../services/db/drive';
 import { ErrorResponse } from '../../types';
 import { status } from '../../utils/status';
 
@@ -18,10 +18,9 @@ const createDriveRow = async (req: Request, res: Response) => {
 export const updateDriveRow = async (req: Request, res: Response) => {
   try {
     const { data } = await updateDrive(req.body);
-    // if (data && data.length === 0) {
-    //   errorMessage.error = 'No updates to be made';
-    //   return res.status(status.notfound).send(errorMessage);
-    // }
+    if (data && data.length === 0) {
+      return res.status(status.notfound).send({ data });
+    }
     return res.status(status.success).send({ data });
   } catch (error) {
     console.log('An error occurred', error);
@@ -33,7 +32,6 @@ export const updateDriveRow = async (req: Request, res: Response) => {
 
 const getDriveRows = async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log('id: ', id);
   try {
     const response = await getDrive(id);
     if (response instanceof Error) {
@@ -49,8 +47,28 @@ const getDriveRows = async (req: Request, res: Response) => {
   }
 };
 
+const deleteDriveRow = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const response = await deleteDrive(id);
+    if (response instanceof Error) {
+      throw response;
+    }
+    if (response && response.data.length === 0) {
+      return res.status(status.notfound).send({ data: [] });
+    }
+    return res.status(status.success).send({ data: response.data });
+  } catch (error) {
+    console.error('deleteDriveRow error: ', error);
+    return res.status(status.error).send({ data: {} });
+  }
+};
+
 export const useDriveDB = async (req: Request, res: Response) => {
   switch (req.method) {
+    case 'DELETE': {
+      return await deleteDriveRow(req, res);
+    }
     case 'POST': {
       return await createDriveRow(req, res);
     }

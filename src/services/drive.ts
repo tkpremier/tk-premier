@@ -116,8 +116,12 @@ export const syncDriveFiles = async (nextPage = '', pageSize = 1000): Promise<Sy
     updated: 0,
     errors: 0,
     processed: 0,
-    lastPageToken: null
+    lastPageToken: null,
+    deletedFromDrive: []
   };
+
+  // Track which drive_ids from the database were seen in the API response
+  const seenDriveIds = new Set<string>();
 
   let pageToken = nextPage;
 
@@ -135,6 +139,7 @@ export const syncDriveFiles = async (nextPage = '', pageSize = 1000): Promise<Sy
       }
 
       stats.processed += 1;
+      seenDriveIds.add(file.id);
 
       try {
         if (existingRecords.has(file.id)) {
@@ -157,6 +162,10 @@ export const syncDriveFiles = async (nextPage = '', pageSize = 1000): Promise<Sy
     pageToken = nextPageToken ?? '';
     stats.lastPageToken = nextPageToken ?? null;
   } while (pageToken);
+
+  // Find drive_ids that exist in the database but weren't seen in the API response
+  const deletedDriveIds = Array.from(existingRecords.keys()).filter(driveId => !seenDriveIds.has(driveId));
+  stats.deletedFromDrive = deletedDriveIds;
 
   return stats;
 };
