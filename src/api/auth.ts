@@ -6,8 +6,10 @@ export const getAuthentication = async (req: Request, res: Response) => {
     if (!authenticated) {
       throw new Error('User is not authenticated');
     }
-    res.status(200).json({ authenticated, user: req.oidc.user });
+    res
+      .status(200)
+      .json({ authenticated, user: req.oidc.user, isAdmin: process.env.ADMIN_EMAILS.includes(req.oidc.user.email) });
   } catch (error) {
-    res.status(401).json({ error: error.message, authenticated: false });
+    res.status(401).json({ error: error.message, authenticated: false, isAdmin: false });
   }
 };
