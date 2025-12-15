@@ -70,7 +70,7 @@ export type SyncStats = {
   errors: number;
   processed: number;
   lastPageToken: string | null;
-  deletedFromDrive: Array<string>;
+  deleted: number;
 };
 
 export interface ExpDB {

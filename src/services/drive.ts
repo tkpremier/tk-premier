@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { drive_v3, google } from 'googleapis';
 import { DriveFile, SyncStats } from '../types';
-import { createDrive, updateDrive } from './db/drive';
+import { createDrive, deleteDrive, updateDrive } from './db/drive';
 import { getExistingDriveIdentifiers } from './db/utils';
 
 const oauth2 = new google.auth.OAuth2(
@@ -97,7 +97,7 @@ export const syncDriveFiles = async (nextPage = '', pageSize = 1000): Promise<Sy
     errors: 0,
     processed: 0,
     lastPageToken: null,
-    deletedFromDrive: []
+    deleted: 0
   };
 
   // Track which drive_ids from the database were seen in the API response
@@ -145,7 +145,21 @@ export const syncDriveFiles = async (nextPage = '', pageSize = 1000): Promise<Sy
 
   // Find drive_ids that exist in the database but weren't seen in the API response
   const deletedDriveIds = Array.from(existingRecords.keys()).filter(driveId => !seenDriveIds.has(driveId));
-  stats.deletedFromDrive = deletedDriveIds;
+
+  // Delete the drive files that no longer exist in Google Drive
+  for (const driveId of deletedDriveIds) {
+    const databaseId = existingRecords.get(driveId);
+    if (databaseId) {
+      try {
+        await deleteDrive(databaseId);
+        console.log(`Deleted drive file ${driveId} (id: ${databaseId})`);
+        stats.deleted += 1;
+      } catch (error) {
+        console.error(`Failed to delete drive file ${driveId} (id: ${databaseId})`, error);
+        stats.errors += 1;
+      }
+    }
+  }
 
   return stats;
 };
