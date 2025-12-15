@@ -15,6 +15,7 @@ app.use(
     secret: process.env.SECRET,
     baseURL: process.env.BASE_URL,
     clientID: process.env.AUTH0_CLIENT_ID,
+    clientSecret: process.env.AUTH0_CLIENT_SECRET,
     issuerBaseURL: process.env.AUTH0_ISSUER_URL,
     routes: {
       login: false,
@@ -35,8 +36,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', getIndex);
-app.get('/login', (_req, res) => {
-  res.oidc.login({ returnTo: `${process.env.CLIENT_URL}/` });
+app.get('/login', (req, res) => {
+  const returnTo = req.query.returnTo as string | undefined;
+  const redirectUrl = returnTo
+    ? `${process.env.CLIENT_URL}${returnTo.startsWith('/') ? returnTo : `/${returnTo}`}`
+    : `${process.env.CLIENT_URL}/`;
+
+  res.oidc.login({ returnTo: redirectUrl });
 });
 app.post('/callback', (_req, _res, next) => next()); // handled by express-openid-connect internally
 

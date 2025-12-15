@@ -1,3 +1,4 @@
+import { TZDate } from '@date-fns/tz';
 import format from 'date-fns/format';
 import camelCase from 'lodash/camelCase';
 import isNull from 'lodash/isNull';
@@ -39,16 +40,16 @@ export const camelCaseObject = <T extends Record<string, unknown>>(obj: T): Reco
 export const formatDateFields = (
   obj: Record<string, unknown>,
   dateKeys: string[] = ['createdOn', 'createdTime', 'lastViewed'],
-  dateFormat: string = "MM/dd/yyyy' 'HH:mm:ss"
+  dateFormat: string = "MM/dd/yyyy' 'h:mm a"
 ): Record<string, unknown> =>
   Object.keys(obj).reduce((acc, key) => {
     let value = obj[key];
 
     if (dateKeys.includes(key) && value != null) {
       if (key === 'createdOn' || key === 'createdTime') {
-        value = format(new Date(value as string | number | Date), dateFormat);
+        value = format(new TZDate(value as string, 'America/New_York'), dateFormat);
       } else if (!isNull(value)) {
-        value = format(new Date(value as string | number | Date), dateFormat);
+        value = format(new TZDate(value as string, 'America/New_York'), dateFormat);
       }
     }
 
@@ -60,7 +61,7 @@ export const formatDateFields = (
 export const camelCaseObjectWithDates = <T extends Record<string, unknown>>(
   obj: T,
   dateKeys: string[] = ['createdOn', 'createdTime', 'lastViewed'],
-  dateFormat: string = "MM/dd/yyyy' 'HH:mm:ss"
+  dateFormat: string = "MM/dd/yyyy' 'h:mm a"
 ): Record<string, unknown> => {
   const camelCased = camelCaseObject(obj);
   return formatDateFields(camelCased, dateKeys, dateFormat);

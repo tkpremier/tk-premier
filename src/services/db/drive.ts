@@ -12,9 +12,9 @@ export const createDrive = async (values: DriveInsertValue[]): Promise<DbRespons
     web_view_link VARCHAR(100) NOT NULL,
     web_content_link VARCHAR(100) NOT NULL,
     thumbnail_link VARCHAR(100),
-    created_time DATE NOT NULL,
-    viewed_time DATE NOT NULL,
-    created_on DATE NOT NULL)
+    created_time TIMESTAMPTZ NOT NULL,
+    last_viewed TIMESTAMPTZ,
+    created_on TIMESTAMPTZ NOT NULL)
   */
   const createDriveFileQuery = `INSERT INTO
   drive(id, drive_id, type, name, web_view_link, web_content_link, thumbnail_link, created_time, last_viewed, duration, model_id, description, size, created_on)
@@ -44,7 +44,7 @@ export const getDrive = async (id?: string) => {
 
     return {
       data: data.map((f: DriveDB) =>
-        camelCaseObjectWithDates(f, ['createdOn', 'createdTime', 'lastViewed'], 'MM/dd/yyyy')
+        camelCaseObjectWithDates(f, ['createdOn', 'createdTime', 'lastViewed'])
       ) as Array<ODriveFile>
     };
   } catch (error) {
@@ -73,7 +73,6 @@ export const deleteDrive = async (id: string) => {
           SET drive_ids = array_remove(drive_ids, $1)
           WHERE id = $2`;
         try {
-          console.log(`updating model ${modelId} by removing ${driveId} from drive_ids`);
           await dbQuery.query(updateModelQuery, [driveId, modelId]);
         } catch (error) {
           console.log(`Error updating model ${modelId} after drive deletion:`, error);
@@ -84,7 +83,7 @@ export const deleteDrive = async (id: string) => {
 
     return {
       data: data.map((f: DriveDB) =>
-        camelCaseObjectWithDates(f, ['createdOn', 'createdTime', 'lastViewed'], 'MM/dd/yyyy')
+        camelCaseObjectWithDates(f, ['createdOn', 'createdTime', 'lastViewed'])
       ) as Array<ODriveFile>
     };
   } catch (error) {

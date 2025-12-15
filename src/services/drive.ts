@@ -47,25 +47,7 @@ const deriveDriveType = (mimeType?: string | null) => {
   return mimeType;
 };
 
-const toIsoString = (value?: string | null, fallback?: string) => {
-  const parse = (input?: string | null) => {
-    if (!input) {
-      return undefined;
-    }
-    const date = new Date(input);
-    if (Number.isNaN(date.getTime())) {
-      return undefined;
-    }
-    return date;
-  };
-
-  const date = parse(value) ?? parse(fallback) ?? new Date();
-  return date.toISOString();
-};
-
 const buildInsertValues = (file: drive_v3.Schema$File) => {
-  const createdTime = toIsoString(file.createdTime);
-  const lastViewed = toIsoString(file.viewedByMeTime, createdTime);
   const rawDuration = file.videoMediaMetadata?.durationMillis;
   const parsedDuration = rawDuration !== undefined ? Number(rawDuration) : null;
   const duration = Number.isFinite(parsedDuration ?? NaN) ? parsedDuration : null;
@@ -78,8 +60,8 @@ const buildInsertValues = (file: drive_v3.Schema$File) => {
     file.webViewLink ?? '',
     file.webContentLink ?? file.webViewLink ?? '',
     file.thumbnailLink ?? null,
-    createdTime,
-    lastViewed,
+    file.createdTime,
+    file.viewedByMeTime ?? file.createdTime,
     duration,
     [] as number[],
     file.description ?? null,
@@ -88,21 +70,19 @@ const buildInsertValues = (file: drive_v3.Schema$File) => {
 };
 
 const buildUpdatePayload = (file: drive_v3.Schema$File, existingId?: string) => {
-  const createdTime = toIsoString(file.createdTime);
-  const lastViewed = toIsoString(file.viewedByMeTime, createdTime);
   const rawDuration = file.videoMediaMetadata?.durationMillis;
   const parsedDuration = rawDuration !== undefined ? Number(rawDuration) : null;
   const duration = Number.isFinite(parsedDuration ?? NaN) ? parsedDuration : null;
-
   return {
     id: existingId ?? file.id!,
+    driveId: existingId ?? file.id!,
     type: deriveDriveType(file.mimeType),
     name: file.name ?? '',
     webViewLink: file.webViewLink ?? '',
     webContentLink: file.webContentLink ?? file.webViewLink ?? '',
     thumbnailLink: file.thumbnailLink ?? null,
-    createdTime,
-    lastViewed,
+    createdTime: file.createdTime,
+    lastViewed: file.viewedByMeTime ?? file.createdTime,
     duration,
     description: file.description ?? null,
     size: file.size ?? null
