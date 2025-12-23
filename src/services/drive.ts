@@ -163,6 +163,14 @@ export const syncDriveFiles = async (nextPage = '', pageSize = 1000): Promise<Sy
 
   return stats;
 };
+
+export const deleteDriveFile = async (driveId: string) => {
+  const res = await drive.files.delete({
+    fileId: driveId
+  });
+  return res;
+};
+
 export const updateFile = async (driveId: string, data: Partial<DriveFile>) => {
   const res = await drive.files.update({
     fileId: driveId,
