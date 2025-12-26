@@ -3,7 +3,6 @@ const nodeExternals = require('webpack-node-externals');
 const DotEnv = require('dotenv-webpack');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
-const envPath = resolve(__dirname, `.env.${NODE_ENV}`);
 
 module.exports = {
   mode: NODE_ENV,
@@ -41,7 +40,6 @@ module.exports = {
   },
   plugins: [
     new DotEnv({
-      path: envPath, // loads .env.development in dev, .env.production in prod
       systemvars: true, // let process.env override if present (e.g., Docker)
       silent: true // don't crash if file is missing
     })

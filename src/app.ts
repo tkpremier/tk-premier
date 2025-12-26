@@ -12,7 +12,7 @@ app.use(
   auth({
     authRequired: false,
     auth0Logout: true,
-    secret: process.env.SECRET,
+    secret: process.env.AUTH0_SECRET,
     baseURL: process.env.BASE_URL,
     clientID: process.env.AUTH0_CLIENT_ID,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
@@ -94,7 +94,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 };
 app.use(errorHandler);
 
-const port = process.env.PORT || 3001;
+const port = process.env.API_PORT || 3001;
 
 app.listen(port, function () {
   console.log('Server running at http://127.0.0.1:' + port + '/');
