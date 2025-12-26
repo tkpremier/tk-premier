@@ -1,22 +1,9 @@
-# --- Source Control & Config ---
-.git/
-.gitignore
-.github/
-.vscode/
-.dockerignore
-Dockerfile
-
-# --- Dependencies & Builds ---
-node_modules
-dist/
-build/
-
-# --- Security ---
 .env
-.env.local
 .env.*
-
-# --- System Files ---
+.vscode
 .DS_Store
-npm-debug.log
+node_modules
+assets
+build
+dist
 yarn-error.log

@@ -1,9 +1,22 @@
+# --- Source Control & Config ---
 .git/
 .gitignore
-.dockerignore
+.github/
 .vscode/
-.storybook/
+.dockerignore
 Dockerfile
-docker-compose.yml
-node_modules/         # Installed inside container
-nginx/   
+
+# --- Dependencies & Builds ---
+node_modules
+dist/
+build/
+
+# --- Security ---
+.env
+.env.local
+.env.*
+
+# --- System Files ---
+.DS_Store
+npm-debug.log
+yarn-error.log
