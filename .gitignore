@@ -1,13 +1,22 @@
-.env.development
-.env.production
-.vscode
-.DS_Store
+# --- Source Control & Config ---
+.git/
+.gitignore
+.github/
+.vscode/
+.dockerignore
+Dockerfile
+
+# --- Dependencies & Builds ---
 node_modules
-assets
-build
-dist
-src/stories
+dist/
+build/
+
+# --- Security ---
+.env
+.env.local
+.env.*
+
+# --- System Files ---
+.DS_Store
+npm-debug.log
 yarn-error.log
-credentials.json
-token.json
-drive-files-dump.json
